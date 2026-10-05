@@ -198,37 +198,37 @@ export default function AbsensiPage() {
           {!isLoading && dayData && (
             <>
               {dayData.sunday ? (
-                <div className="bg-merah-50 border-merah-200 text-merah-700 rounded-[10px] border p-4">
+                <div className="bg-danger-50 border-danger-200 text-danger-700 rounded-[10px] border p-4">
                   <span className="mb-1 block font-semibold">Hari ini libur</span>
                   <span className="text-sm">Hari Minggu libur dan tidak bisa diabsen.</span>
                 </div>
               ) : dayData.libur ? (
-                <div className="bg-merah-50 border-merah-200 text-merah-700 flex items-center justify-between rounded-[10px] border p-4">
+                <div className="bg-danger-50 border-danger-200 text-danger-700 flex items-center justify-between rounded-[10px] border p-4">
                   <div className="flex flex-col">
                     <span className="font-semibold">Hari ini libur</span>
                     <span className="text-sm">Tidak ada absensi.</span>
                   </div>
                   <button
                     onClick={() => handleSetLibur(false)}
-                    className="text-merah-700 border-merah-200 active:bg-merah-50 rounded-lg border bg-white px-3 py-1.5 text-sm font-medium shadow-sm transition-colors"
+                    className="text-danger-700 border-danger-200 active:bg-danger-50 rounded-lg border bg-white px-3 py-1.5 text-sm font-medium shadow-sm transition-colors"
                   >
                     Batalkan libur
                   </button>
                 </div>
               ) : (
-                <div className="flex items-center justify-between px-1">
+                <div className="flex items-center gap-3">
                   <button
                     onClick={() => handleSetLibur(true)}
-                    className="-ml-2 rounded-lg p-2 text-sm font-medium text-slate-600 active:text-slate-800"
+                    className="flex-1 rounded-btn border border-slate-200 bg-white py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors active:bg-slate-50"
                   >
-                    Tandai libur
+                    Tandai Libur
                   </button>
                   {dayData.recorded && !isDirty && (
                     <button
                       onClick={handleHapusClick}
-                      className="text-danger-600 active:text-merah-700 -mr-2 rounded-lg p-2 text-sm font-medium"
+                      className="flex-1 rounded-btn border border-danger-100 bg-danger-50 py-2 text-sm font-medium text-danger-700 shadow-sm transition-colors active:bg-danger-100"
                     >
-                      Hapus absensi
+                      Hapus Absensi
                     </button>
                   )}
                 </div>
