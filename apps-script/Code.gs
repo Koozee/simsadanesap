@@ -18,6 +18,18 @@ function doGet(e) {
       return validateSpreadsheets();
     });
   }
+
+  if (action === 'absensi.getDay') {
+    return withRead(action, function() {
+      return getAbsenDay(e.parameter.date);
+    });
+  }
+
+  if (action === 'absensi.monthOverview') {
+    return withRead(action, function() {
+      return getAbsenMonthOverview(e.parameter.month);
+    });
+  }
   
   return makeJsonResponse(apiFail('UNKNOWN_ACTION', 'Action GET tidak dikenali: ' + action));
 }

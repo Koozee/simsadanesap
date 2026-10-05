@@ -107,3 +107,132 @@ function ensureMonthSheet(monthStr) {
   
   return sheetName;
 }
+
+function getAbsenDay(dateStr) {
+  const parts = dateStr.split('-');
+  const year = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10);
+  const day = parseInt(parts[2], 10);
+  
+  const sheetName = getNamaBulan(month) + '-' + year;
+  const ss = getAbsensiSs();
+  const sheet = ss.getSheetByName(sheetName);
+  
+  const dateObj = new Date(year, month - 1, day);
+  const isSunday = dateObj.getDay() === 0;
+  
+  if (!sheet) {
+    return {
+      date: dateStr,
+      sheetExists: false,
+      recorded: false,
+      libur: isSunday,
+      sunday: isSunday,
+      entries: []
+    };
+  }
+  
+  const colIndex = 4 + day;
+  const values = sheet.getRange(7, colIndex, 32, 1).getValues();
+  
+  let recorded = false;
+  let allLibur = true;
+  const entries = [];
+  
+  for (let i = 0; i < 32; i++) {
+    let val = String(values[i][0]).trim();
+    if (val) {
+      if (val === 'v' || val === 'V' || val === '✓' || val === '√') {
+        val = 'H';
+      } else {
+        val = val.toUpperCase();
+      }
+      
+      if (['H', 'S', 'I', 'A'].indexOf(val) !== -1) {
+        recorded = true;
+        allLibur = false;
+        entries.push({ no: i + 1, status: val });
+      } else if (val === 'L') {
+        entries.push({ no: i + 1, status: 'L' });
+      } else {
+        allLibur = false;
+      }
+    } else {
+      allLibur = false;
+    }
+  }
+  
+  const finalEntries = [];
+  if (recorded) {
+    for (let i = 0; i < entries.length; i++) {
+      if (entries[i].status !== 'L') {
+        finalEntries.push(entries[i]);
+      }
+    }
+  }
+  
+  return {
+    date: dateStr,
+    sheetExists: true,
+    recorded: recorded,
+    libur: allLibur,
+    sunday: isSunday,
+    entries: finalEntries
+  };
+}
+
+function getAbsenMonthOverview(monthStr) {
+  const parts = monthStr.split('-');
+  const year = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10);
+  
+  const sheetName = getNamaBulan(month) + '-' + year;
+  const ss = getAbsensiSs();
+  const sheet = ss.getSheetByName(sheetName);
+  
+  if (!sheet) {
+    return {
+      month: monthStr,
+      sheetExists: false,
+      recordedDates: [],
+      liburDates: []
+    };
+  }
+  
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const values = sheet.getRange(7, 5, 32, daysInMonth).getValues();
+  
+  const recordedDates = [];
+  const liburDates = [];
+  
+  for (let d = 1; d <= daysInMonth; d++) {
+    let recorded = false;
+    let allLibur = true;
+    
+    for (let i = 0; i < 32; i++) {
+      let val = String(values[i][d - 1]).trim().toUpperCase();
+      if (val === 'V' || val === '✓' || val === '√' || val === 'S' || val === 'I' || val === 'A' || val === 'H') {
+        recorded = true;
+        allLibur = false;
+      } else if (val !== 'L') {
+        allLibur = false;
+      }
+    }
+    
+    const dd = d < 10 ? '0' + d : d;
+    const dateStr = monthStr + '-' + dd;
+    
+    if (recorded) {
+      recordedDates.push(dateStr);
+    } else if (allLibur) {
+      liburDates.push(dateStr);
+    }
+  }
+  
+  return {
+    month: monthStr,
+    sheetExists: true,
+    recordedDates: recordedDates,
+    liburDates: liburDates
+  };
+}
