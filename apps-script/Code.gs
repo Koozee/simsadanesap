@@ -49,5 +49,17 @@ function doPost(e) {
     return makeJsonResponse(apiFail('UNKNOWN_ACTION', 'Action POST tidak ditemukan'));
   }
 
+  if (action === 'absensi.saveDay') {
+    return withLock(action, function() { return saveAbsenDay(params); });
+  }
+
+  if (action === 'absensi.clearDay') {
+    return withLock(action, function() { return clearAbsenDay(params); });
+  }
+
+  if (action === 'absensi.setLibur') {
+    return withLock(action, function() { return setLiburDay(params); });
+  }
+
   return makeJsonResponse(apiFail('UNKNOWN_ACTION', 'Action POST tidak dikenali: ' + action));
 }

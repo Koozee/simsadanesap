@@ -236,3 +236,104 @@ function getAbsenMonthOverview(monthStr) {
     liburDates: liburDates
   };
 }
+
+function saveAbsenDay(params) {
+  const dateStr = params.date;
+  const entries = params.entries || [];
+  
+  const parts = dateStr.split('-');
+  const year = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10);
+  const day = parseInt(parts[2], 10);
+  
+  const dateObj = new Date(year, month - 1, day);
+  if (dateObj.getDay() === 0) {
+    throw { code: 'SUNDAY_LOCKED', message: 'Hari Minggu tidak bisa diabsen' };
+  }
+  
+  const monthStr = dateStr.substring(0, 7);
+  const sheetName = ensureMonthSheet(monthStr);
+  const ss = getAbsensiSs();
+  const sheet = ss.getSheetByName(sheetName);
+  
+  const colIndex = 4 + day;
+  const values = [];
+  
+  const counts = { 'H': 0, 'S': 0, 'I': 0, 'A': 0 };
+  
+  const entryMap = {};
+  for (let i = 0; i < entries.length; i++) {
+    entryMap[entries[i].no] = entries[i].status;
+  }
+  
+  for (let i = 1; i <= 32; i++) {
+    let status = entryMap[i] || 'H'; 
+    if (status === 'H') counts['H']++;
+    else if (status === 'S') counts['S']++;
+    else if (status === 'I') counts['I']++;
+    else if (status === 'A') counts['A']++;
+    
+    const writeVal = status === 'H' ? 'v' : status;
+    values.push([writeVal]);
+  }
+  
+  sheet.getRange(7, colIndex, 32, 1).setValues(values);
+  
+  return { date: dateStr, counts: counts };
+}
+
+function clearAbsenDay(params) {
+  const dateStr = params.date;
+  const parts = dateStr.split('-');
+  const year = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10);
+  const day = parseInt(parts[2], 10);
+  
+  const dateObj = new Date(year, month - 1, day);
+  if (dateObj.getDay() === 0) {
+    throw { code: 'SUNDAY_LOCKED', message: 'Hari Minggu terkunci, tidak bisa dihapus' };
+  }
+  
+  const monthStr = dateStr.substring(0, 7);
+  const sheetName = getNamaBulan(month) + '-' + year;
+  const ss = getAbsensiSs();
+  const sheet = ss.getSheetByName(sheetName);
+  
+  if (sheet) {
+    const colIndex = 4 + day;
+    sheet.getRange(7, colIndex, 32, 1).clearContent();
+  }
+  
+  return { date: dateStr };
+}
+
+function setLiburDay(params) {
+  const dateStr = params.date;
+  const libur = params.libur;
+  
+  const parts = dateStr.split('-');
+  const year = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10);
+  const day = parseInt(parts[2], 10);
+  
+  const dateObj = new Date(year, month - 1, day);
+  if (dateObj.getDay() === 0) {
+    throw { code: 'SUNDAY_LOCKED', message: 'Hari Minggu selalu libur dan terkunci' };
+  }
+  
+  const monthStr = dateStr.substring(0, 7);
+  const sheetName = ensureMonthSheet(monthStr);
+  const ss = getAbsensiSs();
+  const sheet = ss.getSheetByName(sheetName);
+  
+  const colIndex = 4 + day;
+  if (libur) {
+    const values = [];
+    for (let i = 0; i < 32; i++) values.push(['L']);
+    sheet.getRange(7, colIndex, 32, 1).setValues(values);
+  } else {
+    sheet.getRange(7, colIndex, 32, 1).clearContent();
+  }
+  
+  return { date: dateStr, libur: libur };
+}

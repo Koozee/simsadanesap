@@ -53,7 +53,7 @@ Setiap tugas selesai bila kriteria "Selesai bila" terpenuhi dan `typecheck`, `li
 - [x] **T1.2 `absensi.getDay`, `absensi.monthOverview`.** Baca satu kolom tanggal, kembalikan `recorded`, `libur`, `sunday`, `entries`; hitung `recordedDates` dan `liburDates` (Minggu ikut `liburDates`).
   *Selesai bila:* sesuai isi sheet uji, termasuk bulan yang sheet-nya belum ada (`sheetExists: false`).
 
-- [ ] **T1.3 `absensi.saveDay`, `absensi.clearDay`, `absensi.setLibur`.** Tulis satu kolom (dengan lock). `H` ditulis `v`. Tolak hari Minggu dengan `SUNDAY_LOCKED`. `setLibur(true)` mengisi `L`, `setLibur(false)` mengosongkan.
+- [x] **T1.3 `absensi.saveDay`, `absensi.clearDay`, `absensi.setLibur`.** Tulis satu kolom (dengan lock). `H` ditulis `v`. Tolak hari Minggu dengan `SUNDAY_LOCKED`. `setLibur(true)` mengisi `L`, `setLibur(false)` mengosongkan.
   *Selesai bila:* menyimpan 5 Juli menulis kolom `I` saja, `L` di tanggal 17 terisi pada 32 sel dan tampil merah.
 
 - [ ] **T1.4 Handler mock untuk absensi** dengan perilaku yang sama (termasuk Minggu terkunci).
