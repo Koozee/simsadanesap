@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useSearchParams } from 'react-router'
 import { apiCall } from '../api/client'
 import { toast } from 'sonner'
 import { Search, Plus, Minus, ChevronLeft, ChevronRight } from 'lucide-react'
@@ -7,7 +8,15 @@ import { KAS_PER_MINGGU, JUMLAH_MINGGU_KAS } from '../types/api-contract'
 import { ConfirmModal } from '../components/ConfirmModal'
 
 export default function KasPage() {
-  const [year, setYear] = useState(new Date().getFullYear())
+  const [searchParams, setSearchParams] = useSearchParams()
+  const yearParam = searchParams.get('tahun')
+  const year = yearParam ? parseInt(yearParam, 10) : new Date().getFullYear()
+  
+  const setYear = (action: React.SetStateAction<number>) => {
+    const nextYear = typeof action === 'function' ? action(year) : action
+    setSearchParams({ tahun: nextYear.toString() })
+  }
+
   const [students, setStudents] = useState<Siswa[]>([])
   const [search, setSearch] = useState('')
   
