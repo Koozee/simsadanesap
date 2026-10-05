@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { useNavigate } from 'react-router'
 import { apiCall } from '../api/client'
 import { toast } from 'sonner'
 import { ChevronLeft, Plus, Trash2, Edit3, Loader2 } from 'lucide-react'
@@ -26,6 +26,7 @@ export default function PengeluaranPage() {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadData()
   }, [])
 

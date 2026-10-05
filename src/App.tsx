@@ -5,15 +5,9 @@ import AbsensiPage from './pages/Absensi'
 import KasPage from './pages/Kas'
 import PengeluaranPage from './pages/Pengeluaran'
 import NilaiPage from './pages/Nilai'
+import BerandaPage from './pages/Beranda'
 
-function BerandaPage() {
-  return (
-    <div>
-      <h1 className="font-judul font-semibold text-2xl mb-4">Beranda</h1>
-      <p className="text-slate-600">Halaman kosong.</p>
-    </div>
-  )
-}
+// Removed inline BerandaPage component
 
 // Removed empty NilaiPage since it's imported now
 

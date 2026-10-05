@@ -115,7 +115,7 @@ Setiap tugas selesai bila kriteria "Selesai bila" terpenuhi dan `typecheck`, `li
 
 ## Fase 5 — Penyempurnaan
 
-- [ ] **T5.1 Beranda.** Cincin kehadiran hari ini atau banner (belum diabsen, libur), kartu saldo kas, pintasan.
+- [x] **T5.1 Beranda.** Cincin kehadiran hari ini atau banner (belum diabsen, libur), kartu saldo kas, pintasan.
   *Selesai bila:* sesuai `design.md` 6.2.
 
 - [ ] **T5.2 PWA ringan.** Manifest, ikon 192/512 (ruang aman 10%), favicon dari perisai dan obor. Tanpa mode offline.
