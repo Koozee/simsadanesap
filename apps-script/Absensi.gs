@@ -337,3 +337,118 @@ function setLiburDay(params) {
   
   return { date: dateStr, libur: libur };
 }
+
+function getAbsenSummary(from, to, no) {
+  const ss = getAbsensiSs();
+  
+  const partsFrom = from.split('-');
+  const yFrom = parseInt(partsFrom[0], 10);
+  const mFrom = parseInt(partsFrom[1], 10);
+  
+  const partsTo = to.split('-');
+  const yTo = parseInt(partsTo[0], 10);
+  const mTo = parseInt(partsTo[1], 10);
+  
+  let currentY = yFrom;
+  let currentM = mFrom;
+  
+  const skippedMonths = [];
+  const perBulan = [];
+  
+  const rekap = [];
+  for (let i = 0; i < 32; i++) {
+    rekap.push({ no: i + 1, hadir: 0, sakit: 0, izin: 0, alpha: 0, hariEfektif: 0, persen: 0 });
+  }
+  
+  const targetNo = no ? parseInt(no, 10) : null;
+  
+  while (currentY < yTo || (currentY === yTo && currentM <= mTo)) {
+    const monthStr = currentY + '-' + (currentM < 10 ? '0' + currentM : currentM);
+    const sheetName = getNamaBulan(currentM) + '-' + currentY;
+    const sheet = ss.getSheetByName(sheetName);
+    
+    if (!sheet) {
+      skippedMonths.push(monthStr);
+    } else {
+      const daysInMonth = new Date(currentY, currentM, 0).getDate();
+      const values = sheet.getRange(7, 5, 32, daysInMonth).getValues();
+      
+      let bulanHadir = 0;
+      let bulanSakit = 0;
+      let bulanIzin = 0;
+      let bulanAlpha = 0;
+      
+      for (let i = 0; i < 32; i++) {
+        if (targetNo && (i + 1) !== targetNo) continue;
+        
+        let h = 0, s = 0, iz = 0, a = 0;
+        
+        for (let d = 0; d < daysInMonth; d++) {
+          const val = String(values[i][d]).trim().toUpperCase();
+          if (val === 'V' || val === '✓' || val === '√' || val === 'H') h++;
+          else if (val === 'S') s++;
+          else if (val === 'I') iz++;
+          else if (val === 'A') a++;
+        }
+        
+        rekap[i].hadir += h;
+        rekap[i].sakit += s;
+        rekap[i].izin += iz;
+        rekap[i].alpha += a;
+        
+        if (targetNo && (i + 1) === targetNo) {
+          bulanHadir += h;
+          bulanSakit += s;
+          bulanIzin += iz;
+          bulanAlpha += a;
+        }
+      }
+      
+      if (targetNo) {
+        const hE = bulanHadir + bulanSakit + bulanIzin + bulanAlpha;
+        const p = hE === 0 ? 0 : Math.round((bulanHadir / hE) * 100);
+        perBulan.push({
+          month: monthStr,
+          rekap: {
+            no: targetNo,
+            hadir: bulanHadir,
+            sakit: bulanSakit,
+            izin: bulanIzin,
+            alpha: bulanAlpha,
+            hariEfektif: hE,
+            persen: p
+          }
+        });
+      }
+    }
+    
+    currentM++;
+    if (currentM > 12) {
+      currentM = 1;
+      currentY++;
+    }
+  }
+  
+  const perSiswa = [];
+  for (let i = 0; i < 32; i++) {
+    if (targetNo && (i + 1) !== targetNo) continue;
+    
+    const r = rekap[i];
+    r.hariEfektif = r.hadir + r.sakit + r.izin + r.alpha;
+    r.persen = r.hariEfektif === 0 ? 0 : Math.round((r.hadir / r.hariEfektif) * 100);
+    perSiswa.push(r);
+  }
+  
+  const result = {
+    from: from,
+    to: to,
+    perSiswa: perSiswa,
+    skippedMonths: skippedMonths
+  };
+  
+  if (targetNo) {
+    result.perBulan = perBulan;
+  }
+  
+  return result;
+}

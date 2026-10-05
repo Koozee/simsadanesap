@@ -30,6 +30,12 @@ function doGet(e) {
       return getAbsenMonthOverview(e.parameter.month);
     });
   }
+
+  if (action === 'absensi.summary') {
+    return withRead(action, function() {
+      return getAbsenSummary(e.parameter.from, e.parameter.to, e.parameter.no);
+    });
+  }
   
   return makeJsonResponse(apiFail('UNKNOWN_ACTION', 'Action GET tidak dikenali: ' + action));
 }

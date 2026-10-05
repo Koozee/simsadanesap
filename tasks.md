@@ -70,7 +70,7 @@ Setiap tugas selesai bila kriteria "Selesai bila" terpenuhi dan `typecheck`, `li
 
 ## Fase 2 — Rekap absensi
 
-- [ ] **T2.1 `absensi.summary`.** Hitung per siswa lintas bulan: hadir, sakit, izin, alpha, `hariEfektif`, `persen`. Libur dan sel kosong tidak dihitung. Bulan tanpa sheet masuk `skippedMonths`.
+- [x] **T2.1 `absensi.summary`.** Hitung per siswa lintas bulan: hadir, sakit, izin, alpha, `hariEfektif`, `persen`. Libur dan sel kosong tidak dihitung. Bulan tanpa sheet masuk `skippedMonths`.
   *Selesai bila:* hasil sama dengan hitungan manual dari sheet uji (ada tes untuk fungsi hitungnya).
 
 - [ ] **T2.2 Halaman rekap.** Pemilih bulan awal dan akhir, semua siswa atau satu siswa, cincin progres (`design.md` 6.6), rincian per bulan, catatan bulan yang dilewati.

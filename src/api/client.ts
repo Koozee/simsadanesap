@@ -1,6 +1,6 @@
 import type { ActionName, ParamsOf, ResultOf, ApiResult, ApiError, MethodOf, AbsenEntry } from '../types/api-contract'
 import { mockStudents } from './mockData'
-import { mockGetDay, mockMonthOverview, mockSaveDay, mockClearDay, mockSetLibur } from './mockAbsensi'
+import { mockGetDay, mockMonthOverview, mockSaveDay, mockClearDay, mockSetLibur, mockSummary } from './mockAbsensi'
 
 
 export class ApiClientError extends Error {
@@ -18,6 +18,10 @@ async function handleMock<A extends ActionName>(action: A, params: ParamsOf<A>):
   if (action === 'students.list') return mockStudents as ResultOf<A>
   if (action === 'absensi.getDay') return mockGetDay((params as { date: string }).date) as ResultOf<A>
   if (action === 'absensi.monthOverview') return mockMonthOverview((params as { month: string }).month) as ResultOf<A>
+  if (action === 'absensi.summary') {
+    const p = params as { from: string; to: string; no?: number }
+    return mockSummary(p.from, p.to, p.no) as ResultOf<A>
+  }
   if (action === 'absensi.saveDay') {
     const p = params as { date: string; entries: AbsenEntry[] }
     return mockSaveDay(p.date, p.entries) as ResultOf<A>
