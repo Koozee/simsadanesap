@@ -10,6 +10,7 @@ export default function BerandaPage() {
   const [absen, setAbsen] = useState<AbsenDay | null>(null)
   const [kas, setKas] = useState<KasSummary | null>(null)
   const [absenMonth, setAbsenMonth] = useState<AbsenMonth | null>(null)
+  const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   const today = toISODate(new Date())
@@ -27,7 +28,9 @@ export default function BerandaPage() {
       setAbsen(absenData as AbsenDay | null)
       setKas(kasData as KasSummary | null)
       setAbsenMonth(monthData as AbsenMonth | null)
+      if (!selectedDate) setSelectedDate(today)
     }).finally(() => setIsLoading(false))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [today, thisYear, thisMonth])
 
   // Hitung status absen
@@ -124,13 +127,13 @@ export default function BerandaPage() {
           </Link>
 
           {/* Kalender */}
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
-            <h2 className="font-judul font-semibold text-lg text-slate-800 mb-4">
+          <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
+            <h2 className="font-judul font-semibold text-base text-slate-800 mb-3">
               Kalender {formatMonthID(thisYear + '-' + String(thisMonth).padStart(2, '0'))}
             </h2>
-            <div className="grid grid-cols-7 gap-1 text-center mb-2">
-              {['Sn', 'Sl', 'Rb', 'Km', 'Jm', 'Sb', 'Mg'].map(d => (
-                <div key={d} className="text-xs font-medium text-slate-400">{d}</div>
+            <div className="grid grid-cols-7 gap-1 text-center mb-1">
+              {['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'].map(d => (
+                <div key={d} className="text-[9px] sm:text-[10px] uppercase tracking-tighter font-semibold text-slate-400 truncate">{d}</div>
               ))}
             </div>
             <div className="grid grid-cols-7 gap-1">
@@ -138,34 +141,75 @@ export default function BerandaPage() {
                 const iso = toISODate(d)
                 const isCurrentMonth = d.getMonth() + 1 === thisMonth
                 const isToday = iso === today
+                const isSelected = iso === selectedDate
                 
                 const dataHari = absenMonth?.[iso]
-                // Libur jika hari Minggu atau ditandai libur di data absensi
                 const isLibur = dataHari?.libur || d.getDay() === 0
-                
-                // MOCK EVENTS (karena belum ada tabel database khusus agenda)
-                // Contoh: Tanggal 15 dan 20 bulan ini dianggap ada ujian/tugas
                 const isUjian = isCurrentMonth && (d.getDate() === 15 || d.getDate() === 20)
                 
                 return (
-                  <div key={i} className={`aspect-square flex flex-col items-center justify-center rounded-lg relative ${!isCurrentMonth ? 'opacity-30' : ''} ${isToday ? 'bg-biru-50 border border-biru-200' : ''}`}>
-                    <span className={`text-sm font-medium ${isLibur ? 'text-red-600' : isToday ? 'text-biru-700' : 'text-slate-700'}`}>
+                  <button 
+                    key={i} 
+                    onClick={() => setSelectedDate(iso)}
+                    className={`h-10 sm:h-12 flex flex-col items-center justify-center rounded-lg relative transition-colors ${!isCurrentMonth ? 'opacity-30' : ''} ${isSelected ? 'bg-biru-600 text-white shadow-md' : isToday ? 'bg-biru-50 border border-biru-200' : 'hover:bg-slate-50'}`}
+                  >
+                    <span className={`text-xs sm:text-sm font-medium ${isSelected ? 'text-white' : isLibur ? 'text-red-600' : isToday ? 'text-biru-700' : 'text-slate-700'}`}>
                       {d.getDate()}
                     </span>
                     
                     {/* Penanda bawah */}
-                    <div className="flex gap-1 mt-1 h-1.5">
-                      {isLibur && dataHari?.libur && <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>}
-                      {isUjian && <div className="w-1.5 h-1.5 rounded-full bg-emas-400"></div>}
+                    <div className="flex gap-0.5 mt-0.5 h-1">
+                      {isLibur && dataHari?.libur && <div className={`w-1 h-1 rounded-full ${isSelected ? 'bg-white' : 'bg-red-500'}`}></div>}
+                      {isUjian && <div className={`w-1 h-1 rounded-full ${isSelected ? 'bg-white' : 'bg-emas-400'}`}></div>}
                     </div>
-                  </div>
+                  </button>
                 )
               })}
             </div>
-            <div className="flex gap-4 mt-4 text-xs text-slate-500 justify-center">
-              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-red-500"></div> Libur</div>
-              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-emas-400"></div> Ujian/Tugas</div>
+            
+            <div className="flex gap-4 mt-3 text-[10px] text-slate-500 justify-center pb-2 border-b border-slate-100">
+              <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-red-500"></div> Libur</div>
+              <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-emas-400"></div> Ujian/Tugas</div>
             </div>
+
+            {/* Detail Tanggal */}
+            {selectedDate && (
+              <div className="mt-3">
+                <h3 className="font-semibold text-slate-700 text-sm mb-2">Agenda {formatDateID(selectedDate)}</h3>
+                <div className="flex flex-col gap-2">
+                  {absenMonth?.[selectedDate]?.libur && (
+                    <div className="flex items-center gap-2 text-xs sm:text-sm text-red-700 bg-red-50 p-2 rounded-lg border border-red-100">
+                      <div className="w-2 h-2 rounded-full bg-red-500 shrink-0"></div>
+                      Hari Libur
+                    </div>
+                  )}
+                  {selectedDate === toISODate(new Date(thisYear, thisMonth - 1, 15)) && (
+                    <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-100">
+                      <div className="w-2 h-2 rounded-full bg-emas-400 shrink-0"></div>
+                      <div><span className="font-medium text-slate-800">Matematika</span> - Penilaian Harian Bab 2</div>
+                    </div>
+                  )}
+                  {selectedDate === toISODate(new Date(thisYear, thisMonth - 1, 20)) && (
+                    <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-100">
+                      <div className="w-2 h-2 rounded-full bg-emas-400 shrink-0"></div>
+                      <div><span className="font-medium text-slate-800">Bahasa Indonesia</span> - Ujian Tengah Semester</div>
+                    </div>
+                  )}
+                  {/* Mock Arus Kas */}
+                  {selectedDate === today && (
+                    <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-700 bg-emerald-50 p-2 rounded-lg border border-emerald-100">
+                      <div className="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></div>
+                      <div><span className="font-medium text-emerald-700">+ Rp 10.000</span> (Kas masuk dari 5 siswa)</div>
+                    </div>
+                  )}
+                  {!absenMonth?.[selectedDate]?.libur && selectedDate !== toISODate(new Date(thisYear, thisMonth - 1, 15)) && selectedDate !== toISODate(new Date(thisYear, thisMonth - 1, 20)) && selectedDate !== today && (
+                    <div className="text-xs text-slate-400 p-2 text-center bg-slate-50 rounded-lg border border-slate-100 border-dashed">
+                      Tidak ada agenda tercatat
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Pintasan */}
