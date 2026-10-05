@@ -35,7 +35,6 @@ export default function KasPage() {
       .catch(console.error)
   }, [])
 
-  // Fetch kas data
   const loadData = useCallback(() => {
     setIsLoading(true)
     Promise.all([
@@ -51,7 +50,10 @@ export default function KasPage() {
   }, [year])
 
   useEffect(() => {
+    // Clear existing data when year changes to show loading UI
     // eslint-disable-next-line react-hooks/set-state-in-effect
+    setKasData(null)
+    setSummary(null)
     loadData()
   }, [loadData])
 
@@ -178,92 +180,96 @@ export default function KasPage() {
         </button>
         <div className="font-judul font-semibold text-slate-800 flex items-center gap-2">
           Tahun {year}
-          {isLoading && <Loader2 className="animate-spin text-slate-400" size={16} />}
         </div>
         <button onClick={() => setYear(y => y + 1)} disabled={isLoading} className="p-2 text-slate-500 hover:text-slate-800 active:bg-slate-100 rounded-lg disabled:opacity-50">
           <ChevronRight size={20} />
         </button>
       </div>
 
-      <div className={`flex flex-col gap-4 transition-opacity duration-200 ${isLoading ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
-        {summary && kasData && kasData.sheetExists && (
-          <div className="bg-white rounded-[10px] border border-slate-200 p-4 shadow-sm text-center">
-            <div className="text-sm font-medium text-slate-500 mb-1">Saldo Kas</div>
-          <div className="text-2xl font-judul font-semibold text-biru-600 mb-3">{formatRp(summary.saldo)}</div>
-          <div className="flex gap-4 justify-center text-sm">
-            <div className="flex gap-1 text-hadir-solid"><span className="text-slate-400">Masuk</span> {formatRp(summary.pemasukan)}</div>
-            <div className="flex gap-1 text-merah-600"><span className="text-slate-400">Keluar</span> {formatRp(summary.pengeluaran)}</div>
-          </div>
+      {!kasData ? (
+        <div className="flex flex-col items-center justify-center py-20 text-slate-500">
+          <Loader2 className="animate-spin mb-4 text-biru-500" size={36} />
+          <p className="font-medium">Memuat data Tahun {year}...</p>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-4">
+          {summary && kasData.sheetExists && (
+            <div className="bg-white rounded-[10px] border border-slate-200 p-4 shadow-sm text-center">
+              <div className="text-sm font-medium text-slate-500 mb-1">Saldo Kas</div>
+              <div className="text-2xl font-judul font-semibold text-biru-600 mb-3">{formatRp(summary.saldo)}</div>
+              <div className="flex gap-4 justify-center text-sm">
+                <div className="flex gap-1 text-hadir-solid"><span className="text-slate-400">Masuk</span> {formatRp(summary.pemasukan)}</div>
+                <div className="flex gap-1 text-merah-600"><span className="text-slate-400">Keluar</span> {formatRp(summary.pengeluaran)}</div>
+              </div>
+            </div>
+          )}
+
+          {!kasData.sheetExists && (
+            <div className="bg-kuning-50 border border-kuning-200 p-6 rounded-[10px] text-center text-kuning-800 flex flex-col items-center">
+              <h3 className="font-semibold mb-2">Tahun {year} Belum Ada</h3>
+              <p className="text-sm mb-4">Buat lembar kas untuk Tahun {year} dari salinan Tahun {year - 1}? Semua centang akan dikosongkan.</p>
+              <button onClick={() => setShowConfirmCreate(true)} className="bg-kuning-600 text-white font-medium py-2 px-4 rounded-lg shadow-sm active:bg-kuning-700">
+                Buat Tahun {year}
+              </button>
+            </div>
+          )}
+
+          {kasData.sheetExists && (
+            <>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <input 
+                  type="text" 
+                  placeholder="Cari nama siswa" 
+                  value={search} 
+                  onChange={e => setSearch(e.target.value)} 
+                  className="w-full bg-white border border-slate-200 rounded-[10px] py-2.5 pl-10 pr-4 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-biru-600 focus:ring-1 focus:ring-biru-600 shadow-sm"
+                />
+              </div>
+
+              <div className="bg-white rounded-[10px] border border-slate-200 divide-y divide-slate-100 shadow-sm overflow-hidden">
+                {filteredStudents.length === 0 ? (
+                  <div className="p-4 text-center text-slate-500">Siswa tidak ditemukan</div>
+                ) : (
+                  filteredStudents.map(s => {
+                    const row = kasData.rows.find(x => x.no === s.no)
+                    const paidCount = row ? row.weeks.filter(Boolean).length : 0
+                    return (
+                      <div key={s.no} className="w-full text-left p-4 flex justify-between items-center active:bg-slate-50 transition-colors cursor-pointer min-h-[64px]" onClick={() => setSelectedNo(s.no)}>
+                        <div className="flex-1 min-w-0 pr-2">
+                          <div className="text-slate-800 font-medium truncate mb-1">{s.nama}</div>
+                          <div className="text-slate-500 text-xs">
+                            <span className="font-tabular-nums">{paidCount}</span> dari {JUMLAH_MINGGU_KAS} minggu
+                          </div>
+                        </div>
+                        {row && (
+                          <div className="flex items-center gap-2">
+                            <div className="font-medium text-slate-700 font-tabular-nums mr-1">{formatRp(row.total)}</div>
+                            <button 
+                              onClick={(e) => { e.stopPropagation(); handleQuickMinus(s.no) }}
+                              disabled={paidCount === 0}
+                              className="w-8 h-8 rounded-full bg-red-50 text-red-600 flex items-center justify-center active:bg-red-100 disabled:opacity-30 disabled:active:bg-red-50 transition-colors border border-red-100"
+                            >
+                              <Minus size={18} />
+                            </button>
+                            <button 
+                              onClick={(e) => { e.stopPropagation(); handleQuickPay(s.no) }}
+                              disabled={paidCount === JUMLAH_MINGGU_KAS}
+                              className="w-8 h-8 rounded-full bg-biru-50 text-biru-600 flex items-center justify-center active:bg-biru-100 disabled:opacity-30 disabled:active:bg-biru-50 transition-colors border border-biru-100"
+                            >
+                              <Plus size={18} />
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })
+                )}
+              </div>
+            </>
+          )}
         </div>
       )}
-
-      {kasData && !kasData.sheetExists && (
-        <div className="bg-kuning-50 border border-kuning-200 p-6 rounded-[10px] text-center text-kuning-800 flex flex-col items-center">
-          <h3 className="font-semibold mb-2">Tahun {year} Belum Ada</h3>
-          <p className="text-sm mb-4">Buat lembar kas untuk Tahun {year} dari salinan Tahun {year - 1}? Semua centang akan dikosongkan.</p>
-          <button onClick={() => setShowConfirmCreate(true)} className="bg-kuning-600 text-white font-medium py-2 px-4 rounded-lg shadow-sm active:bg-kuning-700">
-            Buat Tahun {year}
-          </button>
-        </div>
-      )}
-
-      {kasData && kasData.sheetExists && (
-        <>
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-            <input 
-              type="text" 
-              placeholder="Cari nama siswa" 
-              value={search} 
-              onChange={e => setSearch(e.target.value)} 
-              className="w-full bg-white border border-slate-200 rounded-[10px] py-2.5 pl-10 pr-4 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-biru-600 focus:ring-1 focus:ring-biru-600 shadow-sm"
-            />
-          </div>
-
-          <div className="bg-white rounded-[10px] border border-slate-200 divide-y divide-slate-100 shadow-sm overflow-hidden">
-            {isLoading && !kasData.rows.length ? (
-              <div className="p-8 text-center text-slate-400">Memuat data...</div>
-            ) : filteredStudents.length === 0 ? (
-              <div className="p-4 text-center text-slate-500">Siswa tidak ditemukan</div>
-            ) : (
-              filteredStudents.map(s => {
-                const row = kasData.rows.find(x => x.no === s.no)
-                const paidCount = row ? row.weeks.filter(Boolean).length : 0
-                return (
-                  <div key={s.no} className="w-full text-left p-4 flex justify-between items-center active:bg-slate-50 transition-colors cursor-pointer min-h-[64px]" onClick={() => setSelectedNo(s.no)}>
-                    <div className="flex-1 min-w-0 pr-2">
-                      <div className="text-slate-800 font-medium truncate mb-1">{s.nama}</div>
-                      <div className="text-slate-500 text-xs">
-                        <span className="font-tabular-nums">{paidCount}</span> dari {JUMLAH_MINGGU_KAS} minggu
-                      </div>
-                    </div>
-                    {row && (
-                      <div className="flex items-center gap-2">
-                        <div className="font-medium text-slate-700 font-tabular-nums mr-1">{formatRp(row.total)}</div>
-                        <button 
-                          onClick={(e) => { e.stopPropagation(); handleQuickMinus(s.no) }}
-                          disabled={paidCount === 0}
-                          className="w-8 h-8 rounded-full bg-red-50 text-red-600 flex items-center justify-center active:bg-red-100 disabled:opacity-30 disabled:active:bg-red-50 transition-colors border border-red-100"
-                        >
-                          <Minus size={18} />
-                        </button>
-                        <button 
-                          onClick={(e) => { e.stopPropagation(); handleQuickPay(s.no) }}
-                          disabled={paidCount === JUMLAH_MINGGU_KAS}
-                          className="w-8 h-8 rounded-full bg-biru-50 text-biru-600 flex items-center justify-center active:bg-biru-100 disabled:opacity-30 disabled:active:bg-biru-50 transition-colors border border-biru-100"
-                        >
-                          <Plus size={18} />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                )
-              })
-            )}
-          </div>
-        </>
-      )}
-      </div>
 
       {/* Bottom Sheet for Student Details */}
       {selectedNo !== null && selectedRow && selectedStudent && (
