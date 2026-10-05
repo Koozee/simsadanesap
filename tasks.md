@@ -39,10 +39,10 @@ Setiap tugas selesai bila kriteria "Selesai bila" terpenuhi dan `typecheck`, `li
 - [x] **T0.7 `validate`.** Periksa: ketiga spreadsheet terbuka, sheet wajib ada, header sesuai konstanta, urutan nama siswa sama di ketiga file. Laporkan `issues[]`.
   *Selesai bila:* mengembalikan `ok: true` pada salinan `_DEV`, dan melaporkan masalah bila satu nama sengaja diubah.
 
-- [ ] **T0.8 [ANDA] Deploy Web App.** *Deploy → Web app*, Execute as: Me, akses: Anyone. Salin URL ke `.env` lokal. Untuk perubahan berikutnya, buat versi baru **pada deployment yang sama**.
+- [x] **T0.8 [ANDA] Deploy Web App.** *Deploy → Web app*, Execute as: Me, akses: Anyone. Salin URL ke `.env` lokal. Untuk perubahan berikutnya, buat versi baru **pada deployment yang sama**.
   *Selesai bila:* `VITE_USE_MOCK=false` menampilkan siswa dari spreadsheet `_DEV`.
 
-- [ ] **T0.9 Verifikasi `spreadsheet-schema.md`.** Bandingkan seluruh konstanta di dokumen dengan salinan `_DEV` yang sebenarnya. Perbarui dokumen bila ada selisih.
+- [x] **T0.9 Verifikasi `spreadsheet-schema.md`.** Bandingkan seluruh konstanta di dokumen dengan salinan `_DEV` yang sebenarnya. Perbarui dokumen bila ada selisih.
   *Selesai bila:* tidak ada selisih tersisa atau selisih dicatat dan dikonfirmasi.
 
 ## Fase 1 — Absensi harian
