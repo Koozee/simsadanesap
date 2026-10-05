@@ -10,6 +10,9 @@ Setiap tugas selesai bila kriteria "Selesai bila" terpenuhi dan `typecheck`, `li
 - Libur memakai huruf **`L`** dengan latar merah `#C62E24`.
 - Semester genap 22 minggu, sheet dibuat dari salinan ganjil. Saldo kas kumulatif.
 - Tanpa autentikasi dan tanpa pengamanan tambahan.
+- Saldo kas **kumulatif** lintas semester (`prd.md` A4): total centang semua sheet semester × 2000 − total `Catatan Pengeluaran`. Kriteria "sama dengan `C40`" berlaku selama baru ada Semester Ganjil.
+- Format uang **`Rp 2.000`** dengan spasi (`prd.md` bagian 10), dengan titik sebagai pemisah ribuan.
+- `merah-600` = `#C62E24`, sama dengan warna libur (`prd.md` 14.4).
 
 ---
 
@@ -136,10 +139,10 @@ Setiap tugas selesai bila kriteria "Selesai bila" terpenuhi dan `typecheck`, `li
 
 Catat hal di luar tugas yang perlu diperhatikan. Jangan dikerjakan tanpa persetujuan.
 
-- (T0.2) **Saldo kas vs sel `C40`:** `prd.md` 7.5 dan T3.3 meminta saldo app sama dengan `C40`, padahal `C38:C40` per semester sedangkan saldo app kumulatif. `C39` tiap sheet semester juga mengambil seluruh `Catatan Pengeluaran`. Perlu keputusan patokan sebelum T3.1.
-- (T0.2) **Format rupiah:** `design.md` dan `prd.md` 10 memakai `Rp 2.000` (spasi), `CLAUDE.md` dan `prd.md` 7.5 memakai `Rp2.000`. Perlu keputusan sebelum membuat `rupiah.ts`.
-- (T0.2) **Token `merah-600`** dipakai di `design.md` 6.2 dan 6.3, tetapi tidak ada di bagian 10. Usul: petakan ke `#C62E24` pada T0.3.
-- (T0.2) **Parameter `nilai.getSheet`:** `prd.md` memakai `subject`, `api-contract.ts` memakai `mapel`. Kontrak yang dipakai.
+- (T0.2, diputuskan) **Saldo kas vs sel `C40`:** ikut `prd.md` A4 (kumulatif). Lihat "Keputusan yang sudah dipakai".
+- (T0.2, diputuskan) **Format rupiah:** ikut `prd.md` bagian 10, `Rp 2.000`.
+- (T0.2, diputuskan) **Token `merah-600`** = `#C62E24`, dipasang pada T0.3.
+- (T0.2, menunggu konfirmasi) **Parameter `nilai.getSheet`:** `prd.md` memakai `subject`, `api-contract.ts` memakai `mapel`. Sementara memakai `mapel` dari kontrak. Mengganti ke `subject` berarti mengubah kontrak dan perlu konfirmasi eksplisit.
 - (T0.2) **Perintah `typecheck`:** `CLAUDE.md` menulis `tsc --noEmit`, tetapi tsconfig memakai project references sehingga perintah itu tidak memeriksa apa pun. Skrip memakai `tsc -b` (semua tsconfig sudah `noEmit`).
 - (T0.2) `public/favicon.svg` dan `public/favicon.ico` masih logo Vite, dan `README.md` masih isi template Vite. Diganti pada T5.2 dan bila diminta.
-- (T0.2) `prd.md` dan `spreadsheet-schema.md` memuat satu nama siswa asli (siswa tanpa NIPD). `CLAUDE.md` melarang commit data siswa asli. Pertimbangkan mengganti dengan sebutan umum sebelum repositori didorong ke remote.
+- (T0.2, diputuskan) Nama siswa tanpa NIPD tetap tertulis di `prd.md` dan `spreadsheet-schema.md` seperti adanya. Repositori harus privat (`prd.md` bagian 10).
