@@ -48,6 +48,12 @@ function doGet(e) {
       return getKasSummary();
     });
   }
+
+  if (action === 'kas.expenses.list') {
+    return withRead(action, function() {
+      return listKasExpenses();
+    });
+  }
   
   return makeJsonResponse(apiFail('UNKNOWN_ACTION', 'Action GET tidak dikenali: ' + action));
 }
@@ -85,6 +91,22 @@ function doPost(e) {
 
   if (action === 'kas.pay') {
     return withLock(action, function() { return payKas(params); });
+  }
+
+  if (action === 'kas.createSemester') {
+    return withLock(action, function() { return createKasSemester(params); });
+  }
+
+  if (action === 'kas.expenses.add') {
+    return withLock(action, function() { return addKasExpense(params); });
+  }
+
+  if (action === 'kas.expenses.update') {
+    return withLock(action, function() { return updateKasExpense(params); });
+  }
+
+  if (action === 'kas.expenses.delete') {
+    return withLock(action, function() { return deleteKasExpense(params); });
   }
 
   return makeJsonResponse(apiFail('UNKNOWN_ACTION', 'Action POST tidak dikenali: ' + action));

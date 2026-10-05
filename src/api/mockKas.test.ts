@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { mockKasPay, mockKasSetWeek, mockKasSummary } from './mockKas'
+import { mockKasPay, mockKasSetWeek, mockKasSummary, mockKasExpensesAdd, mockKasExpensesList, mockKasExpensesUpdate, mockKasExpensesDelete, mockKasCreateSemester } from './mockKas'
 import { KAS_PER_MINGGU } from '../types/api-contract'
 
 describe('kas actions', () => {
@@ -28,5 +28,27 @@ describe('kas actions', () => {
   it('seharusnya menghitung summary total', () => {
     const summary = mockKasSummary()
     expect(summary.pemasukan).toBeGreaterThanOrEqual(KAS_PER_MINGGU * 4) // dari test sebelumnya
+  })
+
+  it('seharusnya bisa menambah, mengubah, dan menghapus pengeluaran (T3.3)', () => {
+    const exp1 = mockKasExpensesAdd({ tanggal: '2026-08-01', jumlah: 50000, keterangan: 'Beli sapu' })
+    expect(exp1.id).toBeDefined()
+    
+    let list = mockKasExpensesList()
+    expect(list.length).toBe(1)
+    
+    mockKasExpensesUpdate({ ...exp1, jumlah: 60000 })
+    list = mockKasExpensesList()
+    expect(list[0].jumlah).toBe(60000)
+    
+    mockKasExpensesDelete(exp1.id)
+    list = mockKasExpensesList()
+    expect(list.length).toBe(0)
+  })
+
+  it('seharusnya bisa membuat semester genap (T3.3)', () => {
+    const res = mockKasCreateSemester('genap')
+    expect(res.sheetName).toBe('Semester Genap 2026-2027')
+    expect(() => mockKasCreateSemester('genap')).toThrow('SEMESTER_EXISTS')
   })
 })

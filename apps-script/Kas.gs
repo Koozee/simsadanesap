@@ -162,3 +162,153 @@ function payKas(params) {
     }
   };
 }
+
+function listKasExpenses() {
+  const ss = getKasSs();
+  const sheet = ss.getSheetByName('Catatan Pengeluaran');
+  if (!sheet) return [];
+  
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return [];
+  
+  const data = sheet.getRange(2, 1, lastRow - 1, 4).getValues();
+  const expenses = [];
+  
+  for (let i = 0; i < data.length; i++) {
+    const rowNum = i + 2;
+    const no = parseInt(data[i][0], 10);
+    const dateVal = data[i][1];
+    const amount = parseFloat(data[i][2]);
+    const ket = data[i][3];
+    
+    // Validasi baris
+    if (!isNaN(no) && no > 0 && !isNaN(amount) && amount > 0) {
+      let dateStr = "";
+      if (dateVal instanceof Date) {
+        const y = dateVal.getFullYear();
+        const m = ("0" + (dateVal.getMonth() + 1)).slice(-2);
+        const d = ("0" + dateVal.getDate()).slice(-2);
+        dateStr = y + "-" + m + "-" + d;
+      } else {
+        dateStr = String(dateVal).trim();
+      }
+      
+      // Jika String dateStr mengandung sesuatu yang aneh, amankan:
+      // Kadang formula IF(..., TODAY(), "") return teks kosong
+      if (dateStr) {
+        expenses.push({
+          id: rowNum,
+          tanggal: dateStr,
+          jumlah: amount,
+          keterangan: String(ket)
+        });
+      }
+    }
+  }
+  return expenses;
+}
+
+function addKasExpense(params) {
+  const ss = getKasSs();
+  const sheet = ss.getSheetByName('Catatan Pengeluaran');
+  
+  const tanggal = params.tanggal;
+  const jumlah = parseFloat(params.jumlah);
+  const keterangan = params.keterangan;
+  
+  const lastRow = sheet.getLastRow();
+  const data = sheet.getRange(2, 1, Math.max(1, lastRow - 1), 4).getValues();
+  
+  let targetRow = -1;
+  let totalRow = -1;
+  
+  // Mencari baris kosong (kolom C) atau baris total (kolom A bukan angka/C adalah rumus SUM)
+  for (let i = 0; i < data.length; i++) {
+    const r = i + 2;
+    // Cek rumus dari Apps Script agak mahal jika dipanggil per cell,
+    // Kita cek apakah cell C r itu mengandung rumus
+    const formula = sheet.getRange(r, 3).getFormula();
+    if (formula && formula.toUpperCase().indexOf('SUM') !== -1) {
+      totalRow = r;
+      break;
+    }
+    if (String(data[i][2]).trim() === "") {
+      targetRow = r;
+      break;
+    }
+  }
+  
+  if (totalRow !== -1 && targetRow === -1) {
+    sheet.insertRowBefore(totalRow);
+    targetRow = totalRow; 
+    totalRow = totalRow + 1;
+    sheet.getRange(targetRow - 1, 1).copyTo(sheet.getRange(targetRow, 1)); // copy nomor A
+    sheet.getRange(totalRow, 3).setFormula("=SUM(C2:C" + (totalRow - 1) + ")");
+  } else if (targetRow === -1) {
+    targetRow = lastRow + 1;
+  }
+  
+  sheet.getRange(targetRow, 1).setFormula("=ROW()-1");
+  sheet.getRange(targetRow, 2).setValue(tanggal);
+  sheet.getRange(targetRow, 3).setValue(jumlah);
+  sheet.getRange(targetRow, 4).setValue(keterangan);
+  
+  return {
+    id: targetRow,
+    tanggal: tanggal,
+    jumlah: jumlah,
+    keterangan: keterangan
+  };
+}
+
+function updateKasExpense(params) {
+  const ss = getKasSs();
+  const sheet = ss.getSheetByName('Catatan Pengeluaran');
+  
+  const id = params.id;
+  sheet.getRange(id, 2).setValue(params.tanggal);
+  sheet.getRange(id, 3).setValue(parseFloat(params.jumlah));
+  sheet.getRange(id, 4).setValue(params.keterangan);
+  
+  return params;
+}
+
+function deleteKasExpense(params) {
+  const ss = getKasSs();
+  const sheet = ss.getSheetByName('Catatan Pengeluaran');
+  const id = params.id;
+  // Hapus sel B, C, D
+  sheet.getRange(id, 2, 1, 3).clearContent();
+  return { id: id };
+}
+
+function createKasSemester(params) {
+  const ss = getKasSs();
+  const ganjilName = CONFIG.KAS_SEMESTER_SHEET['ganjil'];
+  const genapName = CONFIG.KAS_SEMESTER_SHEET['genap'];
+  
+  const ganjilSheet = ss.getSheetByName(ganjilName);
+  if (!ganjilSheet) throw { code: 'SHEET_NOT_FOUND', message: 'Sheet ganjil tidak ada' };
+  
+  let genapSheet = ss.getSheetByName(genapName);
+  if (genapSheet) throw { code: 'SEMESTER_EXISTS', message: 'Semester genap sudah ada' };
+  
+  genapSheet = ganjilSheet.copyTo(ss);
+  genapSheet.setName(genapName);
+  
+  const numRows = 32;
+  const numWeeks = CONFIG.MINGGU_PER_SEMESTER;
+  const startRow = CONFIG.OFFSET_BARIS_KAS + 1;
+  
+  const falseValues = [];
+  for (let r = 0; r < numRows; r++) {
+    const row = [];
+    for (let c = 0; c < numWeeks; c++) {
+      row.push(false);
+    }
+    falseValues.push(row);
+  }
+  genapSheet.getRange(startRow, 3, numRows, numWeeks).setValues(falseValues);
+  
+  return { sheetName: genapName };
+}

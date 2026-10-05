@@ -1,8 +1,9 @@
-import type { KasSemesterData, KasSummary, KasRow, Semester } from '../types/api-contract'
+import type { KasSemesterData, KasSummary, KasRow, Semester, Pengeluaran } from '../types/api-contract'
 import { KAS_PER_MINGGU, MINGGU_PER_SEMESTER } from '../types/api-contract'
 
 const db: Record<string, KasRow[]> = {}
-const pengeluaran = 0
+let expensesDb: Pengeluaran[] = []
+let nextExpId = 2
 
 function initSemester(semester: Semester) {
   if (!db[semester]) {
@@ -39,10 +40,12 @@ export function mockKasSummary(): KasSummary {
     pemasukan += db['genap'].reduce((acc, row) => acc + row.total, 0)
   }
   
+  const totalExp = expensesDb.reduce((acc, exp) => acc + exp.jumlah, 0)
+  
   return {
     pemasukan,
-    pengeluaran,
-    saldo: pemasukan - pengeluaran
+    pengeluaran: totalExp,
+    saldo: pemasukan - totalExp
   }
 }
 
@@ -82,4 +85,33 @@ export function mockKasPay(semester: Semester, no: number, count: number) {
     weeksChecked: checked,
     row: { ...r }
   }
+}
+
+export function mockKasCreateSemester(semester: Semester) {
+  if (db[semester]) throw new Error('SEMESTER_EXISTS')
+  initSemester(semester)
+  return { sheetName: semester === 'genap' ? 'Semester Genap 2026-2027' : 'Tahun 2026' }
+}
+
+export function mockKasExpensesList() {
+  return [...expensesDb]
+}
+
+export function mockKasExpensesAdd(exp: Omit<Pengeluaran, 'id'>) {
+  const newExp = { ...exp, id: nextExpId++ }
+  expensesDb.push(newExp)
+  return newExp
+}
+
+export function mockKasExpensesUpdate(exp: Pengeluaran) {
+  const idx = expensesDb.findIndex(x => x.id === exp.id)
+  if (idx !== -1) {
+    expensesDb[idx] = { ...exp }
+  }
+  return { ...exp }
+}
+
+export function mockKasExpensesDelete(id: number) {
+  expensesDb = expensesDb.filter(x => x.id !== id)
+  return { id }
 }
