@@ -11,22 +11,27 @@ export default function BerandaPage() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [activeYear, setActiveYear] = useState(new Date().getFullYear())
   const [activeMonth, setActiveMonth] = useState(new Date().getMonth() + 1)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isNavigating, setIsNavigating] = useState(false)
 
   const today = toISODate(new Date())
   const todayString = formatDateID(today)
   const formatRp = (n: number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n)
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIsLoading(true)
+    if (overview) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsNavigating(true)
+    }
+    
     apiCall('beranda.overview', { date: today, year: activeYear, month: activeMonth }, 'GET')
       .then(data => {
         setOverview(data)
         if (!selectedDate) setSelectedDate(today)
       })
       .catch(() => {})
-      .finally(() => setIsLoading(false))
+      .finally(() => {
+        setIsNavigating(false)
+      })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [today, activeYear, activeMonth])
 
@@ -73,7 +78,7 @@ export default function BerandaPage() {
         <p className="text-slate-500 font-medium mt-1">{todayString}</p>
       </div>
 
-      {isLoading ? (
+      {!overview ? (
         <div className="flex justify-center py-20 text-slate-400">
           <Loader2 className="animate-spin" size={36} />
         </div>
@@ -147,8 +152,14 @@ export default function BerandaPage() {
           </Link>
 
           {/* Kalender */}
-          <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
-            <div className="flex items-center justify-between mb-4">
+          <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 relative overflow-hidden">
+            {isNavigating && (
+              <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center z-10">
+                <Loader2 className="animate-spin text-biru-500" size={32} />
+              </div>
+            )}
+            
+            <div className="flex items-center justify-between mb-4 relative z-0">
               <h2 className="font-judul font-semibold text-base sm:text-lg text-slate-800">
                 Kalender {formatMonthID(activeYear + '-' + String(activeMonth).padStart(2, '0'))}
               </h2>
