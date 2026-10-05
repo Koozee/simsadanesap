@@ -30,7 +30,7 @@ Setiap tugas selesai bila kriteria "Selesai bila" terpenuhi dan `typecheck`, `li
 - [x] **T0.4 Kerangka layar.** Header (logo 36 px, "Kelas 3", "SDN 1 Pandanmulyo", garis emas 2 px), navigasi bawah 4 tab (Beranda, Absensi, Nilai, Kas), rute dasar dengan halaman kosong.
   *Selesai bila:* berpindah tab berfungsi di lebar 360 px, tab aktif sesuai `design.md` 6.1.
 
-- [ ] **T0.5 Kontrak dan klien API.** Salin `api-contract.ts` ke `src/types/`. Buat `src/api/client.ts` (GET dengan query, POST dengan `text/plain`, parsing `ApiResult`, galat menjadi `ApiError` bertipe). Buat mode mock: fixture 32 siswa fiktif, handler mock untuk `students.list`, pemilihan lewat `VITE_USE_MOCK`.
+- [x] **T0.5 Kontrak dan klien API.** Salin `api-contract.ts` ke `src/types/`. Buat `src/api/client.ts` (GET dengan query, POST dengan `text/plain`, parsing `ApiResult`, galat menjadi `ApiError` bertipe). Buat mode mock: fixture 32 siswa fiktif, handler mock untuk `students.list`, pemilihan lewat `VITE_USE_MOCK`.
   *Selesai bila:* `students.list` mengembalikan 32 siswa pada mode mock, ada tes untuk parsing galat.
 
 - [ ] **T0.6 Kerangka Apps Script.** `Code.gs` (router `doGet`/`doPost`, format `ApiResult`, penanganan galat), `Config.gs` (konstanta dari `spreadsheet-schema.md`), `Utils.gs` (tanggal WIB, nama bulan Indonesia, `withLock`), `Students.gs` (`students.list`).
