@@ -195,13 +195,7 @@ export default function BerandaPage() {
                       <div><span className="font-medium text-slate-800">Bahasa Indonesia</span> - Ujian Tengah Semester</div>
                     </div>
                   )}
-                  {/* Mock Arus Kas */}
-                  {selectedDate === today && (
-                    <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-700 bg-emerald-50 p-2 rounded-lg border border-emerald-100">
-                      <div className="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></div>
-                      <div><span className="font-medium text-emerald-700">+ Rp 10.000</span> (Kas masuk dari 5 siswa)</div>
-                    </div>
-                  )}
+
                   {!absenMonth?.[selectedDate]?.libur && selectedDate !== toISODate(new Date(thisYear, thisMonth - 1, 15)) && selectedDate !== toISODate(new Date(thisYear, thisMonth - 1, 20)) && selectedDate !== today && (
                     <div className="text-xs text-slate-400 p-2 text-center bg-slate-50 rounded-lg border border-slate-100 border-dashed">
                       Tidak ada agenda tercatat
