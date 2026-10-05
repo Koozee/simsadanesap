@@ -141,6 +141,10 @@ function setNilaiExam(params) {
   
   sheet.getRange(startRow, targetCol, numRows, 1).setValues(colValues);
   
+  // Otomatis catat ke Agenda
+  const ket = type === 'PTS' ? 'Ujian Tengah Semester (PTS)' : 'Ujian Akhir Semester (PAS)';
+  recordAgendaIfNotExists(mapel, ket);
+  
   return {
     mapel: mapel,
     type: type
@@ -176,6 +180,21 @@ function setNilaiCell(params) {
   }
   
   sheet.getRange(row, col).setValue(value === null ? "" : value);
+  
+  // Otomatis catat ke Agenda (jika bukan menghapus nilai)
+  if (value !== null) {
+    let ket = '';
+    if (field === 'daily') {
+      ket = `Penilaian Harian Bab ${bab} (Tugas ${slot})`;
+    } else if (field === 'pts') {
+      ket = 'Ujian Tengah Semester (PTS)';
+    } else if (field === 'pas') {
+      ket = 'Ujian Akhir Semester (PAS)';
+    }
+    if (ket) {
+      recordAgendaIfNotExists(mapel, ket);
+    }
+  }
   
   // Return the updated row data
   const updatedValues = sheet.getRange(row, 1, 1, 28).getValues()[0];
