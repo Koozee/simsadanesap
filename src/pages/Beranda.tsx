@@ -259,6 +259,30 @@ export default function BerandaPage() {
                   Agenda {formatDateID(selectedDate!)}
                 </h3>
                 <div className="flex flex-col gap-2">
+                  {/* Jadwal Pelajaran */}
+                  {(() => {
+                    const [y, m, d] = selectedDate!.split('-')
+                    const dayOfWeek = new Date(Number(y), Number(m) - 1, Number(d)).getDay()
+                    const isLibur = liburDates.includes(selectedDate!) || dayOfWeek === 0
+                    
+                    if (!isLibur && JADWAL_PELAJARAN[dayOfWeek]) {
+                      return (
+                        <div className="rounded-lg border border-primary-100 bg-primary-50/50 p-3">
+                          <div className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-primary-600">
+                            Jadwal Pelajaran
+                          </div>
+                          <div className="flex flex-wrap gap-1.5">
+                            {JADWAL_PELAJARAN[dayOfWeek].map((mapel, idx) => (
+                              <span key={idx} className="rounded border border-primary-200/60 bg-white px-2 py-0.5 text-xs font-medium text-slate-700 shadow-sm">
+                                {mapel}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )
+                    }
+                    return null
+                  })()}
                   {liburDates.includes(selectedDate!) && (
                     <div className="flex items-center gap-2 rounded-lg border border-red-100 bg-red-50 p-2 text-xs text-red-700 sm:text-sm">
                       <div className="h-2 w-2 shrink-0 rounded-full bg-red-500"></div>
@@ -335,4 +359,14 @@ export default function BerandaPage() {
       )}
     </div>
   )
+}
+
+const JADWAL_PELAJARAN: Record<number, string[]> = {
+  1: ['Upacara', 'IPAS', 'Bhs. Indonesia'],
+  2: ['Senam', 'Pend. Pancasila', 'Matematika', 'Bhs. Jawa'],
+  3: ['Literasi', 'Bhs. Indonesia', 'Seni Rupa', 'Bhs. Inggris'],
+  4: ["Juz 'Amma", 'Agama', 'Matematika', 'IPAS'],
+  5: ['Shalat Dhuha', 'Istighosah', 'PJOK', 'Bhs. Jawa'],
+  6: ['Senam', 'Halus', 'Kokurikuler'],
+  0: []
 }
