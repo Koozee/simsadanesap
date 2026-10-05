@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Search } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Search, Loader2 } from 'lucide-react'
 import { toISODate, addDays, formatDateID, isSunday } from '../utils/date'
 import { CalendarBottomSheet } from '../components/CalendarBottomSheet'
 import { apiCall } from '../api/client'

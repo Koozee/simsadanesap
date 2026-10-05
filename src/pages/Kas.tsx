@@ -20,6 +20,11 @@ export default function KasPage() {
   const [students, setStudents] = useState<Siswa[]>([])
   const [search, setSearch] = useState('')
 
+  type KasChange = { no: number; week: number; paid: boolean }
+  const [pendingChanges, setPendingChanges] = useState<KasChange[]>([])
+  const [isDirty, setIsDirty] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+
   const [kasData, setKasData] = useState<KasData | null>(null)
   const [summary, setSummary] = useState<KasSummary | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -60,7 +65,7 @@ export default function KasPage() {
     return students.filter((s) => s.nama.toLowerCase().includes(search.toLowerCase()))
   }, [students, search])
 
-  const handleQuickPay = async (no: number) => {
+  const handleQuickPay = (no: number) => {
     const row = kasData?.rows.find((x) => x.no === no)
     if (!row) return
     const nextUnpaid = row.weeks.findIndex((w) => !w)
@@ -69,7 +74,6 @@ export default function KasPage() {
       return
     }
 
-    // Optimistic update
     setKasData((prev) => {
       if (!prev) return prev
       const newRows = [...prev.rows]
@@ -83,18 +87,14 @@ export default function KasPage() {
       return { ...prev, rows: newRows }
     })
 
-    try {
-      await apiCall('kas.pay', { year, no, count: 1 }, 'POST')
-      loadData()
-      toast.success(`Bayar minggu ${nextUnpaid + 1} tersimpan`)
-    } catch (err) {
-      console.error(err)
-      toast.error('Gagal menyimpan kas')
-      loadData() // revert
-    }
+    setPendingChanges((prev) => {
+      const filtered = prev.filter((c) => !(c.no === no && c.week === nextUnpaid + 1))
+      return [...filtered, { no, week: nextUnpaid + 1, paid: true }]
+    })
+    setIsDirty(true)
   }
 
-  const handleQuickMinus = async (no: number) => {
+  const handleQuickMinus = (no: number) => {
     const row = kasData?.rows.find((x) => x.no === no)
     if (!row) return
     const lastPaid = row.weeks.lastIndexOf(true)
@@ -113,19 +113,14 @@ export default function KasPage() {
       return { ...prev, rows: newRows }
     })
 
-    try {
-      await apiCall('kas.setWeek', { year, no, week: lastPaid + 1, paid: false }, 'POST')
-      loadData()
-      toast.success(`Pembayaran minggu ${lastPaid + 1} dibatalkan`)
-    } catch (err) {
-      console.error(err)
-      toast.error('Gagal membatalkan kas')
-      loadData()
-    }
+    setPendingChanges((prev) => {
+      const filtered = prev.filter((c) => !(c.no === no && c.week === lastPaid + 1))
+      return [...filtered, { no, week: lastPaid + 1, paid: false }]
+    })
+    setIsDirty(true)
   }
 
-  const handleSetWeek = async (no: number, week: number, paid: boolean) => {
-    // Optimistic update
+  const handleSetWeek = (no: number, week: number, paid: boolean) => {
     setKasData((prev) => {
       if (!prev) return prev
       const newRows = [...prev.rows]
@@ -141,14 +136,32 @@ export default function KasPage() {
 
     if (showConfirmCancel) setShowConfirmCancel(null)
 
+    setPendingChanges((prev) => {
+      const filtered = prev.filter((c) => !(c.no === no && c.week === week))
+      return [...filtered, { no, week, paid }]
+    })
+    setIsDirty(true)
+  }
+
+  const handleSave = async () => {
+    if (pendingChanges.length === 0) return
+    setIsSaving(true)
+    let hasError = false
     try {
-      await apiCall('kas.setWeek', { year, no, week, paid }, 'POST')
-      loadData()
-      if (paid) toast.success(`Minggu ${week} dicentang`)
-      else toast.success(`Minggu ${week} dibatalkan`)
+      for (const change of pendingChanges) {
+        await apiCall('kas.setWeek', { year, no: change.no, week: change.week, paid: change.paid }, 'POST')
+      }
     } catch (err) {
       console.error(err)
-      toast.error('Gagal menyimpan perubahan minggu')
+      hasError = true
+      toast.error('Gagal menyimpan. Periksa koneksi.')
+    } finally {
+      if (!hasError) {
+        toast.success('Semua perubahan kas berhasil disimpan')
+        setIsDirty(false)
+        setPendingChanges([])
+      }
+      setIsSaving(false)
       loadData()
     }
   }
@@ -387,6 +400,25 @@ export default function KasPage() {
               )
             })()}
           </div>
+        </div>
+      )}
+
+      {isDirty && (
+        <div className="animate-in slide-in-from-bottom fixed right-0 bottom-[56px] left-0 z-[60] border-t border-slate-200 bg-white p-4 shadow-[0_-4px_16px_rgba(0,0,0,0.1)]">
+          <div className="mb-3 flex items-center justify-between">
+            <span className="font-medium text-slate-600">Perubahan Belum Disimpan</span>
+            <span className="font-heading text-primary-600 font-semibold">
+              {pendingChanges.length} perubahan
+            </span>
+          </div>
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="bg-primary-600 active:bg-primary-700 flex w-full cursor-pointer items-center justify-center gap-2 rounded-[10px] py-3 font-semibold text-white transition-colors disabled:opacity-50"
+          >
+            {isSaving && <Loader2 size={18} className="animate-spin" />}
+            Simpan Perubahan
+          </button>
         </div>
       )}
 
