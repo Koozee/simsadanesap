@@ -20,6 +20,7 @@ export default function AbsensiPage() {
   const [isDirty, setIsDirty] = useState(false)
   const [dayData, setDayData] = useState<AbsenDay | null>(null)
   const [showConfirm, setShowConfirm] = useState(false)
+  const [showLiburConfirm, setShowLiburConfirm] = useState(false)
 
   const { entries, toggleStatus, getEntriesArray, setEntries } = useAbsenState()
 
@@ -218,8 +219,8 @@ export default function AbsensiPage() {
               ) : (
                 <div className="flex items-center gap-3">
                   <button
-                    onClick={() => handleSetLibur(true)}
-                    className="flex-1 rounded-btn border border-slate-200 bg-white py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors active:bg-slate-50"
+                    onClick={() => setShowLiburConfirm(true)}
+                    className="flex-1 rounded-btn border border-orange-200 bg-orange-50 py-2 text-sm font-medium text-orange-700 shadow-sm transition-colors active:bg-orange-100"
                   >
                     Tandai Libur
                   </button>
@@ -359,6 +360,17 @@ export default function AbsensiPage() {
             message={`Hapus absensi ${parseISODateLocal(date).getDate()} ${MONTH_NAMES[parseISODateLocal(date).getMonth()]}? Data di spreadsheet ikut terhapus.`}
             onConfirm={handleHapusConfirm}
             onCancel={() => setShowConfirm(false)}
+          />
+
+          <ConfirmModal
+            isOpen={showLiburConfirm}
+            title="Tandai Hari Libur"
+            message={`Tandai ${parseISODateLocal(date).getDate()} ${MONTH_NAMES[parseISODateLocal(date).getMonth()]} sebagai libur? Seluruh data kehadiran pada hari ini akan dihapus.`}
+            onConfirm={() => {
+              setShowLiburConfirm(false)
+              handleSetLibur(true)
+            }}
+            onCancel={() => setShowLiburConfirm(false)}
           />
         </>
       )}
