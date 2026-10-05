@@ -114,15 +114,15 @@ export function AbsensiRekap() {
           )}
 
           {selectedNo === 'semua' ? (
-            <div className="divide-y divide-slate-100 overflow-hidden rounded-[10px] border border-slate-200 bg-white shadow-sm">
+            <div className="divide-y divide-slate-300 overflow-hidden rounded-[10px] border border-slate-200 bg-white shadow-sm">
               {summary.perSiswa.map((rekap) => {
                 const s = students.find((x) => x.no === rekap.no)
                 return (
                   <div key={rekap.no} className="flex items-center justify-between gap-4 p-4">
                     <div className="min-w-0 flex-1">
-                      <div className="mb-1 flex items-center gap-2">
-                        <span className="font-tabular-nums text-sm text-slate-400">{rekap.no}</span>
-                        <span className="truncate font-medium text-slate-800">{s?.nama}</span>
+                      <div className="mb-1 flex items-start gap-3">
+                        <span className="font-tabular-nums text-sm text-slate-400 mt-0.5">{rekap.no}</span>
+                        <span className="font-medium text-slate-800">{s?.nama}</span>
                       </div>
                       <div className="flex gap-3 text-xs">
                         <span className="text-primary-600 font-medium">S: {rekap.sakit}</span>
@@ -175,7 +175,7 @@ export function AbsensiRekap() {
                 </div>
               </div>
 
-              <div className="divide-y divide-slate-100 overflow-hidden rounded-[10px] border border-slate-200 bg-white shadow-sm">
+              <div className="divide-y divide-slate-300 overflow-hidden rounded-[10px] border border-slate-200 bg-white shadow-sm">
                 <div className="bg-slate-50 p-3 text-xs font-semibold tracking-wider text-slate-500 uppercase">
                   Rincian per Bulan
                 </div>

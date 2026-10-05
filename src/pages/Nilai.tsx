@@ -153,7 +153,7 @@ export default function NilaiPage() {
             />
           </div>
 
-          <div className="divide-y divide-slate-100 overflow-hidden rounded-[10px] border border-slate-200 bg-white shadow-sm">
+          <div className="divide-y divide-slate-300 overflow-hidden rounded-[10px] border border-slate-200 bg-white shadow-sm">
             {filteredStudents.length === 0 ? (
               <div className="p-8 text-center text-slate-400">Siswa tidak ditemukan</div>
             ) : (
@@ -169,8 +169,10 @@ export default function NilaiPage() {
                     className="flex min-h-[72px] w-full cursor-pointer items-center justify-between p-4 text-left transition-colors active:bg-slate-50"
                     onClick={() => setSelectedNo(s.no)}
                   >
-                    <div className="min-w-0 flex-1 pr-4">
-                      <div className="mb-1 truncate font-medium text-slate-800">{s.nama}</div>
+                    <div className="flex flex-1 gap-3 pr-4">
+                      <span className="font-tabular-nums shrink-0 text-slate-400 mt-0.5">{s.no}</span>
+                      <div className="min-w-0 flex-1">
+                        <div className="mb-1 font-medium text-slate-800">{s.nama}</div>
                       <div className="flex gap-3 text-xs text-slate-500">
                         <span>
                           Rata-rata: <strong className="text-slate-700">{rata2}</strong>

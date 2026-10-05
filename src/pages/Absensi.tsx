@@ -286,7 +286,7 @@ export default function AbsensiPage() {
             <div className="py-8 text-center text-slate-500">Memuat data...</div>
           ) : (
             <div
-              className={`divide-y divide-slate-100 overflow-hidden rounded-[10px] border border-slate-200 bg-white shadow-sm transition-opacity ${isLiburMode ? 'pointer-events-none opacity-50' : ''}`}
+              className={`divide-y divide-slate-300 overflow-hidden rounded-[10px] border border-slate-200 bg-white shadow-sm transition-opacity ${isLiburMode ? 'pointer-events-none opacity-50' : ''}`}
             >
               {filteredStudents.length === 0 ? (
                 <div className="p-4 text-center text-slate-500">Tidak ada siswa ditemukan</div>
@@ -305,11 +305,11 @@ export default function AbsensiPage() {
                       onClick={() => handleToggle(s.no)}
                       className="flex min-h-[56px] w-full items-center justify-between p-4 text-left transition-colors active:bg-slate-50"
                     >
-                      <div className="flex items-center">
-                        <span className="font-tabular-nums inline-block w-8 text-slate-400">
+                      <div className="flex items-center gap-3 pr-3">
+                        <span className="font-tabular-nums shrink-0 text-slate-400">
                           {s.no}
                         </span>
-                        <span className="max-w-[200px] truncate font-medium text-slate-800">
+                        <span className="font-medium text-slate-800">
                           {s.nama}
                         </span>
                       </div>

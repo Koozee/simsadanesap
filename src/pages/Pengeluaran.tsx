@@ -118,7 +118,7 @@ export default function PengeluaranPage() {
           <p className="mb-4 text-sm">Catat pengeluaran kas kelas di sini</p>
         </div>
       ) : (
-        <div className="divide-y divide-slate-100 overflow-hidden rounded-[10px] border border-slate-200 bg-white shadow-sm">
+        <div className="divide-y divide-slate-300 overflow-hidden rounded-[10px] border border-slate-200 bg-white shadow-sm">
           {expenses.map((e) => (
             <div key={e.id} className="flex items-center justify-between p-4 hover:bg-slate-50">
               <div>
