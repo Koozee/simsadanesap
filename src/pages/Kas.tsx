@@ -7,7 +7,7 @@ import { KAS_PER_MINGGU, JUMLAH_MINGGU_KAS } from '../types/api-contract'
 import { ConfirmModal } from '../components/ConfirmModal'
 
 export default function KasPage() {
-  const [year, setYear] = useState(2026)
+  const [year, setYear] = useState(new Date().getFullYear())
   const [students, setStudents] = useState<Siswa[]>([])
   const [search, setSearch] = useState('')
   
