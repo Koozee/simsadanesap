@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { mockKasGetSemester, mockKasPay, mockKasSetWeek, mockKasSummary } from './mockKas'
+import { mockKasPay, mockKasSetWeek, mockKasSummary } from './mockKas'
 import { KAS_PER_MINGGU } from '../types/api-contract'
 
 describe('kas actions', () => {
