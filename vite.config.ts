@@ -13,8 +13,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'favicon.svg'],
       manifest: {
-        name: 'SIM SADANEPA',
-        short_name: 'SIM',
+        name: 'SIM SADANESAP',
+        short_name: 'SIMSADANESAP',
         description: 'Sistem Informasi Manajemen SDN 1 Pandanmulyo',
         theme_color: '#2563eb',
         background_color: '#ffffff',
