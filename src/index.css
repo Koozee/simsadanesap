@@ -75,6 +75,14 @@
     outline: 2px solid var(--color-primary-600);
     outline-offset: 2px;
   }
+
+  button, [role="button"] {
+    @apply cursor-pointer;
+  }
+
+  button:disabled, [role="button"][aria-disabled="true"] {
+    @apply cursor-not-allowed;
+  }
 }
 
 

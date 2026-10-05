@@ -243,12 +243,12 @@ export default function BerandaPage() {
               })}
             </div>
 
-            <div className="mt-3 flex justify-center gap-4 border-b border-slate-100 pb-2 text-[10px] text-slate-500">
-              <div className="flex items-center gap-1">
-                <div className="h-1.5 w-1.5 rounded-full bg-red-500"></div> Libur
+            <div className="mt-3 flex justify-center gap-10 border-b border-slate-100 pb-2 text-xs font-medium">
+              <div className="flex items-center gap-2">
+                <div className="h-5 w-5 rounded-full bg-red-500"></div> Libur
               </div>
-              <div className="flex items-center gap-1">
-                <div className="bg-gold-400 h-1.5 w-1.5 rounded-full"></div> Ujian/Tugas
+              <div className="flex items-center gap-2">
+                <div className="bg-gold-400 h-5 w-5 rounded-full"></div> Ujian/Tugas
               </div>
             </div>
 

@@ -17,6 +17,7 @@ export default function AbsensiPage() {
   const [activeTab, setActiveTab] = useState<'S' | 'I' | 'A'>('S')
   const [viewTab, setViewTab] = useState<'harian' | 'rekap'>('harian')
   const [isLoading, setIsLoading] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
   const [isDirty, setIsDirty] = useState(false)
   const [dayData, setDayData] = useState<AbsenDay | null>(null)
   const [showConfirm, setShowConfirm] = useState(false)
@@ -71,6 +72,7 @@ export default function AbsensiPage() {
   }
 
   const handleSave = async () => {
+    setIsSaving(true)
     try {
       await apiCall('absensi.saveDay', { date, entries: getEntriesArray() }, 'POST')
       setIsDirty(false)
@@ -83,6 +85,8 @@ export default function AbsensiPage() {
     } catch (err) {
       console.error(err)
       toast.error('Absensi belum tersimpan. Periksa koneksi, lalu coba lagi.')
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -337,8 +341,10 @@ export default function AbsensiPage() {
               </div>
               <button
                 onClick={handleSave}
-                className="bg-primary-600 active:bg-primary-700 w-full rounded-[10px] py-3 font-semibold text-white transition-colors"
+                disabled={isSaving}
+                className="bg-primary-600 active:bg-primary-700 flex w-full items-center justify-center gap-2 rounded-[10px] py-3 font-semibold text-white transition-colors disabled:opacity-50"
               >
+                {isSaving && <Loader2 size={18} className="animate-spin" />}
                 Simpan absensi
               </button>
             </div>

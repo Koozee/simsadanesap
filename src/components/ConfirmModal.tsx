@@ -1,20 +1,36 @@
+import { useState } from 'react'
+import { Loader2 } from 'lucide-react'
+
 export function ConfirmModal({
   isOpen,
   title,
   message,
   onConfirm,
   onCancel,
-  confirmText = 'Ya, hapus',
+  confirmText = 'Ya, simpan',
   cancelText = 'Batal',
+  confirmBtnClass = 'bg-danger-600 active:bg-danger-700 text-white',
 }: {
   isOpen: boolean
   title: string
   message: string
-  onConfirm: () => void
+  onConfirm: () => void | Promise<void>
   onCancel: () => void
   confirmText?: string
   cancelText?: string
+  confirmBtnClass?: string
 }) {
+  const [isConfirming, setIsConfirming] = useState(false)
+
+  const handleConfirm = async () => {
+    setIsConfirming(true)
+    try {
+      await onConfirm()
+    } finally {
+      setIsConfirming(false)
+    }
+  }
+
   if (!isOpen) return null
 
   return (
@@ -25,14 +41,17 @@ export function ConfirmModal({
         <div className="flex justify-end gap-3">
           <button
             onClick={onCancel}
-            className="rounded-[10px] px-4 py-2 font-medium text-slate-600 transition-colors active:bg-slate-100"
+            disabled={isConfirming}
+            className="cursor-pointer rounded-[10px] px-4 py-2 font-medium text-slate-600 transition-colors active:bg-slate-100 disabled:opacity-50"
           >
             {cancelText}
           </button>
           <button
-            onClick={onConfirm}
-            className="rounded-[10px] bg-red-600 px-4 py-2 font-medium text-white transition-colors active:bg-red-700"
+            onClick={handleConfirm}
+            disabled={isConfirming}
+            className={`flex cursor-pointer items-center justify-center gap-2 rounded-[10px] px-4 py-2 font-medium transition-colors disabled:opacity-50 ${confirmBtnClass}`}
           >
+            {isConfirming && <Loader2 size={16} className="animate-spin" />}
             {confirmText}
           </button>
         </div>
