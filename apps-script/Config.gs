@@ -13,6 +13,11 @@ const CONFIG = {
   OFFSET_BARIS_NILAI: 6,
   OFFSET_BARIS_KAS: 5,
   
+  KAS_SEMESTER_SHEET: {
+    'ganjil': 'Tahun 2026',
+    'genap': 'Semester Genap 2026-2027'
+  },
+  
   MAPEL: [
     'Bahasa Indonesia',
     'Seni Rupa',

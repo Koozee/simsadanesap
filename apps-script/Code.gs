@@ -12,6 +12,12 @@ function doGet(e) {
       return getStudentsList();
     });
   }
+
+  if (action === 'validate') {
+    return withRead(action, function() {
+      return validateSpreadsheets();
+    });
+  }
   
   return makeJsonResponse(apiFail('UNKNOWN_ACTION', 'Action GET tidak dikenali: ' + action));
 }

@@ -36,7 +36,7 @@ Setiap tugas selesai bila kriteria "Selesai bila" terpenuhi dan `typecheck`, `li
 - [x] **T0.6 Kerangka Apps Script.** `Code.gs` (router `doGet`/`doPost`, format `ApiResult`, penanganan galat), `Config.gs` (konstanta dari `spreadsheet-schema.md`), `Utils.gs` (tanggal WIB, nama bulan Indonesia, `withLock`), `Students.gs` (`students.list`).
   *Selesai bila:* memanggil URL Web App `?action=students.list` mengembalikan 32 siswa dari salinan `_DEV`.
 
-- [ ] **T0.7 `validate`.** Periksa: ketiga spreadsheet terbuka, sheet wajib ada, header sesuai konstanta, urutan nama siswa sama di ketiga file. Laporkan `issues[]`.
+- [x] **T0.7 `validate`.** Periksa: ketiga spreadsheet terbuka, sheet wajib ada, header sesuai konstanta, urutan nama siswa sama di ketiga file. Laporkan `issues[]`.
   *Selesai bila:* mengembalikan `ok: true` pada salinan `_DEV`, dan melaporkan masalah bila satu nama sengaja diubah.
 
 - [ ] **T0.8 [ANDA] Deploy Web App.** *Deploy → Web app*, Execute as: Me, akses: Anyone. Salin URL ke `.env` lokal. Untuk perubahan berikutnya, buat versi baru **pada deployment yang sama**.
