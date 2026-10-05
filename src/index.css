@@ -1,3 +1,86 @@
 @import 'tailwindcss';
 
-/* Token desain (design.md bagian 10) dipasang pada T0.3. */
+/*
+ * Token desain dari design.md bagian 10, dalam format Tailwind v4 (@theme).
+ * Nama token mengikuti design.md, dengan awalan namespace Tailwind
+ * (--color-, --radius-, --shadow-, --font-) agar menjadi kelas utilitas:
+ *   bg-biru-600, text-navy-900, border-garis, bg-sakit-bg, text-sakit-fg,
+ *   rounded-kecil, rounded-tombol, rounded-t-sheet, shadow-melayang,
+ *   font-judul, font-teks.
+ *
+ * Palet bawaan Tailwind sengaja dikosongkan (--color-*: initial) supaya
+ * hanya warna dari design.md yang bisa dipakai.
+ */
+@theme {
+  --color-*: initial;
+
+  /* inti */
+  --color-biru-600: #00359d;
+  --color-biru-700: #002a7d;
+  --color-biru-50: #eaf0fb;
+  --color-navy-900: #0c1b4b;
+  --color-slate-600: #4a5578;
+  --color-garis: #d6dceb;
+  --color-latar: #f5f7fc;
+  --color-permukaan: #ffffff;
+  /* Emas HANYA untuk garis header dan penanda "minggu berikutnya" (design.md 2.3). */
+  --color-emas-400: #f6be26;
+  --color-krem-100: #f7f3de;
+  /* Dipakai design.md 6.2 dan 6.3; sama dengan warna libur (keputusan T0.2). */
+  --color-merah-600: #c62e24;
+  --color-white: #ffffff;
+
+  /* status: lembut (bg), teks di latar lembut (fg), solid (tab aktif) */
+  --color-hadir-bg: #ddf1e2;
+  --color-hadir-fg: #17612d;
+  --color-hadir-solid: #1f7a3a;
+  --color-sakit-bg: #fce9c2;
+  --color-sakit-fg: #7a4a00;
+  --color-sakit-solid: #a35f00;
+  --color-izin-bg: #d8ebfa;
+  --color-izin-fg: #0b4f86;
+  --color-izin-solid: #1c6fb5;
+  --color-alpha-bg: #f9d9d5;
+  --color-alpha-fg: #8e1c14;
+  --color-alpha-solid: #c62e24;
+  --color-libur-solid: #c62e24;
+
+  /* bentuk */
+  --radius-kecil: 6px;
+  --radius-tombol: 10px;
+  --radius-sheet: 20px;
+  --shadow-melayang: 0 -4px 16px rgba(12, 27, 75, 0.14);
+
+  /* huruf */
+  --font-judul: 'Lexend Variable', system-ui, sans-serif;
+  --font-teks: 'Source Sans 3 Variable', system-ui, sans-serif;
+  --font-sans: 'Source Sans 3 Variable', system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    background: var(--color-latar);
+    color: var(--color-navy-900);
+    font-family: var(--font-teks);
+    font-size: 16px;
+  }
+
+  /* Fokus keyboard: garis 2 px biru-600 dengan jarak 2 px (design.md 4). */
+  :focus-visible {
+    outline: 2px solid var(--color-biru-600);
+    outline-offset: 2px;
+  }
+}
+
+@utility angka {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
