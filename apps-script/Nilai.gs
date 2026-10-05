@@ -109,6 +109,9 @@ function addNilaiDaily(params) {
   
   sheet.getRange(startRow, targetCol, numRows, 1).setValues(colValues);
   
+  // Otomatis catat ke Agenda
+  recordAgendaIfNotExists(mapel, `Penilaian Harian Bab ${bab} (Tugas ${targetSlot})`);
+  
   return {
     bab: bab,
     slotUsed: targetSlot
