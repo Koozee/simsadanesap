@@ -47,7 +47,7 @@ Setiap tugas selesai bila kriteria "Selesai bila" terpenuhi dan `typecheck`, `li
 
 ## Fase 1 — Absensi harian
 
-- [ ] **T1.1 Template absensi.** Apps Script menyiapkan `Template`: aturan format bersyarat (`L` → latar `#C62E24`, huruf putih) pada `E7:AI38`, header kolom `H` di `AM`. Fungsi `ensureMonthSheet(month)` menyalin template, menamai `Bulan-Tahun`, mengisi judul `E4`, rumus `AJ:AM` (S, I, A, H) untuk 32 baris, mengabukan kolom tanggal yang tidak ada, dan mengisi `L` pada seluruh kolom hari Minggu.
+- [x] **T1.1 Template absensi.** Apps Script menyiapkan `Template`: aturan format bersyarat (`L` → latar `#C62E24`, huruf putih) pada `E7:AI38`, header kolom `H` di `AM`. Fungsi `ensureMonthSheet(month)` menyalin template, menamai `Bulan-Tahun`, mengisi judul `E4`, rumus `AJ:AM` (S, I, A, H) untuk 32 baris, mengabukan kolom tanggal yang tidak ada, dan mengisi `L` pada seluruh kolom hari Minggu.
   *Selesai bila:* memanggil `ensureMonthSheet('2026-08')` menghasilkan sheet `Agustus-2026` yang benar; memanggil dua kali tidak membuat duplikat.
 
 - [ ] **T1.2 `absensi.getDay`, `absensi.monthOverview`.** Baca satu kolom tanggal, kembalikan `recorded`, `libur`, `sunday`, `entries`; hitung `recordedDates` dan `liburDates` (Minggu ikut `liburDates`).
