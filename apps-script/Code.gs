@@ -37,9 +37,9 @@ function doGet(e) {
     });
   }
   
-  if (action === 'kas.getSemester') {
+  if (action === 'kas.getData') {
     return withRead(action, function() {
-      return getKasSemester(e.parameter.semester);
+      return getKasData();
     });
   }
 
@@ -91,10 +91,6 @@ function doPost(e) {
 
   if (action === 'kas.pay') {
     return withLock(action, function() { return payKas(params); });
-  }
-
-  if (action === 'kas.createSemester') {
-    return withLock(action, function() { return createKasSemester(params); });
   }
 
   if (action === 'kas.expenses.add') {

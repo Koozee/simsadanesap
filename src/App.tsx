@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router'
 import { Toaster } from 'sonner'
 import { Layout } from './components/Layout'
 import AbsensiPage from './pages/Absensi'
+import KasPage from './pages/Kas'
 
 function BerandaPage() {
   return (
@@ -21,14 +22,6 @@ function NilaiPage() {
   )
 }
 
-function KasPage() {
-  return (
-    <div>
-      <h1 className="font-judul font-semibold text-2xl mb-4">Kas</h1>
-      <p className="text-slate-600">Halaman kosong.</p>
-    </div>
-  )
-}
 
 export default function App() {
   return (

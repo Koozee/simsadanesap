@@ -1,13 +1,12 @@
 // Kas.gs
 
-function getKasSemester(semester) {
+function getKasData() {
   const ss = getKasSs();
-  const sheetName = CONFIG.KAS_SEMESTER_SHEET[semester];
+  const sheetName = CONFIG.KAS_SHEET;
   const sheet = ss.getSheetByName(sheetName);
   
   if (!sheet) {
     return {
-      semester: semester,
       sheetExists: false,
       rows: []
     };
@@ -15,7 +14,7 @@ function getKasSemester(semester) {
   
   const startRow = CONFIG.OFFSET_BARIS_KAS + 1; // 6
   const numRows = 32;
-  const numWeeks = CONFIG.MINGGU_PER_SEMESTER; // 22
+  const numWeeks = CONFIG.JUMLAH_MINGGU_KAS;
   
   // Baca C6:Y37
   const range = sheet.getRange(startRow, 3, numRows, numWeeks + 1);
@@ -38,7 +37,6 @@ function getKasSemester(semester) {
   }
   
   return {
-    semester: semester,
     sheetExists: true,
     rows: rows
   };
@@ -49,18 +47,12 @@ function getKasSummary() {
   let pemasukan = 0;
   let pengeluaran = 0;
   
-  const ganjilName = CONFIG.KAS_SEMESTER_SHEET['ganjil'];
-  const ganjilSheet = ss.getSheetByName(ganjilName);
+  const sheetName = CONFIG.KAS_SHEET;
+  const sheet = ss.getSheetByName(sheetName);
   
-  if (ganjilSheet) {
-    pemasukan += parseFloat(ganjilSheet.getRange('C38').getValue()) || 0;
-    pengeluaran = parseFloat(ganjilSheet.getRange('C39').getValue()) || 0;
-  }
-  
-  const genapName = CONFIG.KAS_SEMESTER_SHEET['genap'];
-  const genapSheet = ss.getSheetByName(genapName);
-  if (genapSheet) {
-    pemasukan += parseFloat(genapSheet.getRange('C38').getValue()) || 0;
+  if (sheet) {
+    pemasukan = parseFloat(sheet.getRange('C38').getValue()) || 0;
+    pengeluaran = parseFloat(sheet.getRange('C39').getValue()) || 0;
   }
   
   return {
@@ -71,13 +63,12 @@ function getKasSummary() {
 }
 
 function setKasWeek(params) {
-  const semester = params.semester;
   const no = params.no;
-  const week = params.week; // 1-22
+  const week = params.week; 
   const paid = params.paid;
   
   const ss = getKasSs();
-  const sheetName = CONFIG.KAS_SEMESTER_SHEET[semester];
+  const sheetName = CONFIG.KAS_SHEET;
   const sheet = ss.getSheetByName(sheetName);
   
   if (!sheet) {
@@ -92,7 +83,7 @@ function setKasWeek(params) {
   sheet.getRange(row, col).setValue(paid);
   
   // Baca kembali baris tersebut untuk return
-  const numWeeks = CONFIG.MINGGU_PER_SEMESTER;
+  const numWeeks = CONFIG.JUMLAH_MINGGU_KAS;
   const rowValues = sheet.getRange(row, 3, 1, numWeeks + 1).getValues()[0];
   
   const weeks = [];
@@ -109,12 +100,11 @@ function setKasWeek(params) {
 }
 
 function payKas(params) {
-  const semester = params.semester;
   const no = params.no;
   const count = params.count || 1;
   
   const ss = getKasSs();
-  const sheetName = CONFIG.KAS_SEMESTER_SHEET[semester];
+  const sheetName = CONFIG.KAS_SHEET;
   const sheet = ss.getSheetByName(sheetName);
   
   if (!sheet) {
@@ -122,7 +112,7 @@ function payKas(params) {
   }
   
   const row = CONFIG.OFFSET_BARIS_KAS + no;
-  const numWeeks = CONFIG.MINGGU_PER_SEMESTER;
+  const numWeeks = CONFIG.JUMLAH_MINGGU_KAS;
   const range = sheet.getRange(row, 3, 1, numWeeks);
   const weeksData = range.getValues()[0];
   
@@ -280,35 +270,4 @@ function deleteKasExpense(params) {
   // Hapus sel B, C, D
   sheet.getRange(id, 2, 1, 3).clearContent();
   return { id: id };
-}
-
-function createKasSemester(params) {
-  const ss = getKasSs();
-  const ganjilName = CONFIG.KAS_SEMESTER_SHEET['ganjil'];
-  const genapName = CONFIG.KAS_SEMESTER_SHEET['genap'];
-  
-  const ganjilSheet = ss.getSheetByName(ganjilName);
-  if (!ganjilSheet) throw { code: 'SHEET_NOT_FOUND', message: 'Sheet ganjil tidak ada' };
-  
-  let genapSheet = ss.getSheetByName(genapName);
-  if (genapSheet) throw { code: 'SEMESTER_EXISTS', message: 'Semester genap sudah ada' };
-  
-  genapSheet = ganjilSheet.copyTo(ss);
-  genapSheet.setName(genapName);
-  
-  const numRows = 32;
-  const numWeeks = CONFIG.MINGGU_PER_SEMESTER;
-  const startRow = CONFIG.OFFSET_BARIS_KAS + 1;
-  
-  const falseValues = [];
-  for (let r = 0; r < numRows; r++) {
-    const row = [];
-    for (let c = 0; c < numWeeks; c++) {
-      row.push(false);
-    }
-    falseValues.push(row);
-  }
-  genapSheet.getRange(startRow, 3, numRows, numWeeks).setValues(falseValues);
-  
-  return { sheetName: genapName };
 }

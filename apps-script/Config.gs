@@ -4,7 +4,7 @@ const CONFIG = {
   LOCK_TIMEOUT_MS: 30000,
   
   KAS_PER_MINGGU: 2000,
-  MINGGU_PER_SEMESTER: 22,
+  JUMLAH_MINGGU_KAS: 22,
   
   JUMLAH_BAB: 5,
   SLOT_PER_BAB: 4,
@@ -13,10 +13,7 @@ const CONFIG = {
   OFFSET_BARIS_NILAI: 6,
   OFFSET_BARIS_KAS: 5,
   
-  KAS_SEMESTER_SHEET: {
-    'ganjil': 'Tahun 2026',
-    'genap': 'Semester Genap 2026-2027'
-  },
+  KAS_SHEET: 'Tahun 2026',
   
   MAPEL: [
     'Bahasa Indonesia',

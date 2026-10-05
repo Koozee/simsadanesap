@@ -14,7 +14,7 @@
 // ───────────────────────── Konstanta ─────────────────────────
 
 export const KAS_PER_MINGGU = 2000;
-export const MINGGU_PER_SEMESTER = 22;
+export const JUMLAH_MINGGU_KAS = 22; // Nanti bisa disesuaikan
 export const JUMLAH_BAB = 5;
 export const SLOT_PER_BAB = 4;
 export const SLOT_HARIAN_TOTAL = JUMLAH_BAB * SLOT_PER_BAB; // 20
@@ -37,7 +37,6 @@ export type ISODate = string;
 export type ISOMonth = string;
 
 export type Mapel = (typeof MAPEL)[number];
-export type Semester = 'ganjil' | 'genap';
 
 /** Nomor urut siswa 1–32. Dipakai sebagai kunci di semua spreadsheet. */
 export type NoSiswa = number;
@@ -65,7 +64,6 @@ export type ApiErrorCode =
   | 'STRUCTURE_MISMATCH'  // struktur spreadsheet tidak sesuai spreadsheet-schema.md
   | 'BAB_FULL'            // keempat slot penilaian dalam bab sudah terisi
   | 'NOTHING_TO_PAY'      // semua minggu kas siswa sudah lunas
-  | 'SEMESTER_EXISTS'     // sheet semester sudah ada
   | 'LOCK_TIMEOUT'        // gagal mendapatkan lock tulis, coba lagi
   | 'UNKNOWN_ACTION'
   | 'UNKNOWN';
@@ -150,14 +148,13 @@ export type KasRow = {
   total: number;
 };
 
-export type KasSemesterData = {
-  semester: Semester;
+export type KasData = {
   sheetExists: boolean;
   rows: KasRow[];
 };
 
 export type KasSummary = {
-  /** Total semua semester */
+  /** Total pemasukan */
   pemasukan: number;
   pengeluaran: number;
   /** pemasukan − pengeluaran */
@@ -227,16 +224,15 @@ export type ApiActions = {
   >;
 
   // Kas
-  'kas.getSemester': Action<'GET', { semester: Semester }, KasSemesterData>;
+  'kas.getData': Action<'GET', Record<string, never>, KasData>;
   'kas.summary': Action<'GET', Record<string, never>, KasSummary>;
   /** Mencentang `count` minggu terlama yang belum lunas (default 1). */
   'kas.pay': Action<
     'POST',
-    { semester: Semester; no: NoSiswa; count?: number },
+    { no: NoSiswa; count?: number },
     { weeksChecked: Minggu[]; row: KasRow }
   >;
-  'kas.setWeek': Action<'POST', { semester: Semester; no: NoSiswa; week: Minggu; paid: boolean }, KasRow>;
-  'kas.createSemester': Action<'POST', { semester: Semester }, { sheetName: string }>;
+  'kas.setWeek': Action<'POST', { no: NoSiswa; week: Minggu; paid: boolean }, KasRow>;
   'kas.expenses.list': Action<'GET', Record<string, never>, Pengeluaran[]>;
   'kas.expenses.add': Action<'POST', Omit<Pengeluaran, 'id'>, Pengeluaran>;
   'kas.expenses.update': Action<'POST', Pengeluaran, Pengeluaran>;

@@ -1,44 +1,34 @@
-import type { KasSemesterData, KasSummary, KasRow, Semester, Pengeluaran } from '../types/api-contract'
-import { KAS_PER_MINGGU, MINGGU_PER_SEMESTER } from '../types/api-contract'
+import type { KasData, KasSummary, KasRow, Pengeluaran } from '../types/api-contract'
+import { KAS_PER_MINGGU, JUMLAH_MINGGU_KAS } from '../types/api-contract'
 
-const db: Record<string, KasRow[]> = {}
+const db: KasRow[] = []
 let expensesDb: Pengeluaran[] = []
 let nextExpId = 2
 
-function initSemester(semester: Semester) {
-  if (!db[semester]) {
-    const rows: KasRow[] = []
+function initData() {
+  if (db.length === 0) {
     for (let i = 1; i <= 32; i++) {
-      rows.push({
+      db.push({
         no: i,
-        weeks: Array(MINGGU_PER_SEMESTER).fill(false),
+        weeks: Array(JUMLAH_MINGGU_KAS).fill(false),
         total: 0
       })
     }
-    db[semester] = rows
   }
 }
 
-// Inisialisasi ganjil default
-initSemester('ganjil')
+// Inisialisasi default
+initData()
 
-export function mockKasGetSemester(semester: Semester): KasSemesterData {
+export function mockKasGetData(): KasData {
   return {
-    semester,
-    sheetExists: !!db[semester],
-    rows: db[semester] || []
+    sheetExists: db.length > 0,
+    rows: db || []
   }
 }
 
 export function mockKasSummary(): KasSummary {
-  let pemasukan = 0
-  
-  if (db['ganjil']) {
-    pemasukan += db['ganjil'].reduce((acc, row) => acc + row.total, 0)
-  }
-  if (db['genap']) {
-    pemasukan += db['genap'].reduce((acc, row) => acc + row.total, 0)
-  }
+  const pemasukan = db.reduce((acc, row) => acc + row.total, 0)
   
   const totalExp = expensesDb.reduce((acc, exp) => acc + exp.jumlah, 0)
   
@@ -49,9 +39,8 @@ export function mockKasSummary(): KasSummary {
   }
 }
 
-export function mockKasSetWeek(semester: Semester, no: number, week: number, paid: boolean): KasRow {
-  if (!db[semester]) throw new Error('SEMESTER_NOT_FOUND')
-  const r = db[semester].find(x => x.no === no)
+export function mockKasSetWeek(no: number, week: number, paid: boolean): KasRow {
+  const r = db.find(x => x.no === no)
   if (!r) throw new Error('SISWA_NOT_FOUND')
   
   r.weeks[week - 1] = paid
@@ -60,14 +49,13 @@ export function mockKasSetWeek(semester: Semester, no: number, week: number, pai
   return { ...r }
 }
 
-export function mockKasPay(semester: Semester, no: number, count: number) {
-  if (!db[semester]) throw new Error('SEMESTER_NOT_FOUND')
-  const r = db[semester].find(x => x.no === no)
+export function mockKasPay(no: number, count: number) {
+  const r = db.find(x => x.no === no)
   if (!r) throw new Error('SISWA_NOT_FOUND')
   
   const checked: number[] = []
   let c = 0
-  for (let w = 0; w < MINGGU_PER_SEMESTER && c < count; w++) {
+  for (let w = 0; w < JUMLAH_MINGGU_KAS && c < count; w++) {
     if (!r.weeks[w]) {
       r.weeks[w] = true
       checked.push(w + 1)
@@ -85,12 +73,6 @@ export function mockKasPay(semester: Semester, no: number, count: number) {
     weeksChecked: checked,
     row: { ...r }
   }
-}
-
-export function mockKasCreateSemester(semester: Semester) {
-  if (db[semester]) throw new Error('SEMESTER_EXISTS')
-  initSemester(semester)
-  return { sheetName: semester === 'genap' ? 'Semester Genap 2026-2027' : 'Tahun 2026' }
 }
 
 export function mockKasExpensesList() {

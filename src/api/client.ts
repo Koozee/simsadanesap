@@ -1,7 +1,7 @@
 import type { ActionName, ParamsOf, ResultOf, ApiResult, ApiError, MethodOf, AbsenEntry } from '../types/api-contract'
 import { mockStudents } from './mockData'
 import { mockGetDay, mockMonthOverview, mockSaveDay, mockClearDay, mockSetLibur, mockSummary } from './mockAbsensi'
-import { mockKasGetSemester, mockKasSummary, mockKasSetWeek, mockKasPay, mockKasCreateSemester, mockKasExpensesList, mockKasExpensesAdd, mockKasExpensesUpdate, mockKasExpensesDelete } from './mockKas'
+import { mockKasGetData, mockKasSummary, mockKasSetWeek, mockKasPay, mockKasExpensesList, mockKasExpensesAdd, mockKasExpensesUpdate, mockKasExpensesDelete } from './mockKas'
 import type { Pengeluaran } from '../types/api-contract'
 
 
@@ -33,22 +33,17 @@ async function handleMock<A extends ActionName>(action: A, params: ParamsOf<A>):
     const p = params as { date: string; libur: boolean }
     return mockSetLibur(p.date, p.libur) as ResultOf<A>
   }
-  if (action === 'kas.getSemester') {
-    const p = params as { semester: 'ganjil' | 'genap' }
-    return mockKasGetSemester(p.semester) as ResultOf<A>
+  if (action === 'kas.getData') {
+    return mockKasGetData() as ResultOf<A>
   }
   if (action === 'kas.summary') return mockKasSummary() as ResultOf<A>
   if (action === 'kas.setWeek') {
-    const p = params as { semester: 'ganjil' | 'genap'; no: number; week: number; paid: boolean }
-    return mockKasSetWeek(p.semester, p.no, p.week, p.paid) as ResultOf<A>
+    const p = params as { no: number; week: number; paid: boolean }
+    return mockKasSetWeek(p.no, p.week, p.paid) as ResultOf<A>
   }
   if (action === 'kas.pay') {
-    const p = params as { semester: 'ganjil' | 'genap'; no: number; count?: number }
-    return mockKasPay(p.semester, p.no, p.count ?? 1) as ResultOf<A>
-  }
-  if (action === 'kas.createSemester') {
-    const p = params as { semester: 'ganjil' | 'genap' }
-    return mockKasCreateSemester(p.semester) as ResultOf<A>
+    const p = params as { no: number; count?: number }
+    return mockKasPay(p.no, p.count ?? 1) as ResultOf<A>
   }
   if (action === 'kas.expenses.list') return mockKasExpensesList() as ResultOf<A>
   if (action === 'kas.expenses.add') {
