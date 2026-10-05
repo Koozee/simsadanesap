@@ -12,8 +12,6 @@
  * hanya warna dari design.md yang bisa dipakai.
  */
 @theme {
-  --color-*: initial;
-
   /* inti */
   --color-biru-600: #00359d;
   --color-biru-700: #002a7d;
@@ -34,15 +32,22 @@
   --color-hadir-bg: #ddf1e2;
   --color-hadir-fg: #17612d;
   --color-hadir-solid: #1f7a3a;
-  --color-sakit-bg: #fce9c2;
-  --color-sakit-fg: #7a4a00;
-  --color-sakit-solid: #a35f00;
-  --color-izin-bg: #d8ebfa;
-  --color-izin-fg: #0b4f86;
-  --color-izin-solid: #1c6fb5;
+  
+  /* Sakit: Biru */
+  --color-sakit-bg: #d8ebfa;
+  --color-sakit-fg: #0b4f86;
+  --color-sakit-solid: #1c6fb5;
+  
+  /* Izin: Kuning */
+  --color-izin-bg: #fce9c2;
+  --color-izin-fg: #7a4a00;
+  --color-izin-solid: #a35f00;
+  
+  /* Alpha: Merah */
   --color-alpha-bg: #f9d9d5;
   --color-alpha-fg: #8e1c14;
   --color-alpha-solid: #c62e24;
+  
   --color-libur-solid: #c62e24;
 
   /* bentuk */

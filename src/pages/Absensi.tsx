@@ -176,13 +176,13 @@ export default function AbsensiPage() {
       )}
 
       <div className={`flex gap-2 transition-opacity ${isLiburMode ? 'opacity-50 pointer-events-none' : ''}`}>
-        <button onClick={() => setActiveTab('S')} className={`flex-1 py-2.5 rounded-[10px] font-medium transition-colors ${activeTab === 'S' ? 'bg-blue-600 text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-600'}`}>
+        <button onClick={() => setActiveTab('S')} className={`flex-1 py-2.5 rounded-[10px] font-medium transition-colors ${activeTab === 'S' ? 'bg-sakit-solid text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-600'}`}>
           Sakit {countS > 0 && <span className="ml-1 bg-white/20 px-1.5 py-0.5 rounded-md text-xs">{countS}</span>}
         </button>
-        <button onClick={() => setActiveTab('I')} className={`flex-1 py-2.5 rounded-[10px] font-medium transition-colors ${activeTab === 'I' ? 'bg-amber-500 text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-600'}`}>
+        <button onClick={() => setActiveTab('I')} className={`flex-1 py-2.5 rounded-[10px] font-medium transition-colors ${activeTab === 'I' ? 'bg-izin-solid text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-600'}`}>
           Izin {countI > 0 && <span className="ml-1 bg-white/20 px-1.5 py-0.5 rounded-md text-xs">{countI}</span>}
         </button>
-        <button onClick={() => setActiveTab('A')} className={`flex-1 py-2.5 rounded-[10px] font-medium transition-colors ${activeTab === 'A' ? 'bg-red-600 text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-600'}`}>
+        <button onClick={() => setActiveTab('A')} className={`flex-1 py-2.5 rounded-[10px] font-medium transition-colors ${activeTab === 'A' ? 'bg-alpha-solid text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-600'}`}>
           Alpha {countA > 0 && <span className="ml-1 bg-white/20 px-1.5 py-0.5 rounded-md text-xs">{countA}</span>}
         </button>
       </div>
@@ -209,9 +209,9 @@ export default function AbsensiPage() {
               const status = entries[s.no]
               
               let badgeClass = ''
-              if (status === 'S') badgeClass = 'bg-blue-100 text-blue-700'
-              else if (status === 'I') badgeClass = 'bg-amber-100 text-amber-700'
-              else if (status === 'A') badgeClass = 'bg-red-100 text-red-700'
+              if (status === 'S') badgeClass = 'bg-sakit-bg text-sakit-fg'
+              else if (status === 'I') badgeClass = 'bg-izin-bg text-izin-fg'
+              else if (status === 'A') badgeClass = 'bg-alpha-bg text-alpha-fg'
               
               return (
                 <button 
@@ -236,12 +236,12 @@ export default function AbsensiPage() {
       )}
 
       {isDirty && (
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-slate-200 shadow-[0_-4px_16px_rgba(0,0,0,0.1)] z-[60] animate-in slide-in-from-bottom pb-[calc(1rem+env(safe-area-inset-bottom))]">
+        <div className="fixed bottom-[56px] left-0 right-0 p-4 bg-white border-t border-slate-200 shadow-[0_-4px_16px_rgba(0,0,0,0.1)] z-[60] animate-in slide-in-from-bottom">
            <div className="flex justify-between items-center mb-3">
               <span className="font-medium text-slate-600">Ringkasan</span>
-              <span className="font-judul font-semibold text-blue-600">Hadir {countH} dari {students.length}</span>
+              <span className="font-judul font-semibold text-biru-600">Hadir {countH} dari {students.length}</span>
            </div>
-           <button onClick={handleSave} className="w-full bg-blue-600 text-white py-3 rounded-[10px] font-semibold active:bg-blue-700 transition-colors">
+           <button onClick={handleSave} className="w-full bg-biru-600 text-white py-3 rounded-[10px] font-semibold active:bg-biru-700 transition-colors">
              Simpan absensi
            </button>
         </div>
