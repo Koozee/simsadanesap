@@ -45,7 +45,7 @@ export type Slot = 1 | 2 | 3 | 4
 /** Minggu kas 1–22 */
 export type Minggu = number
 
-/** H ditulis sebagai 'v' di spreadsheet. */
+/** H ditulis sebagai '.' di spreadsheet. */
 export type StatusAbsen = 'H' | 'S' | 'I' | 'A'
 
 export type Siswa = {

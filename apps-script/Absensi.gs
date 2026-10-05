@@ -142,7 +142,7 @@ function getAbsenDay(dateStr) {
   for (let i = 0; i < 32; i++) {
     let val = String(values[i][0]).trim();
     if (val) {
-      if (val === 'v' || val === 'V' || val === '✓' || val === '√') {
+      if (val === 'v' || val === 'V' || val === '✓' || val === '√' || val === '.') {
         val = 'H';
       } else {
         val = val.toUpperCase();
@@ -273,11 +273,14 @@ function saveAbsenDay(params) {
     else if (status === 'I') counts['I']++;
     else if (status === 'A') counts['A']++;
     
-    const writeVal = status === 'H' ? 'v' : status;
+    const writeVal = status === 'H' ? '.' : status;
     values.push([writeVal]);
   }
   
-  sheet.getRange(7, colIndex, 32, 1).setValues(values);
+  const range = sheet.getRange(7, colIndex, 32, 1);
+  range.setValues(values);
+  range.setFontWeight('bold');
+  range.setHorizontalAlignment('center');
   
   return { date: dateStr, counts: counts };
 }

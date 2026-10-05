@@ -1,8 +1,8 @@
 export function Header() {
   return (
     <header className="bg-primary-600 text-surface border-gold-400 border-b-2">
-      <div className="flex h-14 items-center px-4">
-        <div className="mr-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white p-0.5 shadow-sm">
+      <div className="flex h-20 items-center px-4">
+        <div className="mr-3 flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-white p-0.5 shadow-sm">
           <img
             src="/img/SDNegeri1Pandanmulyo.webp"
             alt="Logo SDN 1 Pandanmulyo"
