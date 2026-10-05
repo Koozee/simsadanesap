@@ -37,6 +37,18 @@ function doGet(e) {
     });
   }
   
+  if (action === 'kas.getSemester') {
+    return withRead(action, function() {
+      return getKasSemester(e.parameter.semester);
+    });
+  }
+
+  if (action === 'kas.summary') {
+    return withRead(action, function() {
+      return getKasSummary();
+    });
+  }
+  
   return makeJsonResponse(apiFail('UNKNOWN_ACTION', 'Action GET tidak dikenali: ' + action));
 }
 
@@ -65,6 +77,14 @@ function doPost(e) {
 
   if (action === 'absensi.setLibur') {
     return withLock(action, function() { return setLiburDay(params); });
+  }
+
+  if (action === 'kas.setWeek') {
+    return withLock(action, function() { return setKasWeek(params); });
+  }
+
+  if (action === 'kas.pay') {
+    return withLock(action, function() { return payKas(params); });
   }
 
   return makeJsonResponse(apiFail('UNKNOWN_ACTION', 'Action POST tidak dikenali: ' + action));

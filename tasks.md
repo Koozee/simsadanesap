@@ -78,10 +78,10 @@ Setiap tugas selesai bila kriteria "Selesai bila" terpenuhi dan `typecheck`, `li
 
 ## Fase 3 — Kas
 
-- [ ] **T3.1 `kas.getSemester`, `kas.summary`.** Baca checkbox 22 minggu per siswa, total, dan ringkasan (pemasukan, pengeluaran, saldo kumulatif lintas semester).
+- [x] **T3.1 `kas.getSemester`, `kas.summary`.** Baca checkbox 22 minggu per siswa, total, dan ringkasan (pemasukan, pengeluaran, saldo kumulatif lintas semester).
   *Selesai bila:* total sama dengan kolom `Y` dan sel ringkasan di sheet.
 
-- [ ] **T3.2 `kas.pay`, `kas.setWeek`.** `pay` mencentang `count` minggu terlama yang belum lunas; galat `NOTHING_TO_PAY` bila semua lunas.
+- [x] **T3.2 `kas.pay`, `kas.setWeek`.** `pay` mencentang `count` minggu terlama yang belum lunas; galat `NOTHING_TO_PAY` bila semua lunas.
   *Selesai bila:* siswa kosong minggu 5–22 → `pay` mencentang minggu 5. Ada tes untuk fungsi pemilih minggu.
 
 - [ ] **T3.3 `kas.expenses.*` dan `kas.createSemester`.** Tambah, ubah, hapus, dan daftar pengeluaran (tanggal sebagai nilai tetap; sisipkan baris dan perbarui rumus total bila 19 baris penuh). Buat sheet Semester Genap dari salinan ganjil dengan centang direset.
