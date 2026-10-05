@@ -37,6 +37,18 @@ function doGet(e) {
     });
   }
   
+  if (action === 'nilai.subjects') {
+    return withRead(action, function() {
+      return getNilaiSubjects();
+    });
+  }
+
+  if (action === 'nilai.getSheet') {
+    return withRead(action, function() {
+      return getNilaiSheetData(e.parameter.mapel);
+    });
+  }
+  
   if (action === 'kas.getData') {
     return withRead(action, function() {
       return getKasData(parseInt(e.parameter.year, 10));
@@ -107,6 +119,18 @@ function doPost(e) {
 
   if (action === 'kas.expenses.delete') {
     return withLock(action, function() { return deleteKasExpense(params); });
+  }
+
+  if (action === 'nilai.addDaily') {
+    return withLock(action, function() { return addNilaiDaily(params); });
+  }
+
+  if (action === 'nilai.setExam') {
+    return withLock(action, function() { return setNilaiExam(params); });
+  }
+
+  if (action === 'nilai.setCell') {
+    return withLock(action, function() { return setNilaiCell(params); });
   }
 
   return makeJsonResponse(apiFail('UNKNOWN_ACTION', 'Action POST tidak dikenali: ' + action));

@@ -199,16 +199,16 @@ export default function KasPage() {
               <div className="text-2xl font-judul font-semibold text-biru-600 mb-3">{formatRp(summary.saldo)}</div>
               <div className="flex gap-4 justify-center text-sm">
                 <div className="flex gap-1 text-hadir-solid"><span className="text-slate-400">Masuk</span> {formatRp(summary.pemasukan)}</div>
-                <div className="flex gap-1 text-merah-600"><span className="text-slate-400">Keluar</span> {formatRp(summary.pengeluaran)}</div>
+                <div className="flex gap-1 text-red-600"><span className="text-slate-400">Keluar</span> {formatRp(summary.pengeluaran)}</div>
               </div>
             </div>
           )}
 
           {!kasData.sheetExists && (
-            <div className="bg-kuning-50 border border-kuning-200 p-6 rounded-[10px] text-center text-kuning-800 flex flex-col items-center">
+            <div className="bg-yellow-50 border border-yellow-200 p-6 rounded-[10px] text-center text-yellow-800 flex flex-col items-center">
               <h3 className="font-semibold mb-2">Tahun {year} Belum Ada</h3>
               <p className="text-sm mb-4">Buat lembar kas untuk Tahun {year} dari salinan Tahun {year - 1}? Semua centang akan dikosongkan.</p>
-              <button onClick={() => setShowConfirmCreate(true)} className="bg-kuning-600 text-white font-medium py-2 px-4 rounded-lg shadow-sm active:bg-kuning-700">
+              <button onClick={() => setShowConfirmCreate(true)} className="bg-yellow-600 text-white font-medium py-2 px-4 rounded-lg shadow-sm active:bg-yellow-700">
                 Buat Tahun {year}
               </button>
             </div>
