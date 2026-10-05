@@ -4,7 +4,8 @@ import { toISODate, addDays, formatDateID, isSunday } from '../utils/date'
 import { CalendarBottomSheet } from '../components/CalendarBottomSheet'
 import { apiCall } from '../api/client'
 import { useAbsenState } from '../hooks/useAbsenState'
-import { useToast } from '../components/Toast'
+import { toast } from 'sonner'
+import { ConfirmModal } from '../components/ConfirmModal'
 import type { Siswa, AbsenEntry, AbsenDay } from '../types/api-contract'
 
 export default function AbsensiPage() {
@@ -16,9 +17,9 @@ export default function AbsensiPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [isDirty, setIsDirty] = useState(false)
   const [dayData, setDayData] = useState<AbsenDay | null>(null)
+  const [showConfirm, setShowConfirm] = useState(false)
   
   const { entries, toggleStatus, getEntriesArray, setEntries } = useAbsenState()
-  const { showToast } = useToast()
 
   useEffect(() => {
     apiCall('students.list', {}, 'GET')
@@ -73,10 +74,10 @@ export default function AbsensiPage() {
       setDayData(prev => prev ? { ...prev, recorded: true } : prev)
       
       const d = parseISODateLocal(date)
-      showToast(`Absensi ${d.getDate()} ${MONTH_NAMES[d.getMonth()]} tersimpan`)
+      toast.success(`Absensi ${d.getDate()} ${MONTH_NAMES[d.getMonth()]} tersimpan`)
     } catch (err) {
       console.error(err)
-      showToast('Absensi belum tersimpan. Periksa koneksi, lalu coba lagi.')
+      toast.error('Absensi belum tersimpan. Periksa koneksi, lalu coba lagi.')
     }
   }
 
@@ -89,27 +90,30 @@ export default function AbsensiPage() {
       const d = parseISODateLocal(date)
       const dateStr = `${d.getDate()} ${MONTH_NAMES[d.getMonth()]}`
       if (libur) {
-        showToast(`${dateStr} ditandai libur`)
+        toast.success(`${dateStr} ditandai libur`)
       } else {
-        showToast(`Libur dibatalkan untuk ${dateStr}`)
+        toast.success(`Libur dibatalkan untuk ${dateStr}`)
       }
     } catch (err) {
       console.error(err)
+      toast.error('Gagal menyimpan pengaturan libur. Periksa koneksi.')
     }
   }
 
-  const handleHapus = async () => {
-    const d = parseISODateLocal(date)
-    const confirm = window.confirm(`Hapus absensi ${d.getDate()} ${MONTH_NAMES[d.getMonth()]}? Data di spreadsheet ikut terhapus.`)
-    if (!confirm) return
-    
+  const handleHapusClick = () => {
+    setShowConfirm(true)
+  }
+
+  const handleHapusConfirm = async () => {
+    setShowConfirm(false)
     try {
       await apiCall('absensi.clearDay', { date }, 'POST')
       setDayData(prev => prev ? { ...prev, recorded: false, libur: false, entries: [] } : prev)
       setEntries({})
-      showToast(`Data absensi dihapus`)
+      toast.success(`Data absensi dihapus`)
     } catch (err) {
       console.error(err)
+      toast.error('Gagal menghapus absensi. Periksa koneksi.')
     }
   }
 
@@ -166,7 +170,7 @@ export default function AbsensiPage() {
                 Tandai libur
               </button>
               {dayData.recorded && !isDirty && (
-                <button onClick={handleHapus} className="text-merah-600 text-sm font-medium active:text-merah-700 p-2 -mr-2 rounded-lg">
+                <button onClick={handleHapusClick} className="text-merah-600 text-sm font-medium active:text-merah-700 p-2 -mr-2 rounded-lg">
                   Hapus absensi
                 </button>
               )}
@@ -252,6 +256,14 @@ export default function AbsensiPage() {
         onClose={() => setShowCalendar(false)} 
         selectedDate={date} 
         onSelect={(d) => { setDate(d); setShowCalendar(false) }} 
+      />
+
+      <ConfirmModal
+        isOpen={showConfirm}
+        title="Hapus Absensi"
+        message={`Hapus absensi ${parseISODateLocal(date).getDate()} ${MONTH_NAMES[parseISODateLocal(date).getMonth()]}? Data di spreadsheet ikut terhapus.`}
+        onConfirm={handleHapusConfirm}
+        onCancel={() => setShowConfirm(false)}
       />
     </div>
   )

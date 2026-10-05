@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router'
+import { Toaster } from 'sonner'
 import { Layout } from './components/Layout'
-import { ToastProvider } from './components/Toast'
 import AbsensiPage from './pages/Absensi'
 
 function BerandaPage() {
@@ -32,7 +32,7 @@ function KasPage() {
 
 export default function App() {
   return (
-    <ToastProvider>
+    <>
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<BerandaPage />} />
@@ -41,6 +41,12 @@ export default function App() {
           <Route path="/kas" element={<KasPage />} />
         </Route>
       </Routes>
-    </ToastProvider>
+      <Toaster 
+        position="bottom-center" 
+        toastOptions={{ 
+          className: 'font-sans shadow-[0_4px_16px_rgba(12,27,75,0.14)] rounded-[10px]' 
+        }} 
+      />
+    </>
   )
 }
