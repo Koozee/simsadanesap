@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router'
 import { apiCall } from '../api/client'
-import { formatRp, getTodayDate, getTodayString } from '../utils/date'
+import { toISODate, formatDateID } from '../utils/date'
 import { Users, Wallet, Receipt, FileText, ChevronRight, Loader2 } from 'lucide-react'
 import CircularProgress from '../components/CircularProgress'
 import type { AbsenDay, KasSummary } from '../types/api-contract'
@@ -11,8 +11,10 @@ export default function BerandaPage() {
   const [kas, setKas] = useState<KasSummary | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  const today = getTodayDate()
+  const today = toISODate(new Date())
   const thisYear = new Date().getFullYear()
+  const todayString = formatDateID(today)
+  const formatRp = (n: number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n)
 
   useEffect(() => {
     Promise.all([
@@ -41,7 +43,7 @@ export default function BerandaPage() {
       {/* Header */}
       <div>
         <h1 className="font-judul font-semibold text-2xl text-slate-800">SIM SADANEPA</h1>
-        <p className="text-slate-500 font-medium mt-1">{getTodayString()}</p>
+        <p className="text-slate-500 font-medium mt-1">{todayString}</p>
       </div>
 
       {isLoading ? (
