@@ -27,7 +27,16 @@ function getAgendaMonth(payload) {
   
   const result = [];
   for (let i = 1; i < data.length; i++) {
-    const tanggalStr = String(data[i][0] || '').trim();
+    const cellVal = data[i][0];
+    if (!cellVal) continue;
+    
+    let tanggalStr = "";
+    if (cellVal instanceof Date) {
+      tanggalStr = Utilities.formatDate(cellVal, "Asia/Jakarta", "yyyy-MM-dd");
+    } else {
+      tanggalStr = String(cellVal).trim();
+    }
+    
     if (tanggalStr.startsWith(prefix)) {
       result.push({
         tanggal: tanggalStr,
