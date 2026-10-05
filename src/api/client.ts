@@ -88,6 +88,16 @@ async function handleMock<A extends ActionName>(action: A, params: ParamsOf<A>):
     const p = params as { year: number; month: number }
     return mockAgendaGetMonth(p.year, p.month) as ResultOf<A>
   }
+  if (action === 'beranda.overview') {
+    const p = params as { date: string; year: number; month: number };
+    const monthStr = p.year + '-' + String(p.month).padStart(2, '0');
+    return {
+      absenDay: mockGetDay(p.date),
+      kasSummary: mockKasSummary(p.year),
+      absenMonthOverview: mockMonthOverview(monthStr),
+      agendaMonth: mockAgendaGetMonth(p.year, p.month)
+    } as ResultOf<A>;
+  }
   
   throw new Error(`Mock for action ${action} not implemented`)
 }

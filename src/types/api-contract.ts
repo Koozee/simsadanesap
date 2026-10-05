@@ -177,6 +177,15 @@ export type AgendaItem = {
   keterangan: string;
 };
 
+// ───────────────────────── Beranda ─────────────────────────
+
+export type BerandaOverview = {
+  absenDay: AbsenDay;
+  kasSummary: KasSummary;
+  absenMonthOverview: AbsenMonthOverview;
+  agendaMonth: AgendaItem[];
+};
+
 // ───────────────────────── Validasi ─────────────────────────
 
 export type ValidateIssue = {
@@ -249,6 +258,9 @@ export type ApiActions = {
 
   // Agenda
   'agenda.getMonth': Action<'GET', { year: number; month: number }, AgendaItem[]>;
+
+  // Beranda
+  'beranda.overview': Action<'GET', { date: ISODate; year: number; month: number }, BerandaOverview>;
 };
 
 export type ActionName = keyof ApiActions;

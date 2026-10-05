@@ -4,13 +4,10 @@ import { apiCall } from '../api/client'
 import { toISODate, formatDateID, getCalendarGrid, formatMonthID } from '../utils/date'
 import { Users, Wallet, Receipt, FileText, ChevronRight, Loader2 } from 'lucide-react'
 import {CircularProgress} from '../components/CircularProgress'
-import type { AbsenDay, KasSummary, AbsenMonth, AgendaItem } from '../types/api-contract'
+import type { BerandaOverview } from '../types/api-contract'
 
 export default function BerandaPage() {
-  const [absen, setAbsen] = useState<AbsenDay | null>(null)
-  const [kas, setKas] = useState<KasSummary | null>(null)
-  const [absenMonth, setAbsenMonth] = useState<AbsenMonth | null>(null)
-  const [agenda, setAgenda] = useState<AgendaItem[]>([])
+  const [overview, setOverview] = useState<BerandaOverview | null>(null)
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -21,20 +18,20 @@ export default function BerandaPage() {
   const formatRp = (n: number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n)
 
   useEffect(() => {
-    Promise.all([
-      apiCall('absensi.getDay', { date: today }, 'GET').catch(() => null),
-      apiCall('kas.summary', { year: thisYear }, 'GET').catch(() => null),
-      apiCall('absensi.getMonth', { year: thisYear, month: thisMonth }, 'GET').catch(() => null),
-      apiCall('agenda.getMonth', { year: thisYear, month: thisMonth }, 'GET').catch(() => [])
-    ]).then(([absenData, kasData, monthData, agendaData]) => {
-      setAbsen(absenData as AbsenDay | null)
-      setKas(kasData as KasSummary | null)
-      setAbsenMonth(monthData as AbsenMonth | null)
-      setAgenda(agendaData as AgendaItem[])
-      if (!selectedDate) setSelectedDate(today)
-    }).finally(() => setIsLoading(false))
+    apiCall('beranda.overview', { date: today, year: thisYear, month: thisMonth }, 'GET')
+      .then(data => {
+        setOverview(data)
+        if (!selectedDate) setSelectedDate(today)
+      })
+      .catch(() => {})
+      .finally(() => setIsLoading(false))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [today, thisYear, thisMonth])
+
+  const absen = overview?.absenDay
+  const kas = overview?.kasSummary
+  const liburDates = overview?.absenMonthOverview?.liburDates || []
+  const agenda = overview?.agendaMonth || []
 
   // Hitung status absen
   let hadir = 0, sakit = 0, izin = 0, alpha = 0
@@ -146,8 +143,7 @@ export default function BerandaPage() {
                 const isToday = iso === today
                 const isSelected = iso === selectedDate
                 
-                const dataHari = absenMonth?.[iso]
-                const isLibur = dataHari?.libur || d.getDay() === 0
+                const isLibur = liburDates.includes(iso) || d.getDay() === 0
                 const agendaHari = agenda.filter(a => a.tanggal === iso)
                 const isUjian = isCurrentMonth && agendaHari.length > 0
                 
@@ -163,7 +159,7 @@ export default function BerandaPage() {
                     
                     {/* Penanda bawah */}
                     <div className="flex gap-0.5 mt-0.5 h-1">
-                      {isLibur && dataHari?.libur && <div className={`w-1 h-1 rounded-full ${isSelected ? 'bg-white' : 'bg-red-500'}`}></div>}
+                      {isLibur && liburDates.includes(iso) && <div className={`w-1 h-1 rounded-full ${isSelected ? 'bg-white' : 'bg-red-500'}`}></div>}
                       {isUjian && <div className={`w-1 h-1 rounded-full ${isSelected ? 'bg-white' : 'bg-emas-400'}`}></div>}
                     </div>
                   </button>
@@ -179,9 +175,9 @@ export default function BerandaPage() {
             {/* Detail Tanggal */}
             {selectedDate && (
               <div className="mt-3">
-                <h3 className="font-semibold text-slate-700 text-sm mb-2">Agenda {formatDateID(selectedDate)}</h3>
+                <h3 className="font-semibold text-slate-700 text-sm mb-2">Agenda {formatDateID(selectedDate!)}</h3>
                 <div className="flex flex-col gap-2">
-                  {absenMonth?.[selectedDate]?.libur && (
+                  {liburDates.includes(selectedDate!) && (
                     <div className="flex items-center gap-2 text-xs sm:text-sm text-red-700 bg-red-50 p-2 rounded-lg border border-red-100">
                       <div className="w-2 h-2 rounded-full bg-red-500 shrink-0"></div>
                       Hari Libur
@@ -198,7 +194,7 @@ export default function BerandaPage() {
                     </div>
                   ))}
                   
-                  {!absenMonth?.[selectedDate]?.libur && agenda.filter(a => a.tanggal === selectedDate).length === 0 && (
+                  {!liburDates.includes(selectedDate!) && agenda.filter(a => a.tanggal === selectedDate).length === 0 && (
                     <div className="text-xs text-slate-400 p-2 text-center bg-slate-50 rounded-lg border border-slate-100 border-dashed">
                       Tidak ada agenda tercatat
                     </div>

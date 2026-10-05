@@ -13,6 +13,22 @@ function doGet(e) {
     });
   }
 
+  if (action === 'beranda.overview') {
+    return withRead(action, function() {
+      const dateStr = e.parameter.date;
+      const year = parseInt(e.parameter.year, 10);
+      const month = parseInt(e.parameter.month, 10);
+      const monthStr = year + '-' + (month < 10 ? '0' + month : month);
+      
+      return {
+        absenDay: getAbsenDay(dateStr),
+        kasSummary: getKasSummary(year),
+        absenMonthOverview: getAbsenMonthOverview(monthStr),
+        agendaMonth: getAgendaMonth({year: year, month: month})
+      };
+    });
+  }
+
   if (action === 'validate') {
     return withRead(action, function() {
       return validateSpreadsheets();
