@@ -25,14 +25,9 @@ export default function App() {
       </Routes>
       <Toaster
         position="top-center"
+        richColors
         toastOptions={{
-          classNames: {
-            toast: 'font-sans shadow-floating rounded-btn border',
-            success: 'bg-green-50 text-green-700 border-green-200',
-            error: 'bg-danger-50 text-danger-700 border-danger-200',
-            warning: 'bg-yellow-50 text-yellow-700 border-yellow-200',
-            info: 'bg-primary-50 text-primary-700 border-primary-200'
-          }
+          className: 'font-sans shadow-floating rounded-btn',
         }}
       />
     </>

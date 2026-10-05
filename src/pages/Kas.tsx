@@ -171,7 +171,12 @@ export default function KasPage() {
   const selectedStudent = students.find((x) => x.no === selectedNo)
 
   return (
-    <div className="relative flex flex-col gap-4 pb-24">
+    <div className="relative flex flex-col gap-6 pb-24">
+      <div>
+        <h1 className="font-heading text-2xl font-semibold text-slate-800">Uang Kas</h1>
+        <p className="mt-1 font-medium text-slate-500">Kelola iuran dan saldo kelas</p>
+      </div>
+
       <div className="flex items-center justify-between rounded-[10px] border border-slate-200 bg-white p-2 shadow-sm">
         <button
           onClick={() => setYear((y) => y - 1)}

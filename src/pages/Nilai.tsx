@@ -108,7 +108,12 @@ export default function NilaiPage() {
   const selectedRow = selectedNo && sheet ? sheet.rows.find((r) => r.no === selectedNo) : null
 
   return (
-    <div className="relative flex flex-col gap-4 pb-24">
+    <div className="relative flex flex-col gap-6 pb-24">
+      <div>
+        <h1 className="font-heading text-2xl font-semibold text-slate-800">Daftar Nilai</h1>
+        <p className="mt-1 font-medium text-slate-500">Input nilai harian dan ujian siswa</p>
+      </div>
+
       <div className="rounded-[10px] border border-slate-200 bg-white p-4 shadow-sm">
         <label className="mb-2 block text-sm font-medium text-slate-500">Mata Pelajaran</label>
         <div className="relative">

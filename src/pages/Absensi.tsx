@@ -147,7 +147,12 @@ export default function AbsensiPage() {
   const isLiburMode = dayData?.libur || dayData?.sunday
 
   return (
-    <div className="flex flex-col gap-4 pb-24">
+    <div className="flex flex-col gap-6 pb-24">
+      <div>
+        <h1 className="font-heading text-2xl font-semibold text-slate-800">Absensi Kelas</h1>
+        <p className="mt-1 font-medium text-slate-500">Kelola kehadiran siswa harian</p>
+      </div>
+
       {/* Tab View */}
       <div className="flex rounded-xl bg-slate-100 p-1">
         <button
