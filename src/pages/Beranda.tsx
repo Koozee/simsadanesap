@@ -4,12 +4,13 @@ import { apiCall } from '../api/client'
 import { toISODate, formatDateID, getCalendarGrid, formatMonthID } from '../utils/date'
 import { Users, Wallet, Receipt, FileText, ChevronRight, Loader2 } from 'lucide-react'
 import {CircularProgress} from '../components/CircularProgress'
-import type { AbsenDay, KasSummary, AbsenMonth } from '../types/api-contract'
+import type { AbsenDay, KasSummary, AbsenMonth, AgendaItem } from '../types/api-contract'
 
 export default function BerandaPage() {
   const [absen, setAbsen] = useState<AbsenDay | null>(null)
   const [kas, setKas] = useState<KasSummary | null>(null)
   const [absenMonth, setAbsenMonth] = useState<AbsenMonth | null>(null)
+  const [agenda, setAgenda] = useState<AgendaItem[]>([])
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -23,11 +24,13 @@ export default function BerandaPage() {
     Promise.all([
       apiCall('absensi.getDay', { date: today }, 'GET').catch(() => null),
       apiCall('kas.summary', { year: thisYear }, 'GET').catch(() => null),
-      apiCall('absensi.getMonth', { year: thisYear, month: thisMonth }, 'GET').catch(() => null)
-    ]).then(([absenData, kasData, monthData]) => {
+      apiCall('absensi.getMonth', { year: thisYear, month: thisMonth }, 'GET').catch(() => null),
+      apiCall('agenda.getMonth', { year: thisYear, month: thisMonth }, 'GET').catch(() => [])
+    ]).then(([absenData, kasData, monthData, agendaData]) => {
       setAbsen(absenData as AbsenDay | null)
       setKas(kasData as KasSummary | null)
       setAbsenMonth(monthData as AbsenMonth | null)
+      setAgenda(agendaData as AgendaItem[])
       if (!selectedDate) setSelectedDate(today)
     }).finally(() => setIsLoading(false))
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -145,7 +148,8 @@ export default function BerandaPage() {
                 
                 const dataHari = absenMonth?.[iso]
                 const isLibur = dataHari?.libur || d.getDay() === 0
-                const isUjian = isCurrentMonth && (d.getDate() === 15 || d.getDate() === 20)
+                const agendaHari = agenda.filter(a => a.tanggal === iso)
+                const isUjian = isCurrentMonth && agendaHari.length > 0
                 
                 return (
                   <button 
@@ -183,20 +187,18 @@ export default function BerandaPage() {
                       Hari Libur
                     </div>
                   )}
-                  {selectedDate === toISODate(new Date(thisYear, thisMonth - 1, 15)) && (
-                    <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-100">
+                  {/* Render agenda dari database */}
+                  {agenda.filter(a => a.tanggal === selectedDate).map((a, i) => (
+                    <div key={i} className="flex items-center gap-2 text-xs sm:text-sm text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-100">
                       <div className="w-2 h-2 rounded-full bg-emas-400 shrink-0"></div>
-                      <div><span className="font-medium text-slate-800">Matematika</span> - Penilaian Harian Bab 2</div>
+                      <div>
+                        {a.mapel ? <><span className="font-medium text-slate-800">{a.mapel}</span> - </> : null}
+                        {a.keterangan}
+                      </div>
                     </div>
-                  )}
-                  {selectedDate === toISODate(new Date(thisYear, thisMonth - 1, 20)) && (
-                    <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-100">
-                      <div className="w-2 h-2 rounded-full bg-emas-400 shrink-0"></div>
-                      <div><span className="font-medium text-slate-800">Bahasa Indonesia</span> - Ujian Tengah Semester</div>
-                    </div>
-                  )}
-
-                  {!absenMonth?.[selectedDate]?.libur && selectedDate !== toISODate(new Date(thisYear, thisMonth - 1, 15)) && selectedDate !== toISODate(new Date(thisYear, thisMonth - 1, 20)) && selectedDate !== today && (
+                  ))}
+                  
+                  {!absenMonth?.[selectedDate]?.libur && agenda.filter(a => a.tanggal === selectedDate).length === 0 && (
                     <div className="text-xs text-slate-400 p-2 text-center bg-slate-50 rounded-lg border border-slate-100 border-dashed">
                       Tidak ada agenda tercatat
                     </div>

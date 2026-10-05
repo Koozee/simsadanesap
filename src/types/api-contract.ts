@@ -169,6 +169,14 @@ export type Pengeluaran = {
   keterangan: string;
 };
 
+// ───────────────────────── Agenda ─────────────────────────
+
+export type AgendaItem = {
+  tanggal: ISODate;
+  mapel: string;
+  keterangan: string;
+};
+
 // ───────────────────────── Validasi ─────────────────────────
 
 export type ValidateIssue = {
@@ -238,6 +246,9 @@ export type ApiActions = {
   'kas.expenses.add': Action<'POST', Omit<Pengeluaran, 'id'>, Pengeluaran>;
   'kas.expenses.update': Action<'POST', Pengeluaran, Pengeluaran>;
   'kas.expenses.delete': Action<'POST', { id: number }, { id: number }>;
+
+  // Agenda
+  'agenda.getMonth': Action<'GET', { year: number; month: number }, AgendaItem[]>;
 };
 
 export type ActionName = keyof ApiActions;

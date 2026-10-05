@@ -3,6 +3,7 @@ import { mockStudents } from './mockData'
 import { mockGetDay, mockMonthOverview, mockSaveDay, mockClearDay, mockSetLibur, mockSummary } from './mockAbsensi'
 import { mockKasGetData, mockKasSummary, mockKasSetWeek, mockKasPay, mockKasCreateYear, mockKasExpensesList, mockKasExpensesAdd, mockKasExpensesUpdate, mockKasExpensesDelete } from './mockKas'
 import { mockNilaiSubjects, mockNilaiGetSheet, mockNilaiAddDaily, mockNilaiSetExam, mockNilaiSetCell } from './mockNilai'
+import { mockAgendaGetMonth } from './mockAgenda'
 import type { Pengeluaran, Mapel, Bab, Slot, NilaiScore } from '../types/api-contract'
 
 
@@ -82,6 +83,10 @@ async function handleMock<A extends ActionName>(action: A, params: ParamsOf<A>):
   if (action === 'nilai.setCell') {
     const p = params as { mapel: Mapel; no: number; field: 'daily' | 'pts' | 'pas'; bab?: Bab; slot?: Slot; value: number | null }
     return mockNilaiSetCell(p.mapel, p.no, p.field, p.bab, p.slot, p.value) as ResultOf<A>
+  }
+  if (action === 'agenda.getMonth') {
+    const p = params as { year: number; month: number }
+    return mockAgendaGetMonth(p.year, p.month) as ResultOf<A>
   }
   
   throw new Error(`Mock for action ${action} not implemented`)
