@@ -1,19 +1,11 @@
 import { Routes, Route } from 'react-router'
 import { Layout } from './components/Layout'
+import AbsensiPage from './pages/Absensi'
 
 function BerandaPage() {
   return (
     <div>
       <h1 className="font-judul font-semibold text-2xl mb-4">Beranda</h1>
-      <p className="text-slate-600">Halaman kosong.</p>
-    </div>
-  )
-}
-
-function AbsensiPage() {
-  return (
-    <div>
-      <h1 className="font-judul font-semibold text-2xl mb-4">Absensi</h1>
       <p className="text-slate-600">Halaman kosong.</p>
     </div>
   )
