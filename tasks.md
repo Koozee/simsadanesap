@@ -90,27 +90,27 @@ Setiap tugas selesai bila kriteria "Selesai bila" terpenuhi dan `typecheck`, `li
 - [x] **T3.4 Handler mock untuk kas.**
   *Selesai bila:* seluruh alur kas bisa dicoba tanpa backend.
 
-- [ ] **T3.5 Halaman Kas.** Tab semester, ringkasan saldo, daftar siswa dengan tombol cepat `+`, bottom sheet 22 chip dengan cincin emas pada chip berikutnya, tombol "Catat bayar minggu n", koreksi manual dengan konfirmasi pembatalan, optimistic update.
+- [x] **T3.5 Halaman Kas.** Tab semester, ringkasan saldo, daftar siswa dengan tombol cepat `+`, bottom sheet 22 chip dengan cincin emas pada chip berikutnya, tombol "Catat bayar minggu n", koreksi manual dengan konfirmasi pembatalan, optimistic update.
   *Selesai bila:* sesuai `design.md` 6.4 dan kriteria penerimaan di `prd.md` 7.5.
 
-- [ ] **T3.6 Halaman Pengeluaran.** Daftar, tambah, ubah, hapus; keadaan kosong sesuai `design.md` 8.
+- [x] **T3.6 Halaman Pengeluaran.** Daftar, tambah, ubah, hapus; keadaan kosong sesuai `design.md` 8.
   *Selesai bila:* menambah pengeluaran mengurangi saldo yang tampil.
 
 ## Fase 4 — Nilai
 
-- [ ] **T4.1 `nilai.getSheet`, `nilai.subjects`.** Baca 7 mapel: 20 slot harian, rata-rata (baca saja), PTS, PAS, nilai akhir (baca saja).
+- [x] **T4.1 `nilai.getSheet`, `nilai.subjects`.** Baca 7 mapel: 20 slot harian, rata-rata (baca saja), PTS, PAS, nilai akhir (baca saja).
   *Selesai bila:* rata-rata yang tampil sama dengan kolom `Y`.
 
-- [ ] **T4.2 `nilai.addDaily`.** Tentukan slot kosong pertama pada bab (kolom yang seluruh 32 selnya kosong), atau pakai `slot` bila diberikan. Galat `BAB_FULL` bila keempat slot terisi. Sel kosong tidak ditulis 0.
+- [x] **T4.2 `nilai.addDaily`.** Tentukan slot kosong pertama pada bab (kolom yang seluruh 32 selnya kosong), atau pakai `slot` bila diberikan. Galat `BAB_FULL` bila keempat slot terisi. Sel kosong tidak ditulis 0.
   *Selesai bila:* Matematika Bab 2 menempati kolom `I` bila kosong, atau `J` bila `I` sudah terisi. Ada tes untuk fungsi pemilih slot.
 
-- [ ] **T4.3 `nilai.setExam`, `nilai.setCell`.** Tulis PTS/PAS (`Z`/`AA`) dan edit satu sel; `null` mengosongkan sel. **Kolom `AB` tidak boleh ditulis**, tambahkan tes pelindung.
+- [x] **T4.3 `nilai.setExam`, `nilai.setCell`.** Tulis PTS/PAS (`Z`/`AA`) dan edit satu sel; `null` mengosongkan sel. **Kolom `AB` tidak boleh ditulis**, tambahkan tes pelindung.
   *Selesai bila:* percobaan menulis ke `AB` ditolak dengan `INVALID_INPUT`.
 
-- [ ] **T4.4 Handler mock untuk nilai.**
+- [x] **T4.4 Handler mock untuk nilai.**
   *Selesai bila:* seluruh alur nilai bisa dicoba tanpa backend.
 
-- [ ] **T4.5 Halaman Nilai.** Chip 7 mapel, daftar rekap (rata-rata, PTS, PAS, Nilai Akhir `—` bila kosong), detail siswa dengan 20 slot yang bisa diedit (debounce, indikator tersimpan), form "Tambah penilaian" per bab, input PTS/PAS.
+- [x] **T4.5 Halaman Nilai.** Chip 7 mapel, daftar rekap (rata-rata, PTS, PAS, Nilai Akhir `—` bila kosong), detail siswa dengan 20 slot yang bisa diedit (debounce, indikator tersimpan), form "Tambah penilaian" per bab, input PTS/PAS.
   *Selesai bila:* sesuai `prd.md` 7.4; mengosongkan nilai mengosongkan sel, bukan mengisi 0.
 
 ## Fase 5 — Penyempurnaan

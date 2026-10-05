@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
-import { useSearchParams } from 'react-router'
+import { useSearchParams, Link } from 'react-router'
 import { apiCall } from '../api/client'
 import { toast } from 'sonner'
 import { Search, Plus, Minus, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
@@ -201,6 +201,9 @@ export default function KasPage() {
                 <div className="flex gap-1 text-hadir-solid"><span className="text-slate-400">Masuk</span> {formatRp(summary.pemasukan)}</div>
                 <div className="flex gap-1 text-red-600"><span className="text-slate-400">Keluar</span> {formatRp(summary.pengeluaran)}</div>
               </div>
+              <Link to="/kas/pengeluaran" className="block mt-3 text-sm text-biru-600 font-medium hover:underline">
+                Kelola Pengeluaran &rarr;
+              </Link>
             </div>
           )}
 

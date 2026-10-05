@@ -118,6 +118,8 @@ export function mockNilaiSetCell(mapel: Mapel, no: number, field: 'daily' | 'pts
     row.pts = value
   } else if (field === 'pas') {
     row.pas = value
+  } else {
+    throw new Error('INVALID_INPUT')
   }
   
   return { ...row }

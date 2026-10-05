@@ -3,6 +3,8 @@ import { Toaster } from 'sonner'
 import { Layout } from './components/Layout'
 import AbsensiPage from './pages/Absensi'
 import KasPage from './pages/Kas'
+import PengeluaranPage from './pages/Pengeluaran'
+import NilaiPage from './pages/Nilai'
 
 function BerandaPage() {
   return (
@@ -13,14 +15,7 @@ function BerandaPage() {
   )
 }
 
-function NilaiPage() {
-  return (
-    <div>
-      <h1 className="font-judul font-semibold text-2xl mb-4">Nilai</h1>
-      <p className="text-slate-600">Halaman kosong.</p>
-    </div>
-  )
-}
+// Removed empty NilaiPage since it's imported now
 
 
 export default function App() {
@@ -32,6 +27,7 @@ export default function App() {
           <Route path="/absensi" element={<AbsensiPage />} />
           <Route path="/nilai" element={<NilaiPage />} />
           <Route path="/kas" element={<KasPage />} />
+          <Route path="/kas/pengeluaran" element={<PengeluaranPage />} />
         </Route>
       </Routes>
       <Toaster 
