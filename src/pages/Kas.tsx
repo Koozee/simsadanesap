@@ -1,12 +1,13 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { apiCall } from '../api/client'
 import { toast } from 'sonner'
-import { Search, Plus } from 'lucide-react'
+import { Search, Plus, Minus, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { Siswa, KasData, KasSummary } from '../types/api-contract'
 import { KAS_PER_MINGGU, JUMLAH_MINGGU_KAS } from '../types/api-contract'
 import { ConfirmModal } from '../components/ConfirmModal'
 
 export default function KasPage() {
+  const [year, setYear] = useState(2026)
   const [students, setStudents] = useState<Siswa[]>([])
   const [search, setSearch] = useState('')
   
@@ -16,6 +17,7 @@ export default function KasPage() {
   
   const [selectedNo, setSelectedNo] = useState<number | null>(null)
   const [showConfirmCancel, setShowConfirmCancel] = useState<{ week: number } | null>(null)
+  const [showConfirmCreate, setShowConfirmCreate] = useState(false)
 
   // Fetch students
   useEffect(() => {
@@ -25,11 +27,11 @@ export default function KasPage() {
   }, [])
 
   // Fetch kas data
-  const loadData = () => {
+  const loadData = useCallback(() => {
     setIsLoading(true)
     Promise.all([
-      apiCall('kas.getData', {}, 'GET'),
-      apiCall('kas.summary', {}, 'GET')
+      apiCall('kas.getData', { year }, 'GET'),
+      apiCall('kas.summary', { year }, 'GET')
     ]).then(([sData, sSummary]) => {
       setKasData(sData)
       setSummary(sSummary)
@@ -37,12 +39,12 @@ export default function KasPage() {
       console.error(err)
       toast.error('Gagal memuat data kas')
     }).finally(() => setIsLoading(false))
-  }
+  }, [year])
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadData()
-  }, [])
+  }, [loadData])
 
   const filteredStudents = useMemo(() => {
     if (!search) return students
@@ -73,13 +75,43 @@ export default function KasPage() {
     })
 
     try {
-      await apiCall('kas.pay', { no, count: 1 }, 'POST')
+      await apiCall('kas.pay', { year, no, count: 1 }, 'POST')
       loadData()
       toast.success(`Bayar minggu ${nextUnpaid + 1} tersimpan`)
     } catch (err) {
       console.error(err)
       toast.error('Gagal menyimpan kas')
       loadData() // revert
+    }
+  }
+
+  const handleQuickMinus = async (no: number) => {
+    const row = kasData?.rows.find(x => x.no === no)
+    if (!row) return
+    const lastPaid = row.weeks.lastIndexOf(true)
+    if (lastPaid === -1) return
+
+    setKasData(prev => {
+      if (!prev) return prev
+      const newRows = [...prev.rows]
+      const idx = newRows.findIndex(x => x.no === no)
+      if (idx !== -1) {
+        const newRow = { ...newRows[idx], weeks: [...newRows[idx].weeks] }
+        newRow.weeks[lastPaid] = false
+        newRow.total -= KAS_PER_MINGGU
+        newRows[idx] = newRow
+      }
+      return { ...prev, rows: newRows }
+    })
+
+    try {
+      await apiCall('kas.setWeek', { year, no, week: lastPaid + 1, paid: false }, 'POST')
+      loadData()
+      toast.success(`Pembayaran minggu ${lastPaid + 1} dibatalkan`)
+    } catch (err) {
+      console.error(err)
+      toast.error('Gagal membatalkan kas')
+      loadData()
     }
   }
 
@@ -101,7 +133,7 @@ export default function KasPage() {
     if (showConfirmCancel) setShowConfirmCancel(null)
 
     try {
-      await apiCall('kas.setWeek', { no, week, paid }, 'POST')
+      await apiCall('kas.setWeek', { year, no, week, paid }, 'POST')
       loadData()
       if (paid) toast.success(`Minggu ${week} dicentang`)
       else toast.success(`Minggu ${week} dibatalkan`)
@@ -112,6 +144,18 @@ export default function KasPage() {
     }
   }
 
+  const handleCreateYear = async () => {
+    setShowConfirmCreate(false)
+    try {
+      await apiCall('kas.createYear', { year }, 'POST')
+      toast.success(`Sheet Tahun ${year} berhasil dibuat`)
+      loadData()
+    } catch (err: unknown) {
+      console.error(err)
+      toast.error((err as Error).message || 'Gagal membuat sheet tahun baru')
+    }
+  }
+
   const formatRp = (num: number) => `Rp ${num.toLocaleString('id-ID')}`
 
   const selectedRow = kasData?.rows.find(x => x.no === selectedNo)
@@ -119,7 +163,19 @@ export default function KasPage() {
 
   return (
     <div className="flex flex-col gap-4 pb-24 relative">
-      {summary && (
+      <div className="flex justify-between items-center bg-white p-2 rounded-[10px] shadow-sm border border-slate-200">
+        <button onClick={() => setYear(y => y - 1)} className="p-2 text-slate-500 hover:text-slate-800 active:bg-slate-100 rounded-lg">
+          <ChevronLeft size={20} />
+        </button>
+        <div className="font-judul font-semibold text-slate-800">
+          Tahun {year}
+        </div>
+        <button onClick={() => setYear(y => y + 1)} className="p-2 text-slate-500 hover:text-slate-800 active:bg-slate-100 rounded-lg">
+          <ChevronRight size={20} />
+        </button>
+      </div>
+
+      {summary && kasData && kasData.sheetExists && (
         <div className="bg-white rounded-[10px] border border-slate-200 p-4 shadow-sm text-center">
           <div className="text-sm font-medium text-slate-500 mb-1">Saldo Kas</div>
           <div className="text-2xl font-judul font-semibold text-biru-600 mb-3">{formatRp(summary.saldo)}</div>
@@ -127,6 +183,16 @@ export default function KasPage() {
             <div className="flex gap-1 text-hadir-solid"><span className="text-slate-400">Masuk</span> {formatRp(summary.pemasukan)}</div>
             <div className="flex gap-1 text-merah-600"><span className="text-slate-400">Keluar</span> {formatRp(summary.pengeluaran)}</div>
           </div>
+        </div>
+      )}
+
+      {kasData && !kasData.sheetExists && (
+        <div className="bg-kuning-50 border border-kuning-200 p-6 rounded-[10px] text-center text-kuning-800 flex flex-col items-center">
+          <h3 className="font-semibold mb-2">Tahun {year} Belum Ada</h3>
+          <p className="text-sm mb-4">Buat lembar kas untuk Tahun {year} dari salinan Tahun {year - 1}? Semua centang akan dikosongkan.</p>
+          <button onClick={() => setShowConfirmCreate(true)} className="bg-kuning-600 text-white font-medium py-2 px-4 rounded-lg shadow-sm active:bg-kuning-700">
+            Buat Tahun {year}
+          </button>
         </div>
       )}
 
@@ -161,13 +227,21 @@ export default function KasPage() {
                       </div>
                     </div>
                     {row && (
-                      <div className="flex items-center gap-3">
-                        <div className="font-medium text-slate-700 font-tabular-nums">{formatRp(row.total)}</div>
+                      <div className="flex items-center gap-2">
+                        <div className="font-medium text-slate-700 font-tabular-nums mr-1">{formatRp(row.total)}</div>
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); handleQuickMinus(s.no) }}
+                          disabled={paidCount === 0}
+                          className="w-8 h-8 rounded-full bg-red-50 text-red-600 flex items-center justify-center active:bg-red-100 disabled:opacity-30 disabled:active:bg-red-50 transition-colors border border-red-100"
+                        >
+                          <Minus size={18} />
+                        </button>
                         <button 
                           onClick={(e) => { e.stopPropagation(); handleQuickPay(s.no) }}
-                          className="w-8 h-8 rounded-full bg-biru-50 text-biru-600 flex items-center justify-center active:bg-biru-100 hover:bg-biru-100 transition-colors border border-biru-100"
+                          disabled={paidCount === JUMLAH_MINGGU_KAS}
+                          className="w-8 h-8 rounded-full bg-biru-50 text-biru-600 flex items-center justify-center active:bg-biru-100 disabled:opacity-30 disabled:active:bg-biru-50 transition-colors border border-biru-100"
                         >
-                          <Plus size={20} />
+                          <Plus size={18} />
                         </button>
                       </div>
                     )}
@@ -247,6 +321,14 @@ export default function KasPage() {
           }
         }}
         onCancel={() => setShowConfirmCancel(null)}
+      />
+
+      <ConfirmModal
+        isOpen={showConfirmCreate}
+        title={`Buat Tahun ${year}?`}
+        message={`Akan menyalin sheet Tahun ${year - 1} dan mengosongkan semua centangnya. Lanjutkan?`}
+        onConfirm={handleCreateYear}
+        onCancel={() => setShowConfirmCreate(false)}
       />
     </div>
   )

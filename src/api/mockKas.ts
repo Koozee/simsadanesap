@@ -1,14 +1,15 @@
 import type { KasData, KasSummary, KasRow, Pengeluaran } from '../types/api-contract'
 import { KAS_PER_MINGGU, JUMLAH_MINGGU_KAS } from '../types/api-contract'
 
-const db: KasRow[] = []
+const db: Record<number, KasRow[]> = {}
 let expensesDb: Pengeluaran[] = []
 let nextExpId = 2
 
-function initData() {
-  if (db.length === 0) {
+function initData(year: number) {
+  if (!db[year]) {
+    db[year] = []
     for (let i = 1; i <= 32; i++) {
-      db.push({
+      db[year].push({
         no: i,
         weeks: Array(JUMLAH_MINGGU_KAS).fill(false),
         total: 0
@@ -18,17 +19,18 @@ function initData() {
 }
 
 // Inisialisasi default
-initData()
+initData(2026)
 
-export function mockKasGetData(): KasData {
+export function mockKasGetData(year: number): KasData {
   return {
-    sheetExists: db.length > 0,
-    rows: db || []
+    sheetExists: !!db[year],
+    rows: db[year] || []
   }
 }
 
-export function mockKasSummary(): KasSummary {
-  const pemasukan = db.reduce((acc, row) => acc + row.total, 0)
+export function mockKasSummary(year: number): KasSummary {
+  const data = db[year] || []
+  const pemasukan = data.reduce((acc, row) => acc + row.total, 0)
   
   const totalExp = expensesDb.reduce((acc, exp) => acc + exp.jumlah, 0)
   
@@ -39,8 +41,9 @@ export function mockKasSummary(): KasSummary {
   }
 }
 
-export function mockKasSetWeek(no: number, week: number, paid: boolean): KasRow {
-  const r = db.find(x => x.no === no)
+export function mockKasSetWeek(year: number, no: number, week: number, paid: boolean): KasRow {
+  if (!db[year]) throw new Error('YEAR_NOT_FOUND')
+  const r = db[year].find(x => x.no === no)
   if (!r) throw new Error('SISWA_NOT_FOUND')
   
   r.weeks[week - 1] = paid
@@ -49,8 +52,9 @@ export function mockKasSetWeek(no: number, week: number, paid: boolean): KasRow 
   return { ...r }
 }
 
-export function mockKasPay(no: number, count: number) {
-  const r = db.find(x => x.no === no)
+export function mockKasPay(year: number, no: number, count: number) {
+  if (!db[year]) throw new Error('YEAR_NOT_FOUND')
+  const r = db[year].find(x => x.no === no)
   if (!r) throw new Error('SISWA_NOT_FOUND')
   
   const checked: number[] = []
@@ -73,6 +77,12 @@ export function mockKasPay(no: number, count: number) {
     weeksChecked: checked,
     row: { ...r }
   }
+}
+
+export function mockKasCreateYear(year: number) {
+  if (db[year]) throw new Error('SHEET_EXISTS')
+  initData(year)
+  return { sheetName: `Tahun ${year}` }
 }
 
 export function mockKasExpensesList() {

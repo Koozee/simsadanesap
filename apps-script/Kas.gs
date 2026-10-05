@@ -1,8 +1,8 @@
 // Kas.gs
 
-function getKasData() {
+function getKasData(year) {
   const ss = getKasSs();
-  const sheetName = CONFIG.KAS_SHEET;
+  const sheetName = 'Tahun ' + year;
   const sheet = ss.getSheetByName(sheetName);
   
   if (!sheet) {
@@ -42,12 +42,12 @@ function getKasData() {
   };
 }
 
-function getKasSummary() {
+function getKasSummary(year) {
   const ss = getKasSs();
   let pemasukan = 0;
   let pengeluaran = 0;
   
-  const sheetName = CONFIG.KAS_SHEET;
+  const sheetName = 'Tahun ' + year;
   const sheet = ss.getSheetByName(sheetName);
   
   if (sheet) {
@@ -63,12 +63,13 @@ function getKasSummary() {
 }
 
 function setKasWeek(params) {
+  const year = params.year;
   const no = params.no;
   const week = params.week; 
   const paid = params.paid;
   
   const ss = getKasSs();
-  const sheetName = CONFIG.KAS_SHEET;
+  const sheetName = 'Tahun ' + year;
   const sheet = ss.getSheetByName(sheetName);
   
   if (!sheet) {
@@ -100,11 +101,12 @@ function setKasWeek(params) {
 }
 
 function payKas(params) {
+  const year = params.year;
   const no = params.no;
   const count = params.count || 1;
   
   const ss = getKasSs();
-  const sheetName = CONFIG.KAS_SHEET;
+  const sheetName = 'Tahun ' + year;
   const sheet = ss.getSheetByName(sheetName);
   
   if (!sheet) {
@@ -270,4 +272,40 @@ function deleteKasExpense(params) {
   // Hapus sel B, C, D
   sheet.getRange(id, 2, 1, 3).clearContent();
   return { id: id };
+}
+
+function createKasYear(params) {
+  const year = params.year;
+  const ss = getKasSs();
+  
+  const newSheetName = 'Tahun ' + year;
+  const prevSheetName = 'Tahun ' + (year - 1);
+  
+  let newSheet = ss.getSheetByName(newSheetName);
+  if (newSheet) throw { code: 'SHEET_EXISTS', message: 'Sheet ' + newSheetName + ' sudah ada' };
+  
+  const prevSheet = ss.getSheetByName(prevSheetName);
+  if (!prevSheet) throw { code: 'SHEET_NOT_FOUND', message: 'Sheet ' + prevSheetName + ' tidak ditemukan untuk disalin' };
+  
+  newSheet = prevSheet.copyTo(ss);
+  newSheet.setName(newSheetName);
+  
+  const numRows = 32;
+  const numWeeks = CONFIG.JUMLAH_MINGGU_KAS;
+  const startRow = CONFIG.OFFSET_BARIS_KAS + 1;
+  
+  const falseValues = [];
+  for (let r = 0; r < numRows; r++) {
+    const row = [];
+    for (let c = 0; c < numWeeks; c++) {
+      row.push(false);
+    }
+    falseValues.push(row);
+  }
+  newSheet.getRange(startRow, 3, numRows, numWeeks).setValues(falseValues);
+  
+  // Kosongkan nama & NISN (opsional) atau biarkan ada. Kita biarkan karena murid biasanya tetap.
+  // Tapi idealnya reset rumus total kalau perlu. Rumus sudah ikut tercopy.
+  
+  return { sheetName: newSheetName };
 }

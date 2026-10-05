@@ -39,13 +39,13 @@ function doGet(e) {
   
   if (action === 'kas.getData') {
     return withRead(action, function() {
-      return getKasData();
+      return getKasData(parseInt(e.parameter.year, 10));
     });
   }
 
   if (action === 'kas.summary') {
     return withRead(action, function() {
-      return getKasSummary();
+      return getKasSummary(parseInt(e.parameter.year, 10));
     });
   }
 
@@ -91,6 +91,10 @@ function doPost(e) {
 
   if (action === 'kas.pay') {
     return withLock(action, function() { return payKas(params); });
+  }
+
+  if (action === 'kas.createYear') {
+    return withLock(action, function() { return createKasYear(params); });
   }
 
   if (action === 'kas.expenses.add') {

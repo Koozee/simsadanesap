@@ -224,15 +224,16 @@ export type ApiActions = {
   >;
 
   // Kas
-  'kas.getData': Action<'GET', Record<string, never>, KasData>;
-  'kas.summary': Action<'GET', Record<string, never>, KasSummary>;
+  'kas.getData': Action<'GET', { year: number }, KasData>;
+  'kas.summary': Action<'GET', { year: number }, KasSummary>;
   /** Mencentang `count` minggu terlama yang belum lunas (default 1). */
   'kas.pay': Action<
     'POST',
-    { no: NoSiswa; count?: number },
+    { year: number; no: NoSiswa; count?: number },
     { weeksChecked: Minggu[]; row: KasRow }
   >;
-  'kas.setWeek': Action<'POST', { no: NoSiswa; week: Minggu; paid: boolean }, KasRow>;
+  'kas.setWeek': Action<'POST', { year: number; no: NoSiswa; week: Minggu; paid: boolean }, KasRow>;
+  'kas.createYear': Action<'POST', { year: number }, { sheetName: string }>;
   'kas.expenses.list': Action<'GET', Record<string, never>, Pengeluaran[]>;
   'kas.expenses.add': Action<'POST', Omit<Pengeluaran, 'id'>, Pengeluaran>;
   'kas.expenses.update': Action<'POST', Pengeluaran, Pengeluaran>;
