@@ -18,6 +18,7 @@ export default function BerandaPage() {
   const formatRp = (n: number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n)
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(true)
     apiCall('beranda.overview', { date: today, year: activeYear, month: activeMonth }, 'GET')
       .then(data => {
