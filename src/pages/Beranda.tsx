@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 import { apiCall } from '../api/client'
 import { toISODate, formatDateID } from '../utils/date'
 import { Users, Wallet, Receipt, FileText, ChevronRight, Loader2 } from 'lucide-react'
-import CircularProgress from '../components/CircularProgress'
+import {CircularProgress} from '../components/CircularProgress'
 import type { AbsenDay, KasSummary } from '../types/api-contract'
 
 export default function BerandaPage() {
@@ -72,7 +72,7 @@ export default function BerandaPage() {
             ) : (
               <div className="flex items-center gap-6">
                 <div className="w-24 h-24 shrink-0">
-                  <CircularProgress value={persen} color="#1f7a3a" trackColor="#ddf1e2" />
+                  <CircularProgress percent={persen} />
                 </div>
                 <div className="flex-1 grid grid-cols-2 gap-y-3">
                   <div className="flex flex-col">
