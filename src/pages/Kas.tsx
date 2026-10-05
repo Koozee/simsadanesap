@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useSearchParams } from 'react-router'
 import { apiCall } from '../api/client'
 import { toast } from 'sonner'
-import { Search, Plus, Minus, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Search, Plus, Minus, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
 import type { Siswa, KasData, KasSummary } from '../types/api-contract'
 import { KAS_PER_MINGGU, JUMLAH_MINGGU_KAS } from '../types/api-contract'
 import { ConfirmModal } from '../components/ConfirmModal'
@@ -173,20 +173,22 @@ export default function KasPage() {
   return (
     <div className="flex flex-col gap-4 pb-24 relative">
       <div className="flex justify-between items-center bg-white p-2 rounded-[10px] shadow-sm border border-slate-200">
-        <button onClick={() => setYear(y => y - 1)} className="p-2 text-slate-500 hover:text-slate-800 active:bg-slate-100 rounded-lg">
+        <button onClick={() => setYear(y => y - 1)} disabled={isLoading} className="p-2 text-slate-500 hover:text-slate-800 active:bg-slate-100 rounded-lg disabled:opacity-50">
           <ChevronLeft size={20} />
         </button>
-        <div className="font-judul font-semibold text-slate-800">
+        <div className="font-judul font-semibold text-slate-800 flex items-center gap-2">
           Tahun {year}
+          {isLoading && <Loader2 className="animate-spin text-slate-400" size={16} />}
         </div>
-        <button onClick={() => setYear(y => y + 1)} className="p-2 text-slate-500 hover:text-slate-800 active:bg-slate-100 rounded-lg">
+        <button onClick={() => setYear(y => y + 1)} disabled={isLoading} className="p-2 text-slate-500 hover:text-slate-800 active:bg-slate-100 rounded-lg disabled:opacity-50">
           <ChevronRight size={20} />
         </button>
       </div>
 
-      {summary && kasData && kasData.sheetExists && (
-        <div className="bg-white rounded-[10px] border border-slate-200 p-4 shadow-sm text-center">
-          <div className="text-sm font-medium text-slate-500 mb-1">Saldo Kas</div>
+      <div className={`flex flex-col gap-4 transition-opacity duration-200 ${isLoading ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
+        {summary && kasData && kasData.sheetExists && (
+          <div className="bg-white rounded-[10px] border border-slate-200 p-4 shadow-sm text-center">
+            <div className="text-sm font-medium text-slate-500 mb-1">Saldo Kas</div>
           <div className="text-2xl font-judul font-semibold text-biru-600 mb-3">{formatRp(summary.saldo)}</div>
           <div className="flex gap-4 justify-center text-sm">
             <div className="flex gap-1 text-hadir-solid"><span className="text-slate-400">Masuk</span> {formatRp(summary.pemasukan)}</div>
@@ -261,6 +263,7 @@ export default function KasPage() {
           </div>
         </>
       )}
+      </div>
 
       {/* Bottom Sheet for Student Details */}
       {selectedNo !== null && selectedRow && selectedStudent && (
