@@ -33,7 +33,7 @@ Setiap tugas selesai bila kriteria "Selesai bila" terpenuhi dan `typecheck`, `li
 - [x] **T0.5 Kontrak dan klien API.** Salin `api-contract.ts` ke `src/types/`. Buat `src/api/client.ts` (GET dengan query, POST dengan `text/plain`, parsing `ApiResult`, galat menjadi `ApiError` bertipe). Buat mode mock: fixture 32 siswa fiktif, handler mock untuk `students.list`, pemilihan lewat `VITE_USE_MOCK`.
   *Selesai bila:* `students.list` mengembalikan 32 siswa pada mode mock, ada tes untuk parsing galat.
 
-- [ ] **T0.6 Kerangka Apps Script.** `Code.gs` (router `doGet`/`doPost`, format `ApiResult`, penanganan galat), `Config.gs` (konstanta dari `spreadsheet-schema.md`), `Utils.gs` (tanggal WIB, nama bulan Indonesia, `withLock`), `Students.gs` (`students.list`).
+- [x] **T0.6 Kerangka Apps Script.** `Code.gs` (router `doGet`/`doPost`, format `ApiResult`, penanganan galat), `Config.gs` (konstanta dari `spreadsheet-schema.md`), `Utils.gs` (tanggal WIB, nama bulan Indonesia, `withLock`), `Students.gs` (`students.list`).
   *Selesai bila:* memanggil URL Web App `?action=students.list` mengembalikan 32 siswa dari salinan `_DEV`.
 
 - [ ] **T0.7 `validate`.** Periksa: ketiga spreadsheet terbuka, sheet wajib ada, header sesuai konstanta, urutan nama siswa sama di ketiga file. Laporkan `issues[]`.
