@@ -4,7 +4,8 @@ import { toISODate, addDays, formatDateID, isSunday } from '../utils/date'
 import { CalendarBottomSheet } from '../components/CalendarBottomSheet'
 import { apiCall } from '../api/client'
 import { useAbsenState } from '../hooks/useAbsenState'
-import type { Siswa, AbsenEntry } from '../types/api-contract'
+import { useToast } from '../components/Toast'
+import type { Siswa, AbsenEntry, AbsenDay } from '../types/api-contract'
 
 export default function AbsensiPage() {
   const [date, setDate] = useState(toISODate(new Date()))
@@ -14,8 +15,10 @@ export default function AbsensiPage() {
   const [activeTab, setActiveTab] = useState<'S' | 'I' | 'A'>('S')
   const [isLoading, setIsLoading] = useState(false)
   const [isDirty, setIsDirty] = useState(false)
+  const [dayData, setDayData] = useState<AbsenDay | null>(null)
   
   const { entries, toggleStatus, getEntriesArray, setEntries } = useAbsenState()
+  const { showToast } = useToast()
 
   useEffect(() => {
     apiCall('students.list', {}, 'GET')
@@ -30,9 +33,12 @@ export default function AbsensiPage() {
     setIsLoading(true)
     apiCall('absensi.getDay', { date }, 'GET')
       .then(data => {
+        setDayData(data)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const map: Record<number, any> = {}
-        data.entries.forEach((e: AbsenEntry) => { map[e.no] = e.status })
+        if (data.entries) {
+          data.entries.forEach((e: AbsenEntry) => { map[e.no] = e.status })
+        }
         setEntries(map)
         setIsDirty(false)
       })
@@ -53,6 +59,7 @@ export default function AbsensiPage() {
   }
 
   const handleToggle = (no: number) => {
+    if (dayData?.libur || dayData?.sunday) return // Cannot edit if libur
     toggleStatus(no, activeTab)
     setIsDirty(true)
   }
@@ -61,6 +68,46 @@ export default function AbsensiPage() {
     try {
       await apiCall('absensi.saveDay', { date, entries: getEntriesArray() }, 'POST')
       setIsDirty(false)
+      
+      // Update dayData (set recorded to true)
+      setDayData(prev => prev ? { ...prev, recorded: true } : prev)
+      
+      const d = parseISODateLocal(date)
+      showToast(`Absensi ${d.getDate()} ${MONTH_NAMES[d.getMonth()]} tersimpan`)
+    } catch (err) {
+      console.error(err)
+      showToast('Absensi belum tersimpan. Periksa koneksi, lalu coba lagi.')
+    }
+  }
+
+  const handleSetLibur = async (libur: boolean) => {
+    try {
+      await apiCall('absensi.setLibur', { date, libur }, 'POST')
+      setDayData(prev => prev ? { ...prev, libur, recorded: libur, entries: [] } : prev)
+      setEntries({}) // clear UI
+      
+      const d = parseISODateLocal(date)
+      const dateStr = `${d.getDate()} ${MONTH_NAMES[d.getMonth()]}`
+      if (libur) {
+        showToast(`${dateStr} ditandai libur`)
+      } else {
+        showToast(`Libur dibatalkan untuk ${dateStr}`)
+      }
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const handleHapus = async () => {
+    const d = parseISODateLocal(date)
+    const confirm = window.confirm(`Hapus absensi ${d.getDate()} ${MONTH_NAMES[d.getMonth()]}? Data di spreadsheet ikut terhapus.`)
+    if (!confirm) return
+    
+    try {
+      await apiCall('absensi.clearDay', { date }, 'POST')
+      setDayData(prev => prev ? { ...prev, recorded: false, libur: false, entries: [] } : prev)
+      setEntries({})
+      showToast(`Data absensi dihapus`)
     } catch (err) {
       console.error(err)
     }
@@ -79,6 +126,8 @@ export default function AbsensiPage() {
     else if (status === 'A') { countA++; countH-- }
   }
 
+  const isLiburMode = dayData?.libur || dayData?.sunday
+
   return (
     <div className="flex flex-col gap-4 pb-24">
       <div className="flex items-center justify-between bg-white border border-slate-200 rounded-[10px] p-2 shadow-sm">
@@ -94,7 +143,39 @@ export default function AbsensiPage() {
         </button>
       </div>
 
-      <div className="flex gap-2">
+      {!isLoading && dayData && (
+        <>
+          {dayData.sunday ? (
+            <div className="bg-merah-50 border border-merah-200 rounded-[10px] p-4 text-merah-700">
+              <span className="font-semibold block mb-1">Hari ini libur</span>
+              <span className="text-sm">Hari Minggu libur dan tidak bisa diabsen.</span>
+            </div>
+          ) : dayData.libur ? (
+            <div className="bg-merah-50 border border-merah-200 rounded-[10px] p-4 flex justify-between items-center text-merah-700">
+              <div className="flex flex-col">
+                <span className="font-semibold">Hari ini libur</span>
+                <span className="text-sm">Tidak ada absensi.</span>
+              </div>
+              <button onClick={() => handleSetLibur(false)} className="px-3 py-1.5 bg-white text-merah-700 border border-merah-200 rounded-lg text-sm font-medium active:bg-merah-50 transition-colors shadow-sm">
+                Batalkan libur
+              </button>
+            </div>
+          ) : (
+            <div className="flex justify-between items-center px-1">
+              <button onClick={() => handleSetLibur(true)} className="text-slate-600 text-sm font-medium active:text-slate-800 p-2 -ml-2 rounded-lg">
+                Tandai libur
+              </button>
+              {dayData.recorded && !isDirty && (
+                <button onClick={handleHapus} className="text-merah-600 text-sm font-medium active:text-merah-700 p-2 -mr-2 rounded-lg">
+                  Hapus absensi
+                </button>
+              )}
+            </div>
+          )}
+        </>
+      )}
+
+      <div className={`flex gap-2 transition-opacity ${isLiburMode ? 'opacity-50 pointer-events-none' : ''}`}>
         <button onClick={() => setActiveTab('S')} className={`flex-1 py-2.5 rounded-[10px] font-medium transition-colors ${activeTab === 'S' ? 'bg-biru-600 text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-600'}`}>
           Sakit {countS > 0 && <span className="ml-1 bg-white/20 px-1.5 py-0.5 rounded-md text-xs">{countS}</span>}
         </button>
@@ -106,7 +187,7 @@ export default function AbsensiPage() {
         </button>
       </div>
 
-      <div className="relative">
+      <div className={`relative transition-opacity ${isLiburMode ? 'opacity-50 pointer-events-none' : ''}`}>
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
         <input 
           type="text" 
@@ -120,7 +201,7 @@ export default function AbsensiPage() {
       {isLoading ? (
         <div className="text-center py-8 text-slate-500">Memuat data...</div>
       ) : (
-        <div className="bg-white rounded-[10px] border border-slate-200 divide-y divide-slate-100 shadow-sm overflow-hidden">
+        <div className={`bg-white rounded-[10px] border border-slate-200 divide-y divide-slate-100 shadow-sm overflow-hidden transition-opacity ${isLiburMode ? 'opacity-50 pointer-events-none' : ''}`}>
           {filteredStudents.length === 0 ? (
             <div className="p-4 text-center text-slate-500">Tidak ada siswa ditemukan</div>
           ) : (
@@ -174,4 +255,14 @@ export default function AbsensiPage() {
       />
     </div>
   )
+}
+
+// Helpers local to AbsensiPage
+const MONTH_NAMES = [
+  'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+  'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+]
+function parseISODateLocal(iso: string) {
+  const [y, m, d] = iso.split('-').map(Number)
+  return new Date(y, m - 1, d)
 }

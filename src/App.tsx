@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router'
 import { Layout } from './components/Layout'
+import { ToastProvider } from './components/Toast'
 import AbsensiPage from './pages/Absensi'
 
 function BerandaPage() {
@@ -31,13 +32,15 @@ function KasPage() {
 
 export default function App() {
   return (
-    <Routes>
-      <Route element={<Layout />}>
-        <Route path="/" element={<BerandaPage />} />
-        <Route path="/absensi" element={<AbsensiPage />} />
-        <Route path="/nilai" element={<NilaiPage />} />
-        <Route path="/kas" element={<KasPage />} />
-      </Route>
-    </Routes>
+    <ToastProvider>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<BerandaPage />} />
+          <Route path="/absensi" element={<AbsensiPage />} />
+          <Route path="/nilai" element={<NilaiPage />} />
+          <Route path="/kas" element={<KasPage />} />
+        </Route>
+      </Routes>
+    </ToastProvider>
   )
 }
