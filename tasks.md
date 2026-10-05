@@ -62,7 +62,7 @@ Setiap tugas selesai bila kriteria "Selesai bila" terpenuhi dan `typecheck`, `li
 - [x] **T1.5 Halaman Absensi: tanggal dan kalender.** Pemilih tanggal (panah kiri/kanan dan bottom sheet kalender), titik penanda tanggal terisi, merah untuk Minggu dan libur, tanggal Minggu tidak bisa dipilih untuk diabsen.
   *Selesai bila:* kalender sesuai `design.md` 6.3; helper tanggal punya tes (batas bulan, tahun kabisat, hari Minggu).
 
-- [ ] **T1.6 Halaman Absensi: input.** Tab Sakit/Izin/Alpha dengan penghitung, daftar siswa dengan lencana huruf, cari nama, ringkasan `Hadir n`, bar Simpan menggantikan tab bawah saat ada perubahan. Siswa pada status lain dipindahkan, bukan digandakan.
+- [x] **T1.6 Halaman Absensi: input.** Tab Sakit/Izin/Alpha dengan penghitung, daftar siswa dengan lencana huruf, cari nama, ringkasan `Hadir n`, bar Simpan menggantikan tab bawah saat ada perubahan. Siswa pada status lain dipindahkan, bukan digandakan.
   *Selesai bila:* alur sesuai `prd.md` 7.2; ada tes untuk logika pemindahan status.
 
 - [ ] **T1.7 Libur dan mode edit.** Tombol "Tandai libur", banner libur dengan "Batalkan libur", pemuatan data lama (mode edit), hapus absensi dengan konfirmasi, toast sesuai `design.md` 8.
