@@ -24,7 +24,7 @@ Setiap tugas selesai bila kriteria "Selesai bila" terpenuhi dan `typecheck`, `li
 - [x] **T0.2 Inisialisasi proyek.** Vite + React + TS strict, Tailwind, React Router, TanStack Query, date-fns, lucide-react, fontsource Lexend dan Source Sans 3. Tambahkan skrip `typecheck`, `lint`, `test` (vitest). `.env.example` berisi `VITE_GAS_URL=` dan `VITE_USE_MOCK=true`.
   *Selesai bila:* `npm run dev` menampilkan halaman kosong, ketiga skrip berjalan.
 
-- [ ] **T0.3 Token desain.** Pasang token `design.md` bagian 10 (warna, radius, bayangan, font) ke `index.css` dan konfigurasi Tailwind. Tambahkan `meta theme-color` `#00359D`.
+- [x] **T0.3 Token desain.** Pasang token `design.md` bagian 10 (warna, radius, bayangan, font) ke `index.css` dan konfigurasi Tailwind. Tambahkan `meta theme-color` `#00359D`.
   *Selesai bila:* kelas utilitas untuk semua warna inti dan status tersedia.
 
 - [ ] **T0.4 Kerangka layar.** Header (logo 36 px, "Kelas 3", "SDN 1 Pandanmulyo", garis emas 2 px), navigasi bawah 4 tab (Beranda, Absensi, Nilai, Kas), rute dasar dengan halaman kosong.
