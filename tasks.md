@@ -65,7 +65,7 @@ Setiap tugas selesai bila kriteria "Selesai bila" terpenuhi dan `typecheck`, `li
 - [x] **T1.6 Halaman Absensi: input.** Tab Sakit/Izin/Alpha dengan penghitung, daftar siswa dengan lencana huruf, cari nama, ringkasan `Hadir n`, bar Simpan menggantikan tab bawah saat ada perubahan. Siswa pada status lain dipindahkan, bukan digandakan.
   *Selesai bila:* alur sesuai `prd.md` 7.2; ada tes untuk logika pemindahan status.
 
-- [ ] **T1.7 Libur dan mode edit.** Tombol "Tandai libur", banner libur dengan "Batalkan libur", pemuatan data lama (mode edit), hapus absensi dengan konfirmasi, toast sesuai `design.md` 8.
+- [x] **T1.7 Libur dan mode edit.** Tombol "Tandai libur", banner libur dengan "Batalkan libur", pemuatan data lama (mode edit), hapus absensi dengan konfirmasi, toast sesuai `design.md` 8.
   *Selesai bila:* semua kriteria penerimaan absensi di `prd.md` 7.2 tercentang.
 
 ## Fase 2 — Rekap absensi
