@@ -1,5 +1,13 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { mockKasPay, mockKasSetWeek, mockKasSummary, mockKasExpensesAdd, mockKasExpensesList, mockKasExpensesUpdate, mockKasExpensesDelete } from './mockKas'
+import {
+  mockKasPay,
+  mockKasSetWeek,
+  mockKasSummary,
+  mockKasExpensesAdd,
+  mockKasExpensesList,
+  mockKasExpensesUpdate,
+  mockKasExpensesDelete,
+} from './mockKas'
 import { KAS_PER_MINGGU } from '../types/api-contract'
 
 describe('kas actions', () => {
@@ -14,11 +22,11 @@ describe('kas actions', () => {
     expect(res.row.weeks[0]).toBe(true)
     expect(res.row.weeks[1]).toBe(false)
     expect(res.row.total).toBe(KAS_PER_MINGGU)
-    
+
     // Set manual minggu 2, 3 lunas
     mockKasSetWeek(2026, 1, 2, true)
     mockKasSetWeek(2026, 1, 3, true)
-    
+
     // Pay lagi -> harusnya centang minggu 4
     const res2 = mockKasPay(2026, 1, 1)
     expect(res2.weeksChecked).toEqual([4])
@@ -31,16 +39,20 @@ describe('kas actions', () => {
   })
 
   it('seharusnya bisa menambah, mengubah, dan menghapus pengeluaran (T3.3)', () => {
-    const exp1 = mockKasExpensesAdd({ tanggal: '2026-08-01', jumlah: 50000, keterangan: 'Beli sapu' })
+    const exp1 = mockKasExpensesAdd({
+      tanggal: '2026-08-01',
+      jumlah: 50000,
+      keterangan: 'Beli sapu',
+    })
     expect(exp1.id).toBeDefined()
-    
+
     let list = mockKasExpensesList()
     expect(list.length).toBe(1)
-    
+
     mockKasExpensesUpdate({ ...exp1, jumlah: 60000 })
     list = mockKasExpensesList()
     expect(list[0].jumlah).toBe(60000)
-    
+
     mockKasExpensesDelete(exp1.id)
     list = mockKasExpensesList()
     expect(list.length).toBe(0)

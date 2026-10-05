@@ -14,7 +14,7 @@ function initMockData(mapel: Mapel) {
         rataRata: null,
         pts: null,
         pas: null,
-        nilaiAkhir: null
+        nilaiAkhir: null,
       })
     }
     mockNilaiDb[mapel] = rows
@@ -22,10 +22,10 @@ function initMockData(mapel: Mapel) {
 }
 
 // Inisialisasi awal
-MAPEL.forEach(m => initMockData(m))
+MAPEL.forEach((m) => initMockData(m))
 
 function updateRataRata(row: NilaiRow) {
-  const filled = row.daily.filter(x => x !== null) as number[]
+  const filled = row.daily.filter((x) => x !== null) as number[]
   if (filled.length === 0) {
     row.rataRata = null
   } else {
@@ -42,17 +42,22 @@ export function mockNilaiGetSheet(mapel: Mapel): NilaiSheet {
   initMockData(mapel)
   return {
     mapel,
-    rows: mockNilaiDb[mapel]
+    rows: mockNilaiDb[mapel],
   }
 }
 
-export function mockNilaiAddDaily(mapel: Mapel, bab: Bab, slotRequested: Slot | undefined, scores: NilaiScore[]) {
+export function mockNilaiAddDaily(
+  mapel: Mapel,
+  bab: Bab,
+  slotRequested: Slot | undefined,
+  scores: NilaiScore[],
+) {
   initMockData(mapel)
   const rows = mockNilaiDb[mapel]
-  
+
   const baseIdx = (bab - 1) * 4
   let targetSlot = -1
-  
+
   if (slotRequested) {
     targetSlot = slotRequested
   } else {
@@ -71,44 +76,51 @@ export function mockNilaiAddDaily(mapel: Mapel, bab: Bab, slotRequested: Slot | 
       }
     }
   }
-  
+
   if (targetSlot === -1) {
     throw new Error('BAB_FULL')
   }
-  
+
   const targetIdx = baseIdx + (targetSlot - 1)
-  
+
   for (const s of scores) {
-    const row = rows.find(r => r.no === s.no)
+    const row = rows.find((r) => r.no === s.no)
     if (row) {
       row.daily[targetIdx] = s.value
       updateRataRata(row)
     }
   }
-  
+
   return { bab, slotUsed: targetSlot }
 }
 
 export function mockNilaiSetExam(mapel: Mapel, type: 'PTS' | 'PAS', scores: NilaiScore[]) {
   initMockData(mapel)
   const rows = mockNilaiDb[mapel]
-  
+
   for (const s of scores) {
-    const row = rows.find(r => r.no === s.no)
+    const row = rows.find((r) => r.no === s.no)
     if (row) {
       if (type === 'PTS') row.pts = s.value
       else row.pas = s.value
     }
   }
-  
+
   return { mapel, type }
 }
 
-export function mockNilaiSetCell(mapel: Mapel, no: number, field: 'daily' | 'pts' | 'pas', bab: Bab | undefined, slot: Slot | undefined, value: number | null): NilaiRow {
+export function mockNilaiSetCell(
+  mapel: Mapel,
+  no: number,
+  field: 'daily' | 'pts' | 'pas',
+  bab: Bab | undefined,
+  slot: Slot | undefined,
+  value: number | null,
+): NilaiRow {
   initMockData(mapel)
-  const row = mockNilaiDb[mapel].find(r => r.no === no)
+  const row = mockNilaiDb[mapel].find((r) => r.no === no)
   if (!row) throw new Error('SISWA_NOT_FOUND')
-  
+
   if (field === 'daily') {
     if (!bab || !slot) throw new Error('INVALID_INPUT')
     const idx = (bab - 1) * 4 + (slot - 1)
@@ -121,6 +133,6 @@ export function mockNilaiSetCell(mapel: Mapel, no: number, field: 'daily' | 'pts
   } else {
     throw new Error('INVALID_INPUT')
   }
-  
+
   return { ...row }
 }

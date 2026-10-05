@@ -20,32 +20,34 @@ export default function AbsensiPage() {
   const [isDirty, setIsDirty] = useState(false)
   const [dayData, setDayData] = useState<AbsenDay | null>(null)
   const [showConfirm, setShowConfirm] = useState(false)
-  
+
   const { entries, toggleStatus, getEntriesArray, setEntries } = useAbsenState()
 
   useEffect(() => {
     apiCall('students.list', {}, 'GET')
-      .then(data => {
+      .then((data) => {
         setStudents(data)
       })
-      .catch(err => console.error(err))
+      .catch((err) => console.error(err))
   }, [])
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(true)
     apiCall('absensi.getDay', { date }, 'GET')
-      .then(data => {
+      .then((data) => {
         setDayData(data)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const map: Record<number, any> = {}
         if (data.entries) {
-          data.entries.forEach((e: AbsenEntry) => { map[e.no] = e.status })
+          data.entries.forEach((e: AbsenEntry) => {
+            map[e.no] = e.status
+          })
         }
         setEntries(map)
         setIsDirty(false)
       })
-      .catch(err => console.error(err))
+      .catch((err) => console.error(err))
       .finally(() => setIsLoading(false))
   }, [date, setEntries])
 
@@ -54,7 +56,7 @@ export default function AbsensiPage() {
     if (isSunday(nextDate)) nextDate = addDays(nextDate, -1)
     setDate(nextDate)
   }
-  
+
   const handleNext = () => {
     let nextDate = addDays(date, 1)
     if (isSunday(nextDate)) nextDate = addDays(nextDate, 1)
@@ -71,10 +73,10 @@ export default function AbsensiPage() {
     try {
       await apiCall('absensi.saveDay', { date, entries: getEntriesArray() }, 'POST')
       setIsDirty(false)
-      
+
       // Update dayData (set recorded to true)
-      setDayData(prev => prev ? { ...prev, recorded: true } : prev)
-      
+      setDayData((prev) => (prev ? { ...prev, recorded: true } : prev))
+
       const d = parseISODateLocal(date)
       toast.success(`Absensi ${d.getDate()} ${MONTH_NAMES[d.getMonth()]} tersimpan`)
     } catch (err) {
@@ -86,9 +88,9 @@ export default function AbsensiPage() {
   const handleSetLibur = async (libur: boolean) => {
     try {
       await apiCall('absensi.setLibur', { date, libur }, 'POST')
-      setDayData(prev => prev ? { ...prev, libur, recorded: libur, entries: [] } : prev)
+      setDayData((prev) => (prev ? { ...prev, libur, recorded: libur, entries: [] } : prev))
       setEntries({}) // clear UI
-      
+
       const d = parseISODateLocal(date)
       const dateStr = `${d.getDate()} ${MONTH_NAMES[d.getMonth()]}`
       if (libur) {
@@ -110,7 +112,7 @@ export default function AbsensiPage() {
     setShowConfirm(false)
     try {
       await apiCall('absensi.clearDay', { date }, 'POST')
-      setDayData(prev => prev ? { ...prev, recorded: false, libur: false, entries: [] } : prev)
+      setDayData((prev) => (prev ? { ...prev, recorded: false, libur: false, entries: [] } : prev))
       setEntries({})
       toast.success(`Data absensi dihapus`)
     } catch (err) {
@@ -121,15 +123,25 @@ export default function AbsensiPage() {
 
   const filteredStudents = useMemo(() => {
     if (!search) return students
-    return students.filter(s => s.nama.toLowerCase().includes(search.toLowerCase()))
+    return students.filter((s) => s.nama.toLowerCase().includes(search.toLowerCase()))
   }, [students, search])
 
-  let countH = students.length, countS = 0, countI = 0, countA = 0
+  let countH = students.length,
+    countS = 0,
+    countI = 0,
+    countA = 0
   for (const s of students) {
     const status = entries[s.no] || 'H'
-    if (status === 'S') { countS++; countH-- }
-    else if (status === 'I') { countI++; countH-- }
-    else if (status === 'A') { countA++; countH-- }
+    if (status === 'S') {
+      countS++
+      countH--
+    } else if (status === 'I') {
+      countI++
+      countH--
+    } else if (status === 'A') {
+      countA++
+      countH--
+    }
   }
 
   const isLiburMode = dayData?.libur || dayData?.sunday
@@ -137,16 +149,16 @@ export default function AbsensiPage() {
   return (
     <div className="flex flex-col gap-4 pb-24">
       {/* Tab View */}
-      <div className="bg-slate-100 p-1 rounded-xl flex">
-        <button 
-          onClick={() => setViewTab('harian')} 
-          className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${viewTab === 'harian' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500'}`}
+      <div className="flex rounded-xl bg-slate-100 p-1">
+        <button
+          onClick={() => setViewTab('harian')}
+          className={`flex-1 rounded-lg py-2 text-sm font-medium transition-colors ${viewTab === 'harian' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500'}`}
         >
           Harian
         </button>
-        <button 
-          onClick={() => setViewTab('rekap')} 
-          className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${viewTab === 'rekap' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500'}`}
+        <button
+          onClick={() => setViewTab('rekap')}
+          className={`flex-1 rounded-lg py-2 text-sm font-medium transition-colors ${viewTab === 'rekap' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500'}`}
         >
           Rekap
         </button>
@@ -156,137 +168,193 @@ export default function AbsensiPage() {
         <AbsensiRekap />
       ) : (
         <>
-          <div className="flex items-center justify-between bg-white border border-slate-200 rounded-[10px] p-2 shadow-sm">
-        <button onClick={handlePrev} className="p-2 text-slate-600 active:bg-slate-100 rounded-[10px]">
-          <ChevronLeft size={20} />
-        </button>
-        <button onClick={() => setShowCalendar(true)} className="flex-1 flex justify-center items-center gap-2 font-medium text-slate-800 active:bg-slate-50 py-2 rounded-[10px]">
-          <CalendarIcon size={18} className="text-biru-600" />
-          {formatDateID(date)}
-        </button>
-        <button onClick={handleNext} className="p-2 text-slate-600 active:bg-slate-100 rounded-[10px]">
-          <ChevronRight size={20} />
-        </button>
-      </div>
+          <div className="flex items-center justify-between rounded-[10px] border border-slate-200 bg-white p-2 shadow-sm">
+            <button
+              onClick={handlePrev}
+              className="rounded-[10px] p-2 text-slate-600 active:bg-slate-100"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <button
+              onClick={() => setShowCalendar(true)}
+              className="flex flex-1 items-center justify-center gap-2 rounded-[10px] py-2 font-medium text-slate-800 active:bg-slate-50"
+            >
+              <CalendarIcon size={18} className="text-biru-600" />
+              {formatDateID(date)}
+            </button>
+            <button
+              onClick={handleNext}
+              className="rounded-[10px] p-2 text-slate-600 active:bg-slate-100"
+            >
+              <ChevronRight size={20} />
+            </button>
+          </div>
 
-      {!isLoading && dayData && (
-        <>
-          {dayData.sunday ? (
-            <div className="bg-merah-50 border border-merah-200 rounded-[10px] p-4 text-merah-700">
-              <span className="font-semibold block mb-1">Hari ini libur</span>
-              <span className="text-sm">Hari Minggu libur dan tidak bisa diabsen.</span>
-            </div>
-          ) : dayData.libur ? (
-            <div className="bg-merah-50 border border-merah-200 rounded-[10px] p-4 flex justify-between items-center text-merah-700">
-              <div className="flex flex-col">
-                <span className="font-semibold">Hari ini libur</span>
-                <span className="text-sm">Tidak ada absensi.</span>
-              </div>
-              <button onClick={() => handleSetLibur(false)} className="px-3 py-1.5 bg-white text-merah-700 border border-merah-200 rounded-lg text-sm font-medium active:bg-merah-50 transition-colors shadow-sm">
-                Batalkan libur
-              </button>
-            </div>
+          {!isLoading && dayData && (
+            <>
+              {dayData.sunday ? (
+                <div className="bg-merah-50 border-merah-200 text-merah-700 rounded-[10px] border p-4">
+                  <span className="mb-1 block font-semibold">Hari ini libur</span>
+                  <span className="text-sm">Hari Minggu libur dan tidak bisa diabsen.</span>
+                </div>
+              ) : dayData.libur ? (
+                <div className="bg-merah-50 border-merah-200 text-merah-700 flex items-center justify-between rounded-[10px] border p-4">
+                  <div className="flex flex-col">
+                    <span className="font-semibold">Hari ini libur</span>
+                    <span className="text-sm">Tidak ada absensi.</span>
+                  </div>
+                  <button
+                    onClick={() => handleSetLibur(false)}
+                    className="text-merah-700 border-merah-200 active:bg-merah-50 rounded-lg border bg-white px-3 py-1.5 text-sm font-medium shadow-sm transition-colors"
+                  >
+                    Batalkan libur
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between px-1">
+                  <button
+                    onClick={() => handleSetLibur(true)}
+                    className="-ml-2 rounded-lg p-2 text-sm font-medium text-slate-600 active:text-slate-800"
+                  >
+                    Tandai libur
+                  </button>
+                  {dayData.recorded && !isDirty && (
+                    <button
+                      onClick={handleHapusClick}
+                      className="text-merah-600 active:text-merah-700 -mr-2 rounded-lg p-2 text-sm font-medium"
+                    >
+                      Hapus absensi
+                    </button>
+                  )}
+                </div>
+              )}
+            </>
+          )}
+
+          <div
+            className={`flex gap-2 transition-opacity ${isLiburMode ? 'pointer-events-none opacity-50' : ''}`}
+          >
+            <button
+              onClick={() => setActiveTab('S')}
+              className={`flex-1 rounded-[10px] py-2.5 font-medium transition-colors ${activeTab === 'S' ? 'bg-sakit-solid text-white shadow-sm' : 'border border-slate-200 bg-white text-slate-600'}`}
+            >
+              Sakit{' '}
+              {countS > 0 && (
+                <span className="ml-1 rounded-md bg-white/20 px-1.5 py-0.5 text-xs">{countS}</span>
+              )}
+            </button>
+            <button
+              onClick={() => setActiveTab('I')}
+              className={`flex-1 rounded-[10px] py-2.5 font-medium transition-colors ${activeTab === 'I' ? 'bg-izin-solid text-white shadow-sm' : 'border border-slate-200 bg-white text-slate-600'}`}
+            >
+              Izin{' '}
+              {countI > 0 && (
+                <span className="ml-1 rounded-md bg-white/20 px-1.5 py-0.5 text-xs">{countI}</span>
+              )}
+            </button>
+            <button
+              onClick={() => setActiveTab('A')}
+              className={`flex-1 rounded-[10px] py-2.5 font-medium transition-colors ${activeTab === 'A' ? 'bg-alpha-solid text-white shadow-sm' : 'border border-slate-200 bg-white text-slate-600'}`}
+            >
+              Alpha{' '}
+              {countA > 0 && (
+                <span className="ml-1 rounded-md bg-white/20 px-1.5 py-0.5 text-xs">{countA}</span>
+              )}
+            </button>
+          </div>
+
+          <div
+            className={`relative transition-opacity ${isLiburMode ? 'pointer-events-none opacity-50' : ''}`}
+          >
+            <Search className="absolute top-1/2 left-3 -translate-y-1/2 text-slate-400" size={18} />
+            <input
+              type="text"
+              placeholder="Cari nama siswa"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="focus:border-biru-600 focus:ring-biru-600 w-full rounded-[10px] border border-slate-200 bg-white py-2.5 pr-4 pl-10 text-slate-800 shadow-sm placeholder:text-slate-400 focus:ring-1 focus:outline-none"
+            />
+          </div>
+
+          {isLoading ? (
+            <div className="py-8 text-center text-slate-500">Memuat data...</div>
           ) : (
-            <div className="flex justify-between items-center px-1">
-              <button onClick={() => handleSetLibur(true)} className="text-slate-600 text-sm font-medium active:text-slate-800 p-2 -ml-2 rounded-lg">
-                Tandai libur
-              </button>
-              {dayData.recorded && !isDirty && (
-                <button onClick={handleHapusClick} className="text-merah-600 text-sm font-medium active:text-merah-700 p-2 -mr-2 rounded-lg">
-                  Hapus absensi
-                </button>
+            <div
+              className={`divide-y divide-slate-100 overflow-hidden rounded-[10px] border border-slate-200 bg-white shadow-sm transition-opacity ${isLiburMode ? 'pointer-events-none opacity-50' : ''}`}
+            >
+              {filteredStudents.length === 0 ? (
+                <div className="p-4 text-center text-slate-500">Tidak ada siswa ditemukan</div>
+              ) : (
+                filteredStudents.map((s) => {
+                  const status = entries[s.no]
+
+                  let badgeClass = ''
+                  if (status === 'S') badgeClass = 'bg-sakit-bg text-sakit-fg'
+                  else if (status === 'I') badgeClass = 'bg-izin-bg text-izin-fg'
+                  else if (status === 'A') badgeClass = 'bg-alpha-bg text-alpha-fg'
+
+                  return (
+                    <button
+                      key={s.no}
+                      onClick={() => handleToggle(s.no)}
+                      className="flex min-h-[56px] w-full items-center justify-between p-4 text-left transition-colors active:bg-slate-50"
+                    >
+                      <div className="flex items-center">
+                        <span className="font-tabular-nums inline-block w-8 text-slate-400">
+                          {s.no}
+                        </span>
+                        <span className="max-w-[200px] truncate font-medium text-slate-800">
+                          {s.nama}
+                        </span>
+                      </div>
+                      {status && status !== 'H' && (
+                        <div
+                          className={`flex h-8 w-8 items-center justify-center rounded-md text-sm font-bold ${badgeClass}`}
+                        >
+                          {status}
+                        </div>
+                      )}
+                    </button>
+                  )
+                })
               )}
             </div>
           )}
-        </>
-      )}
 
-      <div className={`flex gap-2 transition-opacity ${isLiburMode ? 'opacity-50 pointer-events-none' : ''}`}>
-        <button onClick={() => setActiveTab('S')} className={`flex-1 py-2.5 rounded-[10px] font-medium transition-colors ${activeTab === 'S' ? 'bg-sakit-solid text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-600'}`}>
-          Sakit {countS > 0 && <span className="ml-1 bg-white/20 px-1.5 py-0.5 rounded-md text-xs">{countS}</span>}
-        </button>
-        <button onClick={() => setActiveTab('I')} className={`flex-1 py-2.5 rounded-[10px] font-medium transition-colors ${activeTab === 'I' ? 'bg-izin-solid text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-600'}`}>
-          Izin {countI > 0 && <span className="ml-1 bg-white/20 px-1.5 py-0.5 rounded-md text-xs">{countI}</span>}
-        </button>
-        <button onClick={() => setActiveTab('A')} className={`flex-1 py-2.5 rounded-[10px] font-medium transition-colors ${activeTab === 'A' ? 'bg-alpha-solid text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-600'}`}>
-          Alpha {countA > 0 && <span className="ml-1 bg-white/20 px-1.5 py-0.5 rounded-md text-xs">{countA}</span>}
-        </button>
-      </div>
-
-      <div className={`relative transition-opacity ${isLiburMode ? 'opacity-50 pointer-events-none' : ''}`}>
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-        <input 
-          type="text" 
-          placeholder="Cari nama siswa" 
-          value={search} 
-          onChange={e => setSearch(e.target.value)} 
-          className="w-full bg-white border border-slate-200 rounded-[10px] py-2.5 pl-10 pr-4 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-biru-600 focus:ring-1 focus:ring-biru-600 shadow-sm"
-        />
-      </div>
-
-      {isLoading ? (
-        <div className="text-center py-8 text-slate-500">Memuat data...</div>
-      ) : (
-        <div className={`bg-white rounded-[10px] border border-slate-200 divide-y divide-slate-100 shadow-sm overflow-hidden transition-opacity ${isLiburMode ? 'opacity-50 pointer-events-none' : ''}`}>
-          {filteredStudents.length === 0 ? (
-            <div className="p-4 text-center text-slate-500">Tidak ada siswa ditemukan</div>
-          ) : (
-            filteredStudents.map(s => {
-              const status = entries[s.no]
-              
-              let badgeClass = ''
-              if (status === 'S') badgeClass = 'bg-sakit-bg text-sakit-fg'
-              else if (status === 'I') badgeClass = 'bg-izin-bg text-izin-fg'
-              else if (status === 'A') badgeClass = 'bg-alpha-bg text-alpha-fg'
-              
-              return (
-                <button 
-                  key={s.no} 
-                  onClick={() => handleToggle(s.no)} 
-                  className="w-full text-left p-4 flex justify-between items-center active:bg-slate-50 transition-colors min-h-[56px]"
-                >
-                  <div className="flex items-center">
-                    <span className="text-slate-400 w-8 inline-block font-tabular-nums">{s.no}</span>
-                    <span className="text-slate-800 font-medium truncate max-w-[200px]">{s.nama}</span>
-                  </div>
-                  {status && status !== 'H' && (
-                    <div className={`w-8 h-8 rounded-md flex items-center justify-center font-bold text-sm ${badgeClass}`}>
-                      {status}
-                    </div>
-                  )}
-                </button>
-              )
-            })
+          {isDirty && (
+            <div className="animate-in slide-in-from-bottom fixed right-0 bottom-[56px] left-0 z-[60] border-t border-slate-200 bg-white p-4 shadow-[0_-4px_16px_rgba(0,0,0,0.1)]">
+              <div className="mb-3 flex items-center justify-between">
+                <span className="font-medium text-slate-600">Ringkasan</span>
+                <span className="font-judul text-biru-600 font-semibold">
+                  Hadir {countH} dari {students.length}
+                </span>
+              </div>
+              <button
+                onClick={handleSave}
+                className="bg-biru-600 active:bg-biru-700 w-full rounded-[10px] py-3 font-semibold text-white transition-colors"
+              >
+                Simpan absensi
+              </button>
+            </div>
           )}
-        </div>
-      )}
 
-      {isDirty && (
-        <div className="fixed bottom-[56px] left-0 right-0 p-4 bg-white border-t border-slate-200 shadow-[0_-4px_16px_rgba(0,0,0,0.1)] z-[60] animate-in slide-in-from-bottom">
-           <div className="flex justify-between items-center mb-3">
-              <span className="font-medium text-slate-600">Ringkasan</span>
-              <span className="font-judul font-semibold text-biru-600">Hadir {countH} dari {students.length}</span>
-           </div>
-           <button onClick={handleSave} className="w-full bg-biru-600 text-white py-3 rounded-[10px] font-semibold active:bg-biru-700 transition-colors">
-             Simpan absensi
-           </button>
-        </div>
-      )}
+          <CalendarBottomSheet
+            isOpen={showCalendar}
+            onClose={() => setShowCalendar(false)}
+            selectedDate={date}
+            onSelect={(d) => {
+              setDate(d)
+              setShowCalendar(false)
+            }}
+          />
 
-      <CalendarBottomSheet 
-        isOpen={showCalendar} 
-        onClose={() => setShowCalendar(false)} 
-        selectedDate={date} 
-        onSelect={(d) => { setDate(d); setShowCalendar(false) }} 
-      />
-
-      <ConfirmModal
-        isOpen={showConfirm}
-        title="Hapus Absensi"
-        message={`Hapus absensi ${parseISODateLocal(date).getDate()} ${MONTH_NAMES[parseISODateLocal(date).getMonth()]}? Data di spreadsheet ikut terhapus.`}
-        onConfirm={handleHapusConfirm}
-        onCancel={() => setShowConfirm(false)}
-      />
+          <ConfirmModal
+            isOpen={showConfirm}
+            title="Hapus Absensi"
+            message={`Hapus absensi ${parseISODateLocal(date).getDate()} ${MONTH_NAMES[parseISODateLocal(date).getMonth()]}? Data di spreadsheet ikut terhapus.`}
+            onConfirm={handleHapusConfirm}
+            onCancel={() => setShowConfirm(false)}
+          />
         </>
       )}
     </div>
@@ -295,8 +363,18 @@ export default function AbsensiPage() {
 
 // Helpers local to AbsensiPage
 const MONTH_NAMES = [
-  'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-  'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+  'Januari',
+  'Februari',
+  'Maret',
+  'April',
+  'Mei',
+  'Juni',
+  'Juli',
+  'Agustus',
+  'September',
+  'Oktober',
+  'November',
+  'Desember',
 ]
 function parseISODateLocal(iso: string) {
   const [y, m, d] = iso.split('-').map(Number)

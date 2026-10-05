@@ -8,7 +8,7 @@ import {
   addDays,
   getCalendarGrid,
   formatDateID,
-  formatMonthID
+  formatMonthID,
 } from './date'
 
 describe('Date Utilities', () => {
@@ -16,7 +16,7 @@ describe('Date Utilities', () => {
     const d = new Date(2026, 7, 15) // 15 Agustus 2026
     const iso = toISODate(d)
     expect(iso).toBe('2026-08-15')
-    
+
     const parsed = parseISODate('2026-08-15')
     expect(parsed.getFullYear()).toBe(2026)
     expect(parsed.getMonth()).toBe(7)
@@ -53,12 +53,12 @@ describe('Date Utilities', () => {
     // Senin adalah 27 Juli 2026.
     const grid = getCalendarGrid(2026, 8)
     expect(grid.length).toBe(42)
-    
+
     const firstCell = grid[0]
     expect(firstCell.getFullYear()).toBe(2026)
     expect(firstCell.getMonth()).toBe(6) // Juli (0-indexed)
     expect(firstCell.getDate()).toBe(27)
-    
+
     // index 5 = Sabtu, 1 Agustus
     expect(grid[5].getDate()).toBe(1)
     expect(grid[5].getMonth()).toBe(7)

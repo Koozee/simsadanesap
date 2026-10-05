@@ -1,19 +1,22 @@
-export function CircularProgress({ 
-  percent, 
-  size = 96, 
-  strokeWidth = 10 
-}: { 
-  percent: number; 
-  size?: number; 
-  strokeWidth?: number 
+export function CircularProgress({
+  percent,
+  size = 96,
+  strokeWidth = 10,
+}: {
+  percent: number
+  size?: number
+  strokeWidth?: number
 }) {
   const radius = (size - strokeWidth) / 2
   const circumference = radius * 2 * Math.PI
   const offset = circumference - (percent / 100) * circumference
 
   return (
-    <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
-      <svg className="transform -rotate-90 w-full h-full">
+    <div
+      className="relative inline-flex items-center justify-center"
+      style={{ width: size, height: size }}
+    >
+      <svg className="h-full w-full -rotate-90 transform">
         {/* Background circle */}
         <circle
           className="text-biru-50"
@@ -48,7 +51,10 @@ export function CircularProgress({
           cy={size / 2}
         />
       </svg>
-      <span className="absolute font-judul font-semibold text-slate-800" style={{ fontSize: size * 0.25 }}>
+      <span
+        className="font-judul absolute font-semibold text-slate-800"
+        style={{ fontSize: size * 0.25 }}
+      >
         {percent}%
       </span>
     </div>

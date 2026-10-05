@@ -1,11 +1,41 @@
-import type { ActionName, ParamsOf, ResultOf, ApiResult, ApiError, MethodOf, AbsenEntry } from '../types/api-contract'
+import type {
+  ActionName,
+  ParamsOf,
+  ResultOf,
+  ApiResult,
+  ApiError,
+  MethodOf,
+  AbsenEntry,
+} from '../types/api-contract'
 import { mockStudents } from './mockData'
-import { mockGetDay, mockMonthOverview, mockSaveDay, mockClearDay, mockSetLibur, mockSummary } from './mockAbsensi'
-import { mockKasGetData, mockKasSummary, mockKasSetWeek, mockKasPay, mockKasCreateYear, mockKasExpensesList, mockKasExpensesAdd, mockKasExpensesUpdate, mockKasExpensesDelete } from './mockKas'
-import { mockNilaiSubjects, mockNilaiGetSheet, mockNilaiAddDaily, mockNilaiSetExam, mockNilaiSetCell } from './mockNilai'
+import {
+  mockGetDay,
+  mockMonthOverview,
+  mockSaveDay,
+  mockClearDay,
+  mockSetLibur,
+  mockSummary,
+} from './mockAbsensi'
+import {
+  mockKasGetData,
+  mockKasSummary,
+  mockKasSetWeek,
+  mockKasPay,
+  mockKasCreateYear,
+  mockKasExpensesList,
+  mockKasExpensesAdd,
+  mockKasExpensesUpdate,
+  mockKasExpensesDelete,
+} from './mockKas'
+import {
+  mockNilaiSubjects,
+  mockNilaiGetSheet,
+  mockNilaiAddDaily,
+  mockNilaiSetExam,
+  mockNilaiSetCell,
+} from './mockNilai'
 import { mockAgendaGetMonth } from './mockAgenda'
 import type { Pengeluaran, Mapel, Bab, Slot, NilaiScore } from '../types/api-contract'
-
 
 export class ApiClientError extends Error {
   code: string
@@ -16,12 +46,17 @@ export class ApiClientError extends Error {
   }
 }
 
-async function handleMock<A extends ActionName>(action: A, params: ParamsOf<A>): Promise<ResultOf<A>> {
-  await new Promise(resolve => setTimeout(resolve, 500))
-  
+async function handleMock<A extends ActionName>(
+  action: A,
+  params: ParamsOf<A>,
+): Promise<ResultOf<A>> {
+  await new Promise((resolve) => setTimeout(resolve, 500))
+
   if (action === 'students.list') return mockStudents as ResultOf<A>
-  if (action === 'absensi.getDay') return mockGetDay((params as { date: string }).date) as ResultOf<A>
-  if (action === 'absensi.monthOverview') return mockMonthOverview((params as { month: string }).month) as ResultOf<A>
+  if (action === 'absensi.getDay')
+    return mockGetDay((params as { date: string }).date) as ResultOf<A>
+  if (action === 'absensi.monthOverview')
+    return mockMonthOverview((params as { month: string }).month) as ResultOf<A>
   if (action === 'absensi.summary') {
     const p = params as { from: string; to: string; no?: number }
     return mockSummary(p.from, p.to, p.no) as ResultOf<A>
@@ -30,7 +65,8 @@ async function handleMock<A extends ActionName>(action: A, params: ParamsOf<A>):
     const p = params as { date: string; entries: AbsenEntry[] }
     return mockSaveDay(p.date, p.entries) as ResultOf<A>
   }
-  if (action === 'absensi.clearDay') return mockClearDay((params as { date: string }).date) as ResultOf<A>
+  if (action === 'absensi.clearDay')
+    return mockClearDay((params as { date: string }).date) as ResultOf<A>
   if (action === 'absensi.setLibur') {
     const p = params as { date: string; libur: boolean }
     return mockSetLibur(p.date, p.libur) as ResultOf<A>
@@ -81,7 +117,14 @@ async function handleMock<A extends ActionName>(action: A, params: ParamsOf<A>):
     return mockNilaiSetExam(p.mapel, p.type, p.scores) as ResultOf<A>
   }
   if (action === 'nilai.setCell') {
-    const p = params as { mapel: Mapel; no: number; field: 'daily' | 'pts' | 'pas'; bab?: Bab; slot?: Slot; value: number | null }
+    const p = params as {
+      mapel: Mapel
+      no: number
+      field: 'daily' | 'pts' | 'pas'
+      bab?: Bab
+      slot?: Slot
+      value: number | null
+    }
     return mockNilaiSetCell(p.mapel, p.no, p.field, p.bab, p.slot, p.value) as ResultOf<A>
   }
   if (action === 'agenda.getMonth') {
@@ -89,23 +132,23 @@ async function handleMock<A extends ActionName>(action: A, params: ParamsOf<A>):
     return mockAgendaGetMonth(p.year, p.month) as ResultOf<A>
   }
   if (action === 'beranda.overview') {
-    const p = params as { date: string; year: number; month: number };
-    const monthStr = p.year + '-' + String(p.month).padStart(2, '0');
+    const p = params as { date: string; year: number; month: number }
+    const monthStr = p.year + '-' + String(p.month).padStart(2, '0')
     return {
       absenDay: mockGetDay(p.date),
       kasSummary: mockKasSummary(p.year),
       absenMonthOverview: mockMonthOverview(monthStr),
-      agendaMonth: mockAgendaGetMonth(p.year, p.month)
-    } as ResultOf<A>;
+      agendaMonth: mockAgendaGetMonth(p.year, p.month),
+    } as ResultOf<A>
   }
-  
+
   throw new Error(`Mock for action ${action} not implemented`)
 }
 
 export async function apiCall<A extends ActionName>(
   action: A,
   params: ParamsOf<A>,
-  method: MethodOf<A>
+  method: MethodOf<A>,
 ): Promise<ResultOf<A>> {
   try {
     const isMock = import.meta.env.VITE_USE_MOCK === 'true'

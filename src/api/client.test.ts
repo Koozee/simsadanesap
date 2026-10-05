@@ -25,15 +25,15 @@ describe('ApiClient', () => {
   it('melempar ApiClientError dengan kode yang tepat saat respons { ok: false }', async () => {
     vi.stubEnv('VITE_USE_MOCK', 'false')
     vi.stubEnv('VITE_GAS_URL', 'https://script.google.com/macros/s/xxx/exec')
-    
+
     const mockErrorRes: ApiFail = {
       ok: false,
-      error: { code: 'INVALID_INPUT', message: 'Input salah' }
+      error: { code: 'INVALID_INPUT', message: 'Input salah' },
     }
-    
+
     vi.mocked(globalThis.fetch).mockResolvedValueOnce({
       ok: true,
-      json: async () => mockErrorRes
+      json: async () => mockErrorRes,
     } as Response)
 
     try {

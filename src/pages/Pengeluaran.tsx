@@ -9,10 +9,10 @@ export default function PengeluaranPage() {
   const navigate = useNavigate()
   const [expenses, setExpenses] = useState<Pengeluaran[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  
+
   const [showModal, setShowModal] = useState(false)
   const [editItem, setEditItem] = useState<Pengeluaran | null>(null)
-  
+
   const [jumlah, setJumlah] = useState('')
   const [keterangan, setKeterangan] = useState('')
   const [isSaving, setIsSaving] = useState(false)
@@ -32,7 +32,7 @@ export default function PengeluaranPage() {
 
   const handleSave = async () => {
     if (!jumlah || !keterangan) return toast.error('Isi semua field')
-    
+
     setIsSaving(true)
     try {
       const numJumlah = Number(jumlah)
@@ -40,11 +40,15 @@ export default function PengeluaranPage() {
         await apiCall('kas.expenses.update', { ...editItem, jumlah: numJumlah, keterangan }, 'POST')
         toast.success('Pengeluaran diubah')
       } else {
-        await apiCall('kas.expenses.add', { 
-          tanggal: new Date().toISOString().split('T')[0], 
-          jumlah: numJumlah, 
-          keterangan 
-        }, 'POST')
+        await apiCall(
+          'kas.expenses.add',
+          {
+            tanggal: new Date().toISOString().split('T')[0],
+            jumlah: numJumlah,
+            keterangan,
+          },
+          'POST',
+        )
         toast.success('Pengeluaran ditambahkan')
       }
       setShowModal(false)
@@ -55,10 +59,10 @@ export default function PengeluaranPage() {
       setIsSaving(false)
     }
   }
-  
+
   const handleDelete = async (id: number) => {
     if (!confirm('Yakin hapus pengeluaran ini?')) return
-    
+
     try {
       await apiCall('kas.expenses.delete', { id }, 'POST')
       toast.success('Berhasil dihapus')
@@ -74,7 +78,7 @@ export default function PengeluaranPage() {
     setKeterangan('')
     setShowModal(true)
   }
-  
+
   const openEdit = (item: Pengeluaran) => {
     setEditItem(item)
     setJumlah(item.jumlah.toString())
@@ -82,33 +86,41 @@ export default function PengeluaranPage() {
     setShowModal(true)
   }
 
-  const formatRp = (n: number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n)
+  const formatRp = (n: number) =>
+    new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+    }).format(n)
 
   return (
     <div className="flex flex-col gap-4 pb-24">
-      <div className="flex items-center gap-3 bg-white p-4 rounded-[10px] shadow-sm border border-slate-200">
-        <button onClick={() => navigate(-1)} className="p-2 -ml-2 text-slate-500 hover:text-slate-800 rounded-lg">
+      <div className="flex items-center gap-3 rounded-[10px] border border-slate-200 bg-white p-4 shadow-sm">
+        <button
+          onClick={() => navigate(-1)}
+          className="-ml-2 rounded-lg p-2 text-slate-500 hover:text-slate-800"
+        >
           <ChevronLeft size={24} />
         </button>
-        <h1 className="font-judul font-semibold text-lg text-slate-800">Catatan Pengeluaran</h1>
+        <h1 className="font-judul text-lg font-semibold text-slate-800">Catatan Pengeluaran</h1>
       </div>
-      
+
       {isLoading ? (
         <div className="flex justify-center py-20 text-slate-500">
           <Loader2 className="animate-spin" size={32} />
         </div>
       ) : expenses.length === 0 ? (
-        <div className="bg-white border border-slate-200 rounded-[10px] p-8 text-center text-slate-500 shadow-sm flex flex-col items-center">
-          <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+        <div className="flex flex-col items-center rounded-[10px] border border-slate-200 bg-white p-8 text-center text-slate-500 shadow-sm">
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-50">
             <span className="text-2xl">💸</span>
           </div>
-          <h3 className="font-semibold text-slate-700 mb-1">Belum ada pengeluaran</h3>
-          <p className="text-sm mb-4">Catat pengeluaran kas kelas di sini</p>
+          <h3 className="mb-1 font-semibold text-slate-700">Belum ada pengeluaran</h3>
+          <p className="mb-4 text-sm">Catat pengeluaran kas kelas di sini</p>
         </div>
       ) : (
-        <div className="bg-white border border-slate-200 rounded-[10px] shadow-sm overflow-hidden divide-y divide-slate-100">
-          {expenses.map(e => (
-            <div key={e.id} className="p-4 flex justify-between items-center hover:bg-slate-50">
+        <div className="divide-y divide-slate-100 overflow-hidden rounded-[10px] border border-slate-200 bg-white shadow-sm">
+          {expenses.map((e) => (
+            <div key={e.id} className="flex items-center justify-between p-4 hover:bg-slate-50">
               <div>
                 <div className="font-medium text-slate-800">{e.keterangan}</div>
                 <div className="text-xs text-slate-500">{e.tanggal}</div>
@@ -116,8 +128,18 @@ export default function PengeluaranPage() {
               <div className="flex items-center gap-4">
                 <div className="font-semibold text-red-600">{formatRp(e.jumlah)}</div>
                 <div className="flex gap-2">
-                  <button onClick={() => openEdit(e)} className="p-2 text-slate-400 hover:text-biru-600 active:bg-slate-100 rounded-lg"><Edit3 size={16} /></button>
-                  <button onClick={() => handleDelete(e.id)} className="p-2 text-slate-400 hover:text-red-600 active:bg-red-50 rounded-lg"><Trash2 size={16} /></button>
+                  <button
+                    onClick={() => openEdit(e)}
+                    className="hover:text-biru-600 rounded-lg p-2 text-slate-400 active:bg-slate-100"
+                  >
+                    <Edit3 size={16} />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(e.id)}
+                    className="rounded-lg p-2 text-slate-400 hover:text-red-600 active:bg-red-50"
+                  >
+                    <Trash2 size={16} />
+                  </button>
                 </div>
               </div>
             </div>
@@ -126,52 +148,55 @@ export default function PengeluaranPage() {
       )}
 
       {/* FAB */}
-      <button onClick={openAdd} className="fixed bottom-20 right-4 w-14 h-14 bg-biru-600 text-white rounded-full flex items-center justify-center shadow-lg active:bg-biru-700 hover:scale-105 transition-transform">
+      <button
+        onClick={openAdd}
+        className="bg-biru-600 active:bg-biru-700 fixed right-4 bottom-20 flex h-14 w-14 items-center justify-center rounded-full text-white shadow-lg transition-transform hover:scale-105"
+      >
         <Plus size={24} />
       </button>
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
-          <div className="bg-white w-full max-w-sm rounded-2xl p-6 shadow-xl animate-in fade-in zoom-in-95">
-            <h3 className="font-judul font-semibold text-lg text-slate-800 mb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-sm">
+          <div className="animate-in fade-in zoom-in-95 w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+            <h3 className="font-judul mb-4 text-lg font-semibold text-slate-800">
               {editItem ? 'Ubah Pengeluaran' : 'Tambah Pengeluaran'}
             </h3>
-            
-            <div className="space-y-4 mb-6">
+
+            <div className="mb-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Jumlah (Rp)</label>
-                <input 
-                  type="number" 
+                <label className="mb-1 block text-sm font-medium text-slate-700">Jumlah (Rp)</label>
+                <input
+                  type="number"
                   value={jumlah}
-                  onChange={e => setJumlah(e.target.value)}
+                  onChange={(e) => setJumlah(e.target.value)}
                   placeholder="Misal: 50000"
-                  className="w-full border border-slate-200 rounded-lg px-4 py-2 focus:ring-1 focus:ring-biru-500 focus:border-biru-500 outline-none"
+                  className="focus:ring-biru-500 focus:border-biru-500 w-full rounded-lg border border-slate-200 px-4 py-2 outline-none focus:ring-1"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Keterangan</label>
-                <input 
-                  type="text" 
+                <label className="mb-1 block text-sm font-medium text-slate-700">Keterangan</label>
+                <input
+                  type="text"
                   value={keterangan}
-                  onChange={e => setKeterangan(e.target.value)}
+                  onChange={(e) => setKeterangan(e.target.value)}
                   placeholder="Misal: Beli sapu"
-                  className="w-full border border-slate-200 rounded-lg px-4 py-2 focus:ring-1 focus:ring-biru-500 focus:border-biru-500 outline-none"
+                  className="focus:ring-biru-500 focus:border-biru-500 w-full rounded-lg border border-slate-200 px-4 py-2 outline-none focus:ring-1"
                 />
               </div>
             </div>
-            
+
             <div className="flex justify-end gap-3">
-              <button 
+              <button
                 onClick={() => setShowModal(false)}
-                className="px-4 py-2 text-slate-600 font-medium hover:bg-slate-50 rounded-lg"
+                className="rounded-lg px-4 py-2 font-medium text-slate-600 hover:bg-slate-50"
               >
                 Batal
               </button>
-              <button 
+              <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="px-4 py-2 bg-biru-600 text-white font-medium rounded-lg active:bg-biru-700 flex items-center gap-2 disabled:opacity-50"
+                className="bg-biru-600 active:bg-biru-700 flex items-center gap-2 rounded-lg px-4 py-2 font-medium text-white disabled:opacity-50"
               >
                 {isSaving && <Loader2 className="animate-spin" size={16} />}
                 Simpan

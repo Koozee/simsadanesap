@@ -1,27 +1,39 @@
 import { useState, useEffect } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { toISODate, toISOMonth, parseISODate, getCalendarGrid, isSunday, formatMonthID } from '../utils/date'
+import {
+  toISODate,
+  toISOMonth,
+  parseISODate,
+  getCalendarGrid,
+  isSunday,
+  formatMonthID,
+} from '../utils/date'
 import { apiCall } from '../api/client'
 import type { AbsenMonthOverview } from '../types/api-contract'
 
 interface CalendarBottomSheetProps {
-  isOpen: boolean;
-  onClose: () => void;
-  selectedDate: string;
-  onSelect: (date: string) => void;
+  isOpen: boolean
+  onClose: () => void
+  selectedDate: string
+  onSelect: (date: string) => void
 }
 
-export function CalendarBottomSheet({ isOpen, onClose, selectedDate, onSelect }: CalendarBottomSheetProps) {
+export function CalendarBottomSheet({
+  isOpen,
+  onClose,
+  selectedDate,
+  onSelect,
+}: CalendarBottomSheetProps) {
   const [viewMonth, setViewMonth] = useState(toISOMonth(parseISODate(selectedDate)))
   const [overview, setOverview] = useState<AbsenMonthOverview | null>(null)
 
   useEffect(() => {
     if (isOpen) {
       apiCall('absensi.monthOverview', { month: viewMonth }, 'GET')
-        .then(data => {
+        .then((data) => {
           setOverview(data)
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err)
         })
     }
@@ -36,7 +48,7 @@ export function CalendarBottomSheet({ isOpen, onClose, selectedDate, onSelect }:
   }, [isOpen])
 
   if (!isOpen) return null
-  
+
   const [y, m] = viewMonth.split('-').map(Number)
   const grid = getCalendarGrid(y, m)
   const DAYS = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min']
@@ -45,7 +57,7 @@ export function CalendarBottomSheet({ isOpen, onClose, selectedDate, onSelect }:
     const d = new Date(y, m - 2, 1)
     setViewMonth(toISOMonth(d))
   }
-  
+
   const handleNextMonth = () => {
     const d = new Date(y, m, 1)
     setViewMonth(toISOMonth(d))
@@ -53,26 +65,41 @@ export function CalendarBottomSheet({ isOpen, onClose, selectedDate, onSelect }:
 
   return (
     <>
-      <div className="fixed inset-0 bg-slate-900/40 z-40 transition-opacity" onClick={onClose} />
-      <div className="fixed bottom-0 left-0 right-0 bg-white rounded-t-[20px] shadow-lg z-50 p-4 max-w-md mx-auto animate-in slide-in-from-bottom duration-200">
-        <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-4" />
-        
-        <div className="flex justify-between items-center mb-4">
-          <button onClick={handlePrevMonth} className="p-2 text-slate-600 active:bg-slate-100 rounded-full"><ChevronLeft size={20} /></button>
-          <span className="font-judul font-semibold text-lg text-slate-800">{formatMonthID(viewMonth)}</span>
-          <button onClick={handleNextMonth} className="p-2 text-slate-600 active:bg-slate-100 rounded-full"><ChevronRight size={20} /></button>
+      <div className="fixed inset-0 z-40 bg-slate-900/40 transition-opacity" onClick={onClose} />
+      <div className="animate-in slide-in-from-bottom fixed right-0 bottom-0 left-0 z-50 mx-auto max-w-md rounded-t-[20px] bg-white p-4 shadow-lg duration-200">
+        <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-slate-200" />
+
+        <div className="mb-4 flex items-center justify-between">
+          <button
+            onClick={handlePrevMonth}
+            className="rounded-full p-2 text-slate-600 active:bg-slate-100"
+          >
+            <ChevronLeft size={20} />
+          </button>
+          <span className="font-judul text-lg font-semibold text-slate-800">
+            {formatMonthID(viewMonth)}
+          </span>
+          <button
+            onClick={handleNextMonth}
+            className="rounded-full p-2 text-slate-600 active:bg-slate-100"
+          >
+            <ChevronRight size={20} />
+          </button>
         </div>
 
-        <div className="grid grid-cols-7 gap-1 text-center mb-2">
+        <div className="mb-2 grid grid-cols-7 gap-1 text-center">
           {DAYS.map((d, i) => (
-            <div key={d} className={`text-xs font-medium py-1 ${i === 6 ? 'text-merah-600' : 'text-slate-500'}`}>
+            <div
+              key={d}
+              className={`py-1 text-xs font-medium ${i === 6 ? 'text-merah-600' : 'text-slate-500'}`}
+            >
               {d}
             </div>
           ))}
         </div>
 
         <div className="grid grid-cols-7 gap-1">
-          {grid.map(date => {
+          {grid.map((date) => {
             const iso = toISODate(date)
             const isCurrentMonth = date.getMonth() === m - 1
             const isSun = isSunday(iso)
@@ -80,21 +107,22 @@ export function CalendarBottomSheet({ isOpen, onClose, selectedDate, onSelect }:
             const isRecorded = overview?.recordedDates?.includes(iso)
             const isSelected = iso === selectedDate
 
-            let btnClass = "w-full aspect-square flex flex-col items-center justify-center rounded-lg text-sm relative "
-            
+            let btnClass =
+              'w-full aspect-square flex flex-col items-center justify-center rounded-lg text-sm relative '
+
             if (!isCurrentMonth) {
-              btnClass += "text-slate-300 "
+              btnClass += 'text-slate-300 '
             } else if (isSelected) {
-              btnClass += "bg-biru-600 text-white font-semibold "
+              btnClass += 'bg-biru-600 text-white font-semibold '
             } else if (isLibur) {
-              btnClass += "text-merah-600 bg-merah-50 "
+              btnClass += 'text-merah-600 bg-merah-50 '
             } else {
-              btnClass += "text-slate-800 active:bg-slate-100 "
+              btnClass += 'text-slate-800 active:bg-slate-100 '
             }
 
             return (
-              <button 
-                key={iso} 
+              <button
+                key={iso}
                 onClick={() => {
                   if (!isLibur) onSelect(iso)
                 }}
@@ -103,7 +131,9 @@ export function CalendarBottomSheet({ isOpen, onClose, selectedDate, onSelect }:
               >
                 <span>{date.getDate()}</span>
                 {isRecorded && (
-                  <div className={`w-1 h-1 rounded-full absolute bottom-1 ${isSelected ? 'bg-white' : 'bg-biru-500'}`} />
+                  <div
+                    className={`absolute bottom-1 h-1 w-1 rounded-full ${isSelected ? 'bg-white' : 'bg-biru-500'}`}
+                  />
                 )}
               </button>
             )

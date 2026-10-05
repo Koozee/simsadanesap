@@ -11,7 +11,6 @@ import BerandaPage from './pages/Beranda'
 
 // Removed empty NilaiPage since it's imported now
 
-
 export default function App() {
   return (
     <>
@@ -24,11 +23,11 @@ export default function App() {
           <Route path="/kas/pengeluaran" element={<PengeluaranPage />} />
         </Route>
       </Routes>
-      <Toaster 
-        position="bottom-center" 
-        toastOptions={{ 
-          className: 'font-sans shadow-[0_4px_16px_rgba(12,27,75,0.14)] rounded-[10px]' 
-        }} 
+      <Toaster
+        position="bottom-center"
+        toastOptions={{
+          className: 'font-sans shadow-[0_4px_16px_rgba(12,27,75,0.14)] rounded-[10px]',
+        }}
       />
     </>
   )

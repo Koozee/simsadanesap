@@ -5,8 +5,18 @@ import type { Siswa, AbsenSummary } from '../types/api-contract'
 import { toast } from 'sonner'
 
 const MONTH_NAMES = [
-  'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-  'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+  'Januari',
+  'Februari',
+  'Maret',
+  'April',
+  'Mei',
+  'Juni',
+  'Juli',
+  'Agustus',
+  'September',
+  'Oktober',
+  'November',
+  'Desember',
 ]
 
 function formatMonth(iso: string) {
@@ -17,19 +27,19 @@ function formatMonth(iso: string) {
 export function AbsensiRekap() {
   const today = new Date()
   const currentMonthStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`
-  
+
   const [fromMonth, setFromMonth] = useState(currentMonthStr)
   const [toMonth, setToMonth] = useState(currentMonthStr)
   const [selectedNo, setSelectedNo] = useState<string>('semua')
-  
+
   const [students, setStudents] = useState<Siswa[]>([])
   const [summary, setSummary] = useState<AbsenSummary | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     apiCall('students.list', {}, 'GET')
-      .then(data => setStudents(data))
-      .catch(err => console.error(err))
+      .then((data) => setStudents(data))
+      .catch((err) => console.error(err))
   }, [])
 
   useEffect(() => {
@@ -39,10 +49,10 @@ export function AbsensiRekap() {
     if (selectedNo !== 'semua') {
       params.no = parseInt(selectedNo, 10)
     }
-    
+
     apiCall('absensi.summary', params, 'GET')
-      .then(data => setSummary(data))
-      .catch(err => {
+      .then((data) => setSummary(data))
+      .catch((err) => {
         console.error(err)
         toast.error('Gagal memuat rekap absensi')
       })
@@ -52,64 +62,67 @@ export function AbsensiRekap() {
   return (
     <div className="flex flex-col gap-4 pb-24">
       {/* Filters */}
-      <div className="bg-white border border-slate-200 rounded-[10px] p-4 shadow-sm flex flex-col gap-4">
+      <div className="flex flex-col gap-4 rounded-[10px] border border-slate-200 bg-white p-4 shadow-sm">
         <div className="flex gap-4">
-          <div className="flex-1 flex flex-col gap-1">
+          <div className="flex flex-1 flex-col gap-1">
             <label className="text-xs font-medium text-slate-500">Dari Bulan</label>
-            <input 
-              type="month" 
+            <input
+              type="month"
               value={fromMonth}
-              onChange={e => setFromMonth(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-800 w-full focus:outline-none focus:ring-1 focus:ring-biru-600"
+              onChange={(e) => setFromMonth(e.target.value)}
+              className="focus:ring-biru-600 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:ring-1 focus:outline-none"
             />
           </div>
-          <div className="flex-1 flex flex-col gap-1">
+          <div className="flex flex-1 flex-col gap-1">
             <label className="text-xs font-medium text-slate-500">Sampai Bulan</label>
-            <input 
-              type="month" 
+            <input
+              type="month"
               value={toMonth}
-              onChange={e => setToMonth(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-800 w-full focus:outline-none focus:ring-1 focus:ring-biru-600"
+              onChange={(e) => setToMonth(e.target.value)}
+              className="focus:ring-biru-600 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:ring-1 focus:outline-none"
             />
           </div>
         </div>
-        
+
         <div className="flex flex-col gap-1">
           <label className="text-xs font-medium text-slate-500">Pilih Siswa</label>
-          <select 
+          <select
             value={selectedNo}
-            onChange={e => setSelectedNo(e.target.value)}
-            className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-800 w-full focus:outline-none focus:ring-1 focus:ring-biru-600"
+            onChange={(e) => setSelectedNo(e.target.value)}
+            className="focus:ring-biru-600 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:ring-1 focus:outline-none"
           >
             <option value="semua">Semua Siswa</option>
-            {students.map(s => (
-              <option key={s.no} value={s.no}>{s.no} - {s.nama}</option>
+            {students.map((s) => (
+              <option key={s.no} value={s.no}>
+                {s.no} - {s.nama}
+              </option>
             ))}
           </select>
         </div>
       </div>
 
       {isLoading ? (
-        <div className="text-center py-8 text-slate-500">Memuat rekap...</div>
+        <div className="py-8 text-center text-slate-500">Memuat rekap...</div>
       ) : summary ? (
         <>
           {summary.skippedMonths.length > 0 && (
-            <div className="bg-kuning-50 border border-kuning-200 rounded-[10px] p-3 text-kuning-800 text-sm">
-              <span className="font-semibold block mb-1">Catatan:</span>
-              Bulan berikut dilewati karena belum ada datanya: {summary.skippedMonths.map(formatMonth).join(', ')}
+            <div className="bg-kuning-50 border-kuning-200 text-kuning-800 rounded-[10px] border p-3 text-sm">
+              <span className="mb-1 block font-semibold">Catatan:</span>
+              Bulan berikut dilewati karena belum ada datanya:{' '}
+              {summary.skippedMonths.map(formatMonth).join(', ')}
             </div>
           )}
 
           {selectedNo === 'semua' ? (
-            <div className="bg-white rounded-[10px] border border-slate-200 shadow-sm overflow-hidden divide-y divide-slate-100">
-              {summary.perSiswa.map(rekap => {
-                const s = students.find(x => x.no === rekap.no)
+            <div className="divide-y divide-slate-100 overflow-hidden rounded-[10px] border border-slate-200 bg-white shadow-sm">
+              {summary.perSiswa.map((rekap) => {
+                const s = students.find((x) => x.no === rekap.no)
                 return (
-                  <div key={rekap.no} className="p-4 flex items-center justify-between gap-4">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-slate-400 font-tabular-nums text-sm">{rekap.no}</span>
-                        <span className="font-medium text-slate-800 truncate">{s?.nama}</span>
+                  <div key={rekap.no} className="flex items-center justify-between gap-4 p-4">
+                    <div className="min-w-0 flex-1">
+                      <div className="mb-1 flex items-center gap-2">
+                        <span className="font-tabular-nums text-sm text-slate-400">{rekap.no}</span>
+                        <span className="truncate font-medium text-slate-800">{s?.nama}</span>
                       </div>
                       <div className="flex gap-3 text-xs">
                         <span className="text-biru-600 font-medium">S: {rekap.sakit}</span>
@@ -125,36 +138,68 @@ export function AbsensiRekap() {
             </div>
           ) : (
             <div className="flex flex-col gap-4">
-              <div className="bg-white border border-slate-200 rounded-[10px] p-6 shadow-sm flex flex-col items-center text-center">
-                <CircularProgress percent={summary.perSiswa[0]?.persen || 0} size={96} strokeWidth={10} />
-                <h3 className="font-judul font-semibold text-lg text-slate-800 mt-4">
-                  {students.find(x => x.no.toString() === selectedNo)?.nama}
+              <div className="flex flex-col items-center rounded-[10px] border border-slate-200 bg-white p-6 text-center shadow-sm">
+                <CircularProgress
+                  percent={summary.perSiswa[0]?.persen || 0}
+                  size={96}
+                  strokeWidth={10}
+                />
+                <h3 className="font-judul mt-4 text-lg font-semibold text-slate-800">
+                  {students.find((x) => x.no.toString() === selectedNo)?.nama}
                 </h3>
-                <div className="flex gap-4 mt-4 bg-slate-50 px-4 py-2 rounded-lg text-sm">
-                  <div className="flex flex-col items-center"><span className="font-bold text-biru-600">{summary.perSiswa[0]?.sakit || 0}</span><span className="text-slate-500 text-xs">Sakit</span></div>
-                  <div className="flex flex-col items-center"><span className="font-bold text-kuning-600">{summary.perSiswa[0]?.izin || 0}</span><span className="text-slate-500 text-xs">Izin</span></div>
-                  <div className="flex flex-col items-center"><span className="font-bold text-merah-600">{summary.perSiswa[0]?.alpha || 0}</span><span className="text-slate-500 text-xs">Alpha</span></div>
-                  <div className="flex flex-col items-center"><span className="font-bold text-slate-700">{summary.perSiswa[0]?.hadir || 0}</span><span className="text-slate-500 text-xs">Hadir</span></div>
+                <div className="mt-4 flex gap-4 rounded-lg bg-slate-50 px-4 py-2 text-sm">
+                  <div className="flex flex-col items-center">
+                    <span className="text-biru-600 font-bold">
+                      {summary.perSiswa[0]?.sakit || 0}
+                    </span>
+                    <span className="text-xs text-slate-500">Sakit</span>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <span className="text-kuning-600 font-bold">
+                      {summary.perSiswa[0]?.izin || 0}
+                    </span>
+                    <span className="text-xs text-slate-500">Izin</span>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <span className="text-merah-600 font-bold">
+                      {summary.perSiswa[0]?.alpha || 0}
+                    </span>
+                    <span className="text-xs text-slate-500">Alpha</span>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <span className="font-bold text-slate-700">
+                      {summary.perSiswa[0]?.hadir || 0}
+                    </span>
+                    <span className="text-xs text-slate-500">Hadir</span>
+                  </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-[10px] border border-slate-200 shadow-sm overflow-hidden divide-y divide-slate-100">
-                <div className="p-3 bg-slate-50 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              <div className="divide-y divide-slate-100 overflow-hidden rounded-[10px] border border-slate-200 bg-white shadow-sm">
+                <div className="bg-slate-50 p-3 text-xs font-semibold tracking-wider text-slate-500 uppercase">
                   Rincian per Bulan
                 </div>
-                {summary.perBulan?.map(pb => (
-                  <div key={pb.month} className="p-4 flex items-center justify-between">
+                {summary.perBulan?.map((pb) => (
+                  <div key={pb.month} className="flex items-center justify-between p-4">
                     <span className="font-medium text-slate-700">{formatMonth(pb.month)}</span>
                     <div className="flex gap-3 text-sm">
-                      {pb.rekap.sakit > 0 && <span className="text-biru-600">S:{pb.rekap.sakit}</span>}
-                      {pb.rekap.izin > 0 && <span className="text-kuning-600">I:{pb.rekap.izin}</span>}
-                      {pb.rekap.alpha > 0 && <span className="text-merah-600">A:{pb.rekap.alpha}</span>}
+                      {pb.rekap.sakit > 0 && (
+                        <span className="text-biru-600">S:{pb.rekap.sakit}</span>
+                      )}
+                      {pb.rekap.izin > 0 && (
+                        <span className="text-kuning-600">I:{pb.rekap.izin}</span>
+                      )}
+                      {pb.rekap.alpha > 0 && (
+                        <span className="text-merah-600">A:{pb.rekap.alpha}</span>
+                      )}
                       <span className="text-slate-500">H:{pb.rekap.hadir}</span>
                     </div>
                   </div>
                 ))}
                 {(!summary.perBulan || summary.perBulan.length === 0) && (
-                  <div className="p-4 text-center text-slate-500 text-sm">Belum ada data di rentang ini.</div>
+                  <div className="p-4 text-center text-sm text-slate-500">
+                    Belum ada data di rentang ini.
+                  </div>
                 )}
               </div>
             </div>

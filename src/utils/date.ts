@@ -36,27 +36,37 @@ export function addDays(iso: string, days: number): string {
  */
 export function getCalendarGrid(year: number, month: number): Date[] {
   const grid: Date[] = []
-  
+
   const firstDay = new Date(year, month - 1, 1)
-  
+
   let offset = firstDay.getDay() - 1
   if (offset === -1) offset = 6 // Jika Minggu, mundur 6 hari
-  
+
   const startGridDate = new Date(firstDay)
   startGridDate.setDate(startGridDate.getDate() - offset)
-  
+
   for (let i = 0; i < 42; i++) {
     const d = new Date(startGridDate)
     d.setDate(d.getDate() + i)
     grid.push(d)
   }
-  
+
   return grid
 }
 
 const MONTH_NAMES = [
-  'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-  'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+  'Januari',
+  'Februari',
+  'Maret',
+  'April',
+  'Mei',
+  'Juni',
+  'Juli',
+  'Agustus',
+  'September',
+  'Oktober',
+  'November',
+  'Desember',
 ]
 const DAY_NAMES = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
 

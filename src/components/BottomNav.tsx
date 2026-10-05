@@ -10,24 +10,24 @@ const navItems = [
 
 export function BottomNav() {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-permukaan border-t border-garis pb-[env(safe-area-inset-bottom)] z-50">
-      <ul className="flex justify-around items-center h-[56px]">
+    <nav className="bg-permukaan border-garis fixed right-0 bottom-0 left-0 z-50 border-t pb-[env(safe-area-inset-bottom)]">
+      <ul className="flex h-[56px] items-center justify-around">
         {navItems.map((item) => (
-          <li key={item.path} className="flex-1 h-full">
+          <li key={item.path} className="h-full flex-1">
             <NavLink
               to={item.path}
               className={({ isActive }) =>
-                `flex flex-col items-center justify-center h-full w-full py-1 ${
-                  isActive ? 'text-biru-600 font-semibold' : 'text-slate-600 font-normal'
+                `flex h-full w-full flex-col items-center justify-center py-1 ${
+                  isActive ? 'text-biru-600 font-semibold' : 'font-normal text-slate-600'
                 }`
               }
             >
               {({ isActive }) => (
                 <>
-                  <div className={`p-1 rounded-full ${isActive ? 'bg-biru-50' : 'bg-transparent'}`}>
+                  <div className={`rounded-full p-1 ${isActive ? 'bg-biru-50' : 'bg-transparent'}`}>
                     <item.icon size={20} strokeWidth={1.75} />
                   </div>
-                  <span className="text-[11px] font-judul mt-0.5 leading-none">{item.label}</span>
+                  <span className="font-judul mt-0.5 text-[11px] leading-none">{item.label}</span>
                 </>
               )}
             </NavLink>

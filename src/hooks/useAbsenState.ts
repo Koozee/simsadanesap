@@ -4,12 +4,14 @@ import type { StatusAbsen, AbsenEntry } from '../types/api-contract'
 export function useAbsenState(initialEntries: AbsenEntry[] = []) {
   const [entries, setEntriesState] = useState<Record<number, StatusAbsen>>(() => {
     const map: Record<number, StatusAbsen> = {}
-    initialEntries.forEach(e => { map[e.no] = e.status })
+    initialEntries.forEach((e) => {
+      map[e.no] = e.status
+    })
     return map
   })
-  
+
   const toggleStatus = useCallback((no: number, activeTab: StatusAbsen) => {
-    setEntriesState(prev => {
+    setEntriesState((prev) => {
       const current = prev[no] || 'H'
       const next = { ...prev }
       if (current === activeTab) {
@@ -22,17 +24,17 @@ export function useAbsenState(initialEntries: AbsenEntry[] = []) {
       return next
     })
   }, [])
-  
+
   const getEntriesArray = useCallback((): AbsenEntry[] => {
     return Object.entries(entries).map(([noStr, status]) => ({
       no: parseInt(noStr, 10),
-      status
+      status,
     }))
   }, [entries])
 
   const setEntries = useCallback((newEntries: Record<number, StatusAbsen>) => {
     setEntriesState(newEntries)
   }, [])
-  
+
   return { entries, toggleStatus, getEntriesArray, setEntries }
 }
