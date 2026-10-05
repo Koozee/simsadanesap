@@ -185,6 +185,7 @@ export default function NilaiPage() {
                         </span>
                       </div>
                     </div>
+                  </div>
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-400">
                       <Edit3 size={16} />
                     </div>

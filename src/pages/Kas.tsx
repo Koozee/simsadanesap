@@ -281,6 +281,7 @@ export default function KasPage() {
                             {JUMLAH_MINGGU_KAS} minggu
                           </div>
                         </div>
+                      </div>
                         {row && (
                           <div className="flex items-center gap-2">
                             <div className="font-tabular-nums mr-1 font-medium text-slate-700">
