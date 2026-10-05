@@ -87,7 +87,7 @@ Setiap tugas selesai bila kriteria "Selesai bila" terpenuhi dan `typecheck`, `li
 - [x] **T3.3 `kas.expenses.*` dan `kas.createSemester`.** Tambah, ubah, hapus, dan daftar pengeluaran (tanggal sebagai nilai tetap; sisipkan baris dan perbarui rumus total bila 19 baris penuh). Buat sheet Semester Genap dari salinan ganjil dengan centang direset.
   *Selesai bila:* saldo di app sama dengan sel total di sheet.
 
-- [ ] **T3.4 Handler mock untuk kas.**
+- [x] **T3.4 Handler mock untuk kas.**
   *Selesai bila:* seluruh alur kas bisa dicoba tanpa backend.
 
 - [ ] **T3.5 Halaman Kas.** Tab semester, ringkasan saldo, daftar siswa dengan tombol cepat `+`, bottom sheet 22 chip dengan cincin emas pada chip berikutnya, tombol "Catat bayar minggu n", koreksi manual dengan konfirmasi pembatalan, optimistic update.
