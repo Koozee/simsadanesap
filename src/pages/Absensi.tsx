@@ -6,6 +6,7 @@ import { apiCall } from '../api/client'
 import { useAbsenState } from '../hooks/useAbsenState'
 import { toast } from 'sonner'
 import { ConfirmModal } from '../components/ConfirmModal'
+import { AbsensiRekap } from '../components/AbsensiRekap'
 import type { Siswa, AbsenEntry, AbsenDay } from '../types/api-contract'
 
 export default function AbsensiPage() {
@@ -14,6 +15,7 @@ export default function AbsensiPage() {
   const [students, setStudents] = useState<Siswa[]>([])
   const [search, setSearch] = useState('')
   const [activeTab, setActiveTab] = useState<'S' | 'I' | 'A'>('S')
+  const [viewTab, setViewTab] = useState<'harian' | 'rekap'>('harian')
   const [isLoading, setIsLoading] = useState(false)
   const [isDirty, setIsDirty] = useState(false)
   const [dayData, setDayData] = useState<AbsenDay | null>(null)
@@ -134,7 +136,27 @@ export default function AbsensiPage() {
 
   return (
     <div className="flex flex-col gap-4 pb-24">
-      <div className="flex items-center justify-between bg-white border border-slate-200 rounded-[10px] p-2 shadow-sm">
+      {/* Tab View */}
+      <div className="bg-slate-100 p-1 rounded-xl flex">
+        <button 
+          onClick={() => setViewTab('harian')} 
+          className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${viewTab === 'harian' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500'}`}
+        >
+          Harian
+        </button>
+        <button 
+          onClick={() => setViewTab('rekap')} 
+          className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${viewTab === 'rekap' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500'}`}
+        >
+          Rekap
+        </button>
+      </div>
+
+      {viewTab === 'rekap' ? (
+        <AbsensiRekap />
+      ) : (
+        <>
+          <div className="flex items-center justify-between bg-white border border-slate-200 rounded-[10px] p-2 shadow-sm">
         <button onClick={handlePrev} className="p-2 text-slate-600 active:bg-slate-100 rounded-[10px]">
           <ChevronLeft size={20} />
         </button>
@@ -265,6 +287,8 @@ export default function AbsensiPage() {
         onConfirm={handleHapusConfirm}
         onCancel={() => setShowConfirm(false)}
       />
+        </>
+      )}
     </div>
   )
 }

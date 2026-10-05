@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { mockSaveDay, mockClearDay, mockSetLibur, mockSummary } from './mockAbsensi'
+import { mockSaveDay, mockSetLibur, mockSummary } from './mockAbsensi'
 
 describe('absensi.summary', () => {
   beforeEach(() => {
