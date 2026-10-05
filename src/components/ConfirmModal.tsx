@@ -20,7 +20,7 @@ export function ConfirmModal({
   return (
     <div className="animate-in fade-in fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 px-4 duration-200">
       <div className="animate-in zoom-in-95 w-full max-w-sm rounded-[20px] bg-white p-6 shadow-xl duration-200">
-        <h3 className="font-judul mb-2 text-lg font-bold text-slate-900">{title}</h3>
+        <h3 className="font-heading mb-2 text-lg font-bold text-slate-900">{title}</h3>
         <p className="mb-6 leading-relaxed text-slate-600">{message}</p>
         <div className="flex justify-end gap-3">
           <button

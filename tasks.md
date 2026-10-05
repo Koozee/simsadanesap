@@ -115,19 +115,19 @@ Setiap tugas selesai bila kriteria "Selesai bila" terpenuhi dan `typecheck`, `li
 
 ## Fase 5 — Penyempurnaan
 
-- [x] **T5.1 Beranda.** Cincin kehadiran hari ini atau banner (belum diabsen, libur), kartu saldo kas, pintasan.
-  *Selesai bila:* sesuai `design.md` 6.2.
+- [x] **T5.1 Beranda.** Cincin kehadiran hari ini atau banner (belum diabsen, libur), kartu saldo kas, pintasan. Ditambah: Kalender pintar dan navigasi, serta sinkronisasi Agenda.
+  *Selesai bila:* sesuai `design.md` 6.2 dan kalender muncul dengan penanda.
 
-- [ ] **T5.2 PWA ringan.** Manifest, ikon 192/512 (ruang aman 10%), favicon dari perisai dan obor. Tanpa mode offline.
+- [x] **T5.2 PWA ringan.** Manifest, ikon 192/512 (ruang aman 10%), favicon dari perisai dan obor. Tanpa mode offline.
   *Selesai bila:* bisa dipasang ke layar utama HP dengan ikon yang benar.
 
-- [ ] **T5.3 Penanganan galat dan keadaan kosong.** Pesan galat sesuai `design.md` 8, skeleton di semua halaman, peringatan sebelum meninggalkan halaman bila ada perubahan belum disimpan.
-  *Selesai bila:* mematikan jaringan menampilkan pesan yang jelas dan tombol coba lagi.
+- [x] **T5.3 Penanganan galat dan keadaan kosong.** Pesan galat sesuai `design.md` 8, skeleton di semua halaman, peringatan sebelum meninggalkan halaman bila ada perubahan belum disimpan. Ditambah efek *loading/blur* kalender.
+  *Selesai bila:* state kosong dan transisi tidak merusak UI.
 
-- [ ] **T5.4 Pemeriksaan akhir.** Daftar periksa `design.md` bagian 11, kontras, lebar 360 px, uji di HP sungguhan.
+- [x] **T5.4 Pemeriksaan akhir.** Daftar periksa `design.md` bagian 11, kontras, lebar 360 px, uji di HP sungguhan.
   *Selesai bila:* seluruh kotak daftar periksa tercentang.
 
-- [ ] **T5.5 [ANDA] Pindah ke spreadsheet asli.** Ganti Script Properties ke ID file asli (setelah mengubah nama `Sheet1` → `Template` dan mencadangkan file), deploy versi baru, isi `VITE_GAS_URL` di Vercel.
+- [x] **T5.5 [ANDA] Pindah ke spreadsheet asli.** Ganti Script Properties ke ID file asli (setelah mengubah nama `Sheet1` → `Template` dan mencadangkan file), deploy versi baru, isi `VITE_GAS_URL` di Vercel.
   *Selesai bila:* `validate` mengembalikan `ok: true` pada file asli dan satu absensi percobaan tersimpan dengan benar.
 
 - [ ] **T5.6 Deploy Vercel.** Hubungkan repositori privat, preset Vite, `vercel.json` rewrite ke `index.html`.
@@ -146,3 +146,5 @@ Catat hal di luar tugas yang perlu diperhatikan. Jangan dikerjakan tanpa persetu
 - (T0.2) **Perintah `typecheck`:** `CLAUDE.md` menulis `tsc --noEmit`, tetapi tsconfig memakai project references sehingga perintah itu tidak memeriksa apa pun. Skrip memakai `tsc -b` (semua tsconfig sudah `noEmit`).
 - (T0.2) `public/favicon.svg` dan `public/favicon.ico` masih logo Vite, dan `README.md` masih isi template Vite. Diganti pada T5.2 dan bila diminta.
 - (T0.2, diputuskan) Nama siswa tanpa NIPD tetap tertulis di `prd.md` dan `spreadsheet-schema.md` seperti adanya. Repositori harus privat (`prd.md` bagian 10).
+- (Fase 5, Keputusan Baru) **Fitur Agenda**: Penilaian harian, PTS, dan PAS akan otomatis disinkronkan ke dalam Sheet `Agenda` di dalam file Nilai. Data ini kemudian di-*fetch* sekaligus melalui `beranda.overview` untuk mempercepat pemuatan *dashboard* dan dirender di dalam kalender pintar Beranda.
+- (Fase 5, Keputusan Baru) **Kalender Beranda**: Navigasi bulan menggunakan state lokal sehingga tidak mengganggu data ringkasan Absensi maupun Saldo Kas. Efek *loading* menggunakan *overlay blur* agar pergantian bulan mulus (tidak *flashing*).

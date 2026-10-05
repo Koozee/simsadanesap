@@ -76,7 +76,7 @@ export function CalendarBottomSheet({
           >
             <ChevronLeft size={20} />
           </button>
-          <span className="font-judul text-lg font-semibold text-slate-800">
+          <span className="font-heading text-lg font-semibold text-slate-800">
             {formatMonthID(viewMonth)}
           </span>
           <button
@@ -91,7 +91,7 @@ export function CalendarBottomSheet({
           {DAYS.map((d, i) => (
             <div
               key={d}
-              className={`py-1 text-xs font-medium ${i === 6 ? 'text-merah-600' : 'text-slate-500'}`}
+              className={`py-1 text-xs font-medium ${i === 6 ? 'text-danger-600' : 'text-slate-500'}`}
             >
               {d}
             </div>
@@ -113,9 +113,9 @@ export function CalendarBottomSheet({
             if (!isCurrentMonth) {
               btnClass += 'text-slate-300 '
             } else if (isSelected) {
-              btnClass += 'bg-biru-600 text-white font-semibold '
+              btnClass += 'bg-primary-600 text-white font-semibold '
             } else if (isLibur) {
-              btnClass += 'text-merah-600 bg-merah-50 '
+              btnClass += 'text-danger-600 bg-merah-50 '
             } else {
               btnClass += 'text-slate-800 active:bg-slate-100 '
             }
@@ -132,7 +132,7 @@ export function CalendarBottomSheet({
                 <span>{date.getDate()}</span>
                 {isRecorded && (
                   <div
-                    className={`absolute bottom-1 h-1 w-1 rounded-full ${isSelected ? 'bg-white' : 'bg-biru-500'}`}
+                    className={`absolute bottom-1 h-1 w-1 rounded-full ${isSelected ? 'bg-white' : 'bg-primary-500'}`}
                   />
                 )}
               </button>

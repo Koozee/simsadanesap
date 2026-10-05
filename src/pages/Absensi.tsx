@@ -179,7 +179,7 @@ export default function AbsensiPage() {
               onClick={() => setShowCalendar(true)}
               className="flex flex-1 items-center justify-center gap-2 rounded-[10px] py-2 font-medium text-slate-800 active:bg-slate-50"
             >
-              <CalendarIcon size={18} className="text-biru-600" />
+              <CalendarIcon size={18} className="text-primary-600" />
               {formatDateID(date)}
             </button>
             <button
@@ -221,7 +221,7 @@ export default function AbsensiPage() {
                   {dayData.recorded && !isDirty && (
                     <button
                       onClick={handleHapusClick}
-                      className="text-merah-600 active:text-merah-700 -mr-2 rounded-lg p-2 text-sm font-medium"
+                      className="text-danger-600 active:text-merah-700 -mr-2 rounded-lg p-2 text-sm font-medium"
                     >
                       Hapus absensi
                     </button>
@@ -236,7 +236,7 @@ export default function AbsensiPage() {
           >
             <button
               onClick={() => setActiveTab('S')}
-              className={`flex-1 rounded-[10px] py-2.5 font-medium transition-colors ${activeTab === 'S' ? 'bg-sakit-solid text-white shadow-sm' : 'border border-slate-200 bg-white text-slate-600'}`}
+              className={`flex-1 rounded-[10px] py-2.5 font-medium transition-colors ${activeTab === 'S' ? 'bg-sick-solid text-white shadow-sm' : 'border border-slate-200 bg-white text-slate-600'}`}
             >
               Sakit{' '}
               {countS > 0 && (
@@ -245,7 +245,7 @@ export default function AbsensiPage() {
             </button>
             <button
               onClick={() => setActiveTab('I')}
-              className={`flex-1 rounded-[10px] py-2.5 font-medium transition-colors ${activeTab === 'I' ? 'bg-izin-solid text-white shadow-sm' : 'border border-slate-200 bg-white text-slate-600'}`}
+              className={`flex-1 rounded-[10px] py-2.5 font-medium transition-colors ${activeTab === 'I' ? 'bg-excused-solid text-white shadow-sm' : 'border border-slate-200 bg-white text-slate-600'}`}
             >
               Izin{' '}
               {countI > 0 && (
@@ -254,7 +254,7 @@ export default function AbsensiPage() {
             </button>
             <button
               onClick={() => setActiveTab('A')}
-              className={`flex-1 rounded-[10px] py-2.5 font-medium transition-colors ${activeTab === 'A' ? 'bg-alpha-solid text-white shadow-sm' : 'border border-slate-200 bg-white text-slate-600'}`}
+              className={`flex-1 rounded-[10px] py-2.5 font-medium transition-colors ${activeTab === 'A' ? 'bg-absent-solid text-white shadow-sm' : 'border border-slate-200 bg-white text-slate-600'}`}
             >
               Alpha{' '}
               {countA > 0 && (
@@ -272,7 +272,7 @@ export default function AbsensiPage() {
               placeholder="Cari nama siswa"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="focus:border-biru-600 focus:ring-biru-600 w-full rounded-[10px] border border-slate-200 bg-white py-2.5 pr-4 pl-10 text-slate-800 shadow-sm placeholder:text-slate-400 focus:ring-1 focus:outline-none"
+              className="focus:border-primary-600 focus:ring-primary-600 w-full rounded-[10px] border border-slate-200 bg-white py-2.5 pr-4 pl-10 text-slate-800 shadow-sm placeholder:text-slate-400 focus:ring-1 focus:outline-none"
             />
           </div>
 
@@ -289,9 +289,9 @@ export default function AbsensiPage() {
                   const status = entries[s.no]
 
                   let badgeClass = ''
-                  if (status === 'S') badgeClass = 'bg-sakit-bg text-sakit-fg'
-                  else if (status === 'I') badgeClass = 'bg-izin-bg text-izin-fg'
-                  else if (status === 'A') badgeClass = 'bg-alpha-bg text-alpha-fg'
+                  if (status === 'S') badgeClass = 'bg-sick-bg text-sick-fg'
+                  else if (status === 'I') badgeClass = 'bg-excused-bg text-excused-fg'
+                  else if (status === 'A') badgeClass = 'bg-absent-bg text-absent-fg'
 
                   return (
                     <button
@@ -325,13 +325,13 @@ export default function AbsensiPage() {
             <div className="animate-in slide-in-from-bottom fixed right-0 bottom-[56px] left-0 z-[60] border-t border-slate-200 bg-white p-4 shadow-[0_-4px_16px_rgba(0,0,0,0.1)]">
               <div className="mb-3 flex items-center justify-between">
                 <span className="font-medium text-slate-600">Ringkasan</span>
-                <span className="font-judul text-biru-600 font-semibold">
+                <span className="font-heading text-primary-600 font-semibold">
                   Hadir {countH} dari {students.length}
                 </span>
               </div>
               <button
                 onClick={handleSave}
-                className="bg-biru-600 active:bg-biru-700 w-full rounded-[10px] py-3 font-semibold text-white transition-colors"
+                className="bg-primary-600 active:bg-primary-700 w-full rounded-[10px] py-3 font-semibold text-white transition-colors"
               >
                 Simpan absensi
               </button>

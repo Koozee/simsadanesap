@@ -19,7 +19,7 @@ export function CircularProgress({
       <svg className="h-full w-full -rotate-90 transform">
         {/* Background circle */}
         <circle
-          className="text-biru-50"
+          className="text-primary-50"
           strokeWidth={strokeWidth}
           stroke="currentColor"
           fill="transparent"
@@ -29,7 +29,7 @@ export function CircularProgress({
         />
         {/* Progress circle */}
         <circle
-          className="text-biru-600 transition-all duration-1000 ease-out"
+          className="text-primary-600 transition-all duration-1000 ease-out"
           strokeWidth={strokeWidth}
           strokeDasharray={circumference}
           strokeDashoffset={offset}
@@ -42,7 +42,7 @@ export function CircularProgress({
         />
         {/* Inner gold ring */}
         <circle
-          className="text-emas-400"
+          className="text-gold-400"
           strokeWidth={1.5}
           stroke="currentColor"
           fill="transparent"
@@ -52,7 +52,7 @@ export function CircularProgress({
         />
       </svg>
       <span
-        className="font-judul absolute font-semibold text-slate-800"
+        className="font-heading absolute font-semibold text-slate-800"
         style={{ fontSize: size * 0.25 }}
       >
         {percent}%

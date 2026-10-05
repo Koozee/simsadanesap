@@ -4,82 +4,79 @@
  * Token desain dari design.md bagian 10, dalam format Tailwind v4 (@theme).
  * Nama token mengikuti design.md, dengan awalan namespace Tailwind
  * (--color-, --radius-, --shadow-, --font-) agar menjadi kelas utilitas:
- *   bg-biru-600, text-navy-900, border-garis, bg-sakit-bg, text-sakit-fg,
- *   rounded-kecil, rounded-tombol, rounded-t-sheet, shadow-melayang,
- *   font-judul, font-teks.
+ *   bg-primary-600, text-navy-900, border-divider, bg-sick-bg, text-sick-fg,
+ *   rounded-sm, rounded-btn, rounded-t-sheet, shadow-floating,
+ *   font-heading, font-body.
  *
  * Palet bawaan Tailwind sengaja dikosongkan (--color-*: initial) supaya
  * hanya warna dari design.md yang bisa dipakai.
  */
 @theme {
   /* inti */
-  --color-biru-600: #00359d;
-  --color-biru-700: #002a7d;
-  --color-biru-50: #eaf0fb;
+  --color-primary-600: #00359d;
+  --color-primary-700: #002a7d;
+  --color-primary-50: #eaf0fb;
   --color-navy-900: #0c1b4b;
   --color-slate-600: #4a5578;
-  --color-garis: #d6dceb;
-  --color-latar: #f5f7fc;
-  --color-permukaan: #ffffff;
+  --color-divider: #d6dceb;
+  --color-base: #f5f7fc;
+  --color-surface: #ffffff;
   /* Emas HANYA untuk garis header dan penanda "minggu berikutnya" (design.md 2.3). */
-  --color-emas-400: #f6be26;
-  --color-krem-100: #f7f3de;
+  --color-gold-400: #f6be26;
+  --color-cream-100: #f7f3de;
   /* Dipakai design.md 6.2 dan 6.3; sama dengan warna libur (keputusan T0.2). */
-  --color-merah-600: #c62e24;
+  --color-danger-600: #c62e24;
   --color-white: #ffffff;
 
   /* status: lembut (bg), teks di latar lembut (fg), solid (tab aktif) */
-  --color-hadir-bg: #ddf1e2;
-  --color-hadir-fg: #17612d;
-  --color-hadir-solid: #1f7a3a;
+  --color-present-bg: #ddf1e2;
+  --color-present-fg: #17612d;
+  --color-present-solid: #1f7a3a;
 
   /* Sakit: Biru */
-  --color-sakit-bg: #d8ebfa;
-  --color-sakit-fg: #0b4f86;
-  --color-sakit-solid: #1c6fb5;
+  --color-sick-bg: #d8ebfa;
+  --color-sick-fg: #0b4f86;
+  --color-sick-solid: #1c6fb5;
 
   /* Izin: Kuning */
-  --color-izin-bg: #fce9c2;
-  --color-izin-fg: #7a4a00;
-  --color-izin-solid: #a35f00;
+  --color-excused-bg: #fce9c2;
+  --color-excused-fg: #7a4a00;
+  --color-excused-solid: #a35f00;
 
   /* Alpha: Merah */
-  --color-alpha-bg: #f9d9d5;
-  --color-alpha-fg: #8e1c14;
-  --color-alpha-solid: #c62e24;
+  --color-absent-bg: #f9d9d5;
+  --color-absent-fg: #8e1c14;
+  --color-absent-solid: #c62e24;
 
-  --color-libur-solid: #c62e24;
+  --color-holiday-solid: #c62e24;
 
   /* bentuk */
-  --radius-kecil: 6px;
-  --radius-tombol: 10px;
+  --radius-sm: 6px;
+  --radius-btn: 10px;
   --radius-sheet: 20px;
-  --shadow-melayang: 0 -4px 16px rgba(12, 27, 75, 0.14);
+  --shadow-floating: 0 -4px 16px rgba(12, 27, 75, 0.14);
 
   /* huruf */
-  --font-judul: 'Lexend Variable', system-ui, sans-serif;
-  --font-teks: 'Source Sans 3 Variable', system-ui, sans-serif;
+  --font-heading: 'Lexend Variable', system-ui, sans-serif;
+  --font-body: 'Source Sans 3 Variable', system-ui, sans-serif;
   --font-sans: 'Source Sans 3 Variable', system-ui, sans-serif;
 }
 
 @layer base {
   html {
-    background: var(--color-latar);
+    background: var(--color-base);
     color: var(--color-navy-900);
-    font-family: var(--font-teks);
+    font-family: var(--font-body);
     font-size: 16px;
   }
 
-  /* Fokus keyboard: garis 2 px biru-600 dengan jarak 2 px (design.md 4). */
+  /* Fokus keyboard: garis 2 px primary-600 dengan jarak 2 px (design.md 4). */
   :focus-visible {
-    outline: 2px solid var(--color-biru-600);
+    outline: 2px solid var(--color-primary-600);
     outline-offset: 2px;
   }
 }
 
-@utility angka {
-  font-variant-numeric: tabular-nums;
-}
 
 @media (prefers-reduced-motion: reduce) {
   *,

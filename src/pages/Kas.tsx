@@ -180,7 +180,7 @@ export default function KasPage() {
         >
           <ChevronLeft size={20} />
         </button>
-        <div className="font-judul flex items-center gap-2 font-semibold text-slate-800">
+        <div className="font-heading flex items-center gap-2 font-semibold text-slate-800">
           Tahun {year}
         </div>
         <button
@@ -194,7 +194,7 @@ export default function KasPage() {
 
       {!kasData ? (
         <div className="flex flex-col items-center justify-center py-20 text-slate-500">
-          <Loader2 className="text-biru-500 mb-4 animate-spin" size={36} />
+          <Loader2 className="text-primary-500 mb-4 animate-spin" size={36} />
           <p className="font-medium">Memuat data Tahun {year}...</p>
         </div>
       ) : (
@@ -202,11 +202,11 @@ export default function KasPage() {
           {summary && kasData.sheetExists && (
             <div className="rounded-[10px] border border-slate-200 bg-white p-4 text-center shadow-sm">
               <div className="mb-1 text-sm font-medium text-slate-500">Saldo Kas</div>
-              <div className="font-judul text-biru-600 mb-3 text-2xl font-semibold">
+              <div className="font-heading text-primary-600 mb-3 text-2xl font-semibold">
                 {formatRp(summary.saldo)}
               </div>
               <div className="flex justify-center gap-4 text-sm">
-                <div className="text-hadir-solid flex gap-1">
+                <div className="text-present-solid flex gap-1">
                   <span className="text-slate-400">Masuk</span> {formatRp(summary.pemasukan)}
                 </div>
                 <div className="flex gap-1 text-red-600">
@@ -215,7 +215,7 @@ export default function KasPage() {
               </div>
               <Link
                 to="/kas/pengeluaran"
-                className="text-biru-600 mt-3 block text-sm font-medium hover:underline"
+                className="text-primary-600 mt-3 block text-sm font-medium hover:underline"
               >
                 Kelola Pengeluaran &rarr;
               </Link>
@@ -250,7 +250,7 @@ export default function KasPage() {
                   placeholder="Cari nama siswa"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="focus:border-biru-600 focus:ring-biru-600 w-full rounded-[10px] border border-slate-200 bg-white py-2.5 pr-4 pl-10 text-slate-800 shadow-sm placeholder:text-slate-400 focus:ring-1 focus:outline-none"
+                  className="focus:border-primary-600 focus:ring-primary-600 w-full rounded-[10px] border border-slate-200 bg-white py-2.5 pr-4 pl-10 text-slate-800 shadow-sm placeholder:text-slate-400 focus:ring-1 focus:outline-none"
                 />
               </div>
 
@@ -295,7 +295,7 @@ export default function KasPage() {
                                 handleQuickPay(s.no)
                               }}
                               disabled={paidCount === JUMLAH_MINGGU_KAS}
-                              className="bg-biru-50 text-biru-600 active:bg-biru-100 disabled:active:bg-biru-50 border-biru-100 flex h-8 w-8 items-center justify-center rounded-full border transition-colors disabled:opacity-30"
+                              className="bg-primary-50 text-primary-600 active:bg-primary-100 disabled:active:bg-primary-50 border-primary-100 flex h-8 w-8 items-center justify-center rounded-full border transition-colors disabled:opacity-30"
                             >
                               <Plus size={18} />
                             </button>
@@ -319,7 +319,7 @@ export default function KasPage() {
             <div className="mx-auto mb-2 h-1.5 w-12 rounded-full bg-slate-200" />
 
             <div>
-              <h2 className="font-judul truncate text-lg font-semibold text-slate-800">
+              <h2 className="font-heading truncate text-lg font-semibold text-slate-800">
                 {selectedStudent.nama}
               </h2>
               <p className="mt-1 text-sm text-slate-500">
@@ -347,7 +347,7 @@ export default function KasPage() {
                       paid
                         ? 'bg-[#1F7A3A] text-white shadow-sm'
                         : isNext
-                          ? 'border-emas-400 border-2 bg-white text-slate-800 shadow-sm'
+                          ? 'border-gold-400 border-2 bg-white text-slate-800 shadow-sm'
                           : 'border border-slate-200 bg-white text-slate-500'
                     }`}
                   >
@@ -372,7 +372,7 @@ export default function KasPage() {
               return (
                 <button
                   onClick={() => handleQuickPay(selectedNo)}
-                  className="bg-biru-600 active:bg-biru-700 w-full rounded-[10px] py-3.5 font-semibold text-white shadow-sm transition-colors"
+                  className="bg-primary-600 active:bg-primary-700 w-full rounded-[10px] py-3.5 font-semibold text-white shadow-sm transition-colors"
                 >
                   Catat bayar minggu {nextUnpaid + 1}
                 </button>

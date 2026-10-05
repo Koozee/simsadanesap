@@ -70,7 +70,7 @@ export function AbsensiRekap() {
               type="month"
               value={fromMonth}
               onChange={(e) => setFromMonth(e.target.value)}
-              className="focus:ring-biru-600 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:ring-1 focus:outline-none"
+              className="focus:ring-primary-600 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:ring-1 focus:outline-none"
             />
           </div>
           <div className="flex flex-1 flex-col gap-1">
@@ -79,7 +79,7 @@ export function AbsensiRekap() {
               type="month"
               value={toMonth}
               onChange={(e) => setToMonth(e.target.value)}
-              className="focus:ring-biru-600 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:ring-1 focus:outline-none"
+              className="focus:ring-primary-600 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:ring-1 focus:outline-none"
             />
           </div>
         </div>
@@ -89,7 +89,7 @@ export function AbsensiRekap() {
           <select
             value={selectedNo}
             onChange={(e) => setSelectedNo(e.target.value)}
-            className="focus:ring-biru-600 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:ring-1 focus:outline-none"
+            className="focus:ring-primary-600 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:ring-1 focus:outline-none"
           >
             <option value="semua">Semua Siswa</option>
             {students.map((s) => (
@@ -125,9 +125,9 @@ export function AbsensiRekap() {
                         <span className="truncate font-medium text-slate-800">{s?.nama}</span>
                       </div>
                       <div className="flex gap-3 text-xs">
-                        <span className="text-biru-600 font-medium">S: {rekap.sakit}</span>
+                        <span className="text-primary-600 font-medium">S: {rekap.sakit}</span>
                         <span className="text-kuning-600 font-medium">I: {rekap.izin}</span>
-                        <span className="text-merah-600 font-medium">A: {rekap.alpha}</span>
+                        <span className="text-danger-600 font-medium">A: {rekap.alpha}</span>
                         <span className="text-slate-500">H: {rekap.hadir}</span>
                       </div>
                     </div>
@@ -144,12 +144,12 @@ export function AbsensiRekap() {
                   size={96}
                   strokeWidth={10}
                 />
-                <h3 className="font-judul mt-4 text-lg font-semibold text-slate-800">
+                <h3 className="font-heading mt-4 text-lg font-semibold text-slate-800">
                   {students.find((x) => x.no.toString() === selectedNo)?.nama}
                 </h3>
                 <div className="mt-4 flex gap-4 rounded-lg bg-slate-50 px-4 py-2 text-sm">
                   <div className="flex flex-col items-center">
-                    <span className="text-biru-600 font-bold">
+                    <span className="text-primary-600 font-bold">
                       {summary.perSiswa[0]?.sakit || 0}
                     </span>
                     <span className="text-xs text-slate-500">Sakit</span>
@@ -161,7 +161,7 @@ export function AbsensiRekap() {
                     <span className="text-xs text-slate-500">Izin</span>
                   </div>
                   <div className="flex flex-col items-center">
-                    <span className="text-merah-600 font-bold">
+                    <span className="text-danger-600 font-bold">
                       {summary.perSiswa[0]?.alpha || 0}
                     </span>
                     <span className="text-xs text-slate-500">Alpha</span>
@@ -184,13 +184,13 @@ export function AbsensiRekap() {
                     <span className="font-medium text-slate-700">{formatMonth(pb.month)}</span>
                     <div className="flex gap-3 text-sm">
                       {pb.rekap.sakit > 0 && (
-                        <span className="text-biru-600">S:{pb.rekap.sakit}</span>
+                        <span className="text-primary-600">S:{pb.rekap.sakit}</span>
                       )}
                       {pb.rekap.izin > 0 && (
                         <span className="text-kuning-600">I:{pb.rekap.izin}</span>
                       )}
                       {pb.rekap.alpha > 0 && (
-                        <span className="text-merah-600">A:{pb.rekap.alpha}</span>
+                        <span className="text-danger-600">A:{pb.rekap.alpha}</span>
                       )}
                       <span className="text-slate-500">H:{pb.rekap.hadir}</span>
                     </div>

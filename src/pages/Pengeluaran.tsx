@@ -102,7 +102,7 @@ export default function PengeluaranPage() {
         >
           <ChevronLeft size={24} />
         </button>
-        <h1 className="font-judul text-lg font-semibold text-slate-800">Catatan Pengeluaran</h1>
+        <h1 className="font-heading text-lg font-semibold text-slate-800">Catatan Pengeluaran</h1>
       </div>
 
       {isLoading ? (
@@ -130,7 +130,7 @@ export default function PengeluaranPage() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => openEdit(e)}
-                    className="hover:text-biru-600 rounded-lg p-2 text-slate-400 active:bg-slate-100"
+                    className="hover:text-primary-600 rounded-lg p-2 text-slate-400 active:bg-slate-100"
                   >
                     <Edit3 size={16} />
                   </button>
@@ -150,7 +150,7 @@ export default function PengeluaranPage() {
       {/* FAB */}
       <button
         onClick={openAdd}
-        className="bg-biru-600 active:bg-biru-700 fixed right-4 bottom-20 flex h-14 w-14 items-center justify-center rounded-full text-white shadow-lg transition-transform hover:scale-105"
+        className="bg-primary-600 active:bg-primary-700 fixed right-4 bottom-20 flex h-14 w-14 items-center justify-center rounded-full text-white shadow-lg transition-transform hover:scale-105"
       >
         <Plus size={24} />
       </button>
@@ -159,7 +159,7 @@ export default function PengeluaranPage() {
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-sm">
           <div className="animate-in fade-in zoom-in-95 w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
-            <h3 className="font-judul mb-4 text-lg font-semibold text-slate-800">
+            <h3 className="font-heading mb-4 text-lg font-semibold text-slate-800">
               {editItem ? 'Ubah Pengeluaran' : 'Tambah Pengeluaran'}
             </h3>
 
@@ -171,7 +171,7 @@ export default function PengeluaranPage() {
                   value={jumlah}
                   onChange={(e) => setJumlah(e.target.value)}
                   placeholder="Misal: 50000"
-                  className="focus:ring-biru-500 focus:border-biru-500 w-full rounded-lg border border-slate-200 px-4 py-2 outline-none focus:ring-1"
+                  className="focus:ring-primary-500 focus:border-primary-500 w-full rounded-lg border border-slate-200 px-4 py-2 outline-none focus:ring-1"
                 />
               </div>
               <div>
@@ -181,7 +181,7 @@ export default function PengeluaranPage() {
                   value={keterangan}
                   onChange={(e) => setKeterangan(e.target.value)}
                   placeholder="Misal: Beli sapu"
-                  className="focus:ring-biru-500 focus:border-biru-500 w-full rounded-lg border border-slate-200 px-4 py-2 outline-none focus:ring-1"
+                  className="focus:ring-primary-500 focus:border-primary-500 w-full rounded-lg border border-slate-200 px-4 py-2 outline-none focus:ring-1"
                 />
               </div>
             </div>
@@ -196,7 +196,7 @@ export default function PengeluaranPage() {
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="bg-biru-600 active:bg-biru-700 flex items-center gap-2 rounded-lg px-4 py-2 font-medium text-white disabled:opacity-50"
+                className="bg-primary-600 active:bg-primary-700 flex items-center gap-2 rounded-lg px-4 py-2 font-medium text-white disabled:opacity-50"
               >
                 {isSaving && <Loader2 className="animate-spin" size={16} />}
                 Simpan

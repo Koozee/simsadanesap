@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Versi** | 1.1 (asumsi disetujui, fitur Libur ditambahkan, pengamanan ditunda) |
+| **Versi** | 1.2 (Final MVP, termasuk fitur Agenda & Kalender Cerdas) |
 | **Tahun pelajaran** | 2026/2027 |
 | **Pengguna** | Wali kelas (1 orang, 1 kelas) |
 | **Stack** | Vite + React + TypeScript, Google Sheets sebagai database, Google Apps Script sebagai API, deploy di Vercel |
@@ -28,8 +28,9 @@ Wali kelas saat ini mencatat absensi, nilai, dan uang kas langsung di tiga file 
 ### 2.1 Masuk lingkup (MVP)
 1. **Absensi harian** dengan pemilih tanggal (kalender), bisa mengedit tanggal yang sudah lewat, satu sheet per bulan, dan **penandaan hari libur** (Minggu otomatis libur).
 2. **Rekap absensi** (Hadir, Izin, Sakit, Alpha) per siswa dalam rentang bulan yang dipilih.
-3. **Input nilai** untuk 7 mata pelajaran: penilaian harian, PTS, PAS, serta tampilan rata-rata.
+3. **Input nilai** untuk 7 mata pelajaran: penilaian harian, PTS, PAS, serta tampilan rata-rata. Penilaian harian otomatis tersinkronisasi ke sheet Agenda.
 4. **Kas mingguan**: centang pembayaran manual, catatan pengeluaran, dan saldo.
+5. **Beranda Cerdas**: Kalender interaktif yang menampilkan penanda hari libur dan jadwal penilaian/agenda secara otomatis.
 
 ### 2.2 Di luar lingkup (sementara)
 - Login, akun, dan RBAC (sengaja ditiadakan karena hanya satu kelas dan satu pengguna).
@@ -137,6 +138,10 @@ Pembacaan sel bersifat toleran: `v`, `V`, `✓`, dan `√` semuanya dianggap had
 | `Z` | PTS (diisi app) |
 | `AA` | PAS (diisi app) |
 | `AB` | **Nilai Akhir**, **tidak disentuh** (diisi rumus Anda sendiri) |
+
+**Sheet `Agenda` (di dalam file Nilai)**
+
+Sheet khusus bernama `Agenda` untuk menampung riwayat/ jadwal penilaian harian, PTS, dan PAS yang ditambahkan secara otomatis dari form input nilai, dan digunakan sebagai penanda di Kalender Beranda. Kolom: `Tanggal`, `Mapel`, `Keterangan`.
 
 > Catatan: pada permintaan awal tertulis STS/SAS, sedangkan spreadsheet memakai **PTS/PAS**. UI memakai istilah PTS/PAS.
 
@@ -313,6 +318,7 @@ Bottom navigation (mobile): **Beranda · Absensi · Nilai · Kas**. Rekap absens
 |---|---|---|---|
 | `validate` | GET | – | Cek struktur ketiga spreadsheet, urutan nama siswa sama, dan sheet wajib ada |
 | `students.list` | GET | – | `[{no, nipd, nama, jk}]` |
+| `beranda.overview` | GET | `date, year, month` | `{absenDay, kasSummary, absenMonthOverview, agendaMonth}` (Digunakan di Beranda untuk 1x fetch) |
 | `absensi.getDay` | GET | `date` | `{recorded, libur, entries:[{no,status}]}` (`H/S/I/A`) |
 | `absensi.monthOverview` | GET | `month` | `{recordedDates:[...], liburDates:[...]}` untuk penanda kalender (Minggu ikut `liburDates`) |
 | `absensi.saveDay` | POST | `date, entries[]` | Menulis kolom tanggal, membuat sheet bulan bila perlu. Ditolak (`SUNDAY_LOCKED`) untuk hari Minggu |

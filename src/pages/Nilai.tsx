@@ -113,7 +113,7 @@ export default function NilaiPage() {
         <label className="mb-2 block text-sm font-medium text-slate-500">Mata Pelajaran</label>
         <div className="relative">
           <select
-            className="focus:border-biru-500 focus:ring-biru-500 w-full appearance-none rounded-lg border border-slate-200 bg-slate-50 p-3 font-medium text-slate-800 focus:ring-1 focus:outline-none"
+            className="focus:border-primary-500 focus:ring-primary-500 w-full appearance-none rounded-lg border border-slate-200 bg-slate-50 p-3 font-medium text-slate-800 focus:ring-1 focus:outline-none"
             value={selectedMapel || ''}
             onChange={(e) => setSelectedMapel(e.target.value as Mapel)}
           >
@@ -132,7 +132,7 @@ export default function NilaiPage() {
 
       {!sheet ? (
         <div className="flex flex-col items-center justify-center py-20 text-slate-500">
-          <Loader2 className="text-biru-500 mb-4 animate-spin" size={36} />
+          <Loader2 className="text-primary-500 mb-4 animate-spin" size={36} />
           <p className="font-medium">Memuat data nilai...</p>
         </div>
       ) : (
@@ -144,7 +144,7 @@ export default function NilaiPage() {
               placeholder="Cari nama siswa"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="focus:border-biru-600 focus:ring-biru-600 w-full rounded-[10px] border border-slate-200 bg-white py-3 pr-4 pl-10 text-slate-800 shadow-sm placeholder:text-slate-400 focus:ring-1 focus:outline-none"
+              className="focus:border-primary-600 focus:ring-primary-600 w-full rounded-[10px] border border-slate-200 bg-white py-3 pr-4 pl-10 text-slate-800 shadow-sm placeholder:text-slate-400 focus:ring-1 focus:outline-none"
             />
           </div>
 
@@ -201,7 +201,7 @@ export default function NilaiPage() {
           >
             <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/50 p-4">
               <div>
-                <h3 className="font-judul text-lg font-semibold text-slate-800">
+                <h3 className="font-heading text-lg font-semibold text-slate-800">
                   {selectedStudent.nama}
                 </h3>
                 <p className="text-sm text-slate-500">{selectedMapel}</p>
@@ -213,7 +213,7 @@ export default function NilaiPage() {
               <div className="space-y-4">
                 <h4 className="flex justify-between font-semibold text-slate-700">
                   Nilai Harian
-                  <span className="text-biru-600 bg-biru-50 rounded px-2 py-0.5 text-sm">
+                  <span className="text-primary-600 bg-primary-50 rounded px-2 py-0.5 text-sm">
                     Rata-rata: {selectedRow.rataRata ?? '-'}
                   </span>
                 </h4>
@@ -237,7 +237,7 @@ export default function NilaiPage() {
                               const v = e.target.value === '' ? null : Number(e.target.value)
                               handleCellChange(selectedNo, 'daily', v, bab as Bab, slot as Slot)
                             }}
-                            className="md focus:border-biru-500 focus:ring-biru-500 w-full rounded border border-slate-200 bg-white p-2 text-center text-sm font-medium focus:ring-1 focus:outline-none"
+                            className="md focus:border-primary-500 focus:ring-primary-500 w-full rounded border border-slate-200 bg-white p-2 text-center text-sm font-medium focus:ring-1 focus:outline-none"
                           />
                         )
                       })}
@@ -289,7 +289,7 @@ export default function NilaiPage() {
             <div className="border-t border-slate-100 bg-white p-4">
               <button
                 onClick={() => setSelectedNo(null)}
-                className="bg-biru-600 active:bg-biru-700 w-full rounded-xl py-3 font-medium text-white shadow-sm"
+                className="bg-primary-600 active:bg-primary-700 w-full rounded-xl py-3 font-medium text-white shadow-sm"
               >
                 Tutup
               </button>

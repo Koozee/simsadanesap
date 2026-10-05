@@ -82,7 +82,7 @@ export default function BerandaPage() {
     <div className="flex flex-col gap-6 pb-24">
       {/* Header */}
       <div>
-        <h1 className="font-judul text-2xl font-semibold text-slate-800">SIM SADANEPA</h1>
+        <h1 className="font-heading text-2xl font-semibold text-slate-800">SIM SADANEPA</h1>
         <p className="mt-1 font-medium text-slate-500">{todayString}</p>
       </div>
 
@@ -98,8 +98,8 @@ export default function BerandaPage() {
             className="block rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-transform active:scale-[0.98]"
           >
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-judul flex items-center gap-2 text-lg font-semibold text-slate-800">
-                <Users className="text-biru-600" size={20} /> Kehadiran
+              <h2 className="font-heading flex items-center gap-2 text-lg font-semibold text-slate-800">
+                <Users className="text-primary-600" size={20} /> Kehadiran
               </h2>
               <ChevronRight className="text-slate-400" size={20} />
             </div>
@@ -120,19 +120,19 @@ export default function BerandaPage() {
                 <div className="grid flex-1 grid-cols-2 gap-y-3">
                   <div className="flex flex-col">
                     <span className="text-xs font-medium text-slate-500 uppercase">Hadir</span>
-                    <span className="text-hadir-solid text-lg font-semibold">{hadir}</span>
+                    <span className="text-present-solid text-lg font-semibold">{hadir}</span>
                   </div>
                   <div className="flex flex-col">
                     <span className="text-xs font-medium text-slate-500 uppercase">Sakit</span>
-                    <span className="text-sakit-solid text-lg font-semibold">{sakit}</span>
+                    <span className="text-sick-solid text-lg font-semibold">{sakit}</span>
                   </div>
                   <div className="flex flex-col">
                     <span className="text-xs font-medium text-slate-500 uppercase">Izin</span>
-                    <span className="text-izin-solid text-lg font-semibold">{izin}</span>
+                    <span className="text-excused-solid text-lg font-semibold">{izin}</span>
                   </div>
                   <div className="flex flex-col">
                     <span className="text-xs font-medium text-slate-500 uppercase">Alpha</span>
-                    <span className="text-alpha-solid text-lg font-semibold">{alpha}</span>
+                    <span className="text-absent-solid text-lg font-semibold">{alpha}</span>
                   </div>
                 </div>
               </div>
@@ -145,14 +145,14 @@ export default function BerandaPage() {
             className="block rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-transform active:scale-[0.98]"
           >
             <div className="mb-2 flex items-center justify-between">
-              <h2 className="font-judul flex items-center gap-2 text-lg font-semibold text-slate-800">
+              <h2 className="font-heading flex items-center gap-2 text-lg font-semibold text-slate-800">
                 <Wallet className="text-emerald-600" size={20} /> Saldo Kas {activeYear}
               </h2>
               <ChevronRight className="text-slate-400" size={20} />
             </div>
             {kas ? (
               <div className="mt-2">
-                <div className="font-judul mb-3 text-3xl font-semibold text-emerald-600">
+                <div className="font-heading mb-3 text-3xl font-semibold text-emerald-600">
                   {formatRp(kas.saldo)}
                 </div>
                 <div className="flex gap-4 text-sm font-medium">
@@ -173,12 +173,12 @@ export default function BerandaPage() {
           <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             {isNavigating && (
               <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/60 backdrop-blur-[1px]">
-                <Loader2 className="text-biru-500 animate-spin" size={32} />
+                <Loader2 className="text-primary-500 animate-spin" size={32} />
               </div>
             )}
 
             <div className="relative z-0 mb-4 flex items-center justify-between">
-              <h2 className="font-judul text-base font-semibold text-slate-800 sm:text-lg">
+              <h2 className="font-heading text-base font-semibold text-slate-800 sm:text-lg">
                 Kalender {formatMonthID(activeYear + '-' + String(activeMonth).padStart(2, '0'))}
               </h2>
               <div className="flex items-center gap-1">
@@ -221,10 +221,10 @@ export default function BerandaPage() {
                   <button
                     key={i}
                     onClick={() => setSelectedDate(iso)}
-                    className={`relative flex h-10 flex-col items-center justify-center rounded-lg transition-colors sm:h-12 ${!isCurrentMonth ? 'opacity-30' : ''} ${isSelected ? 'bg-biru-600 text-white shadow-md' : isToday ? 'bg-biru-50 border-biru-200 border' : 'hover:bg-slate-50'}`}
+                    className={`relative flex h-10 flex-col items-center justify-center rounded-lg transition-colors sm:h-12 ${!isCurrentMonth ? 'opacity-30' : ''} ${isSelected ? 'bg-primary-600 text-white shadow-md' : isToday ? 'bg-primary-50 border-primary-200 border' : 'hover:bg-slate-50'}`}
                   >
                     <span
-                      className={`text-xs font-medium sm:text-sm ${isSelected ? 'text-white' : isLibur ? 'text-red-600' : isToday ? 'text-biru-700' : 'text-slate-700'}`}
+                      className={`text-xs font-medium sm:text-sm ${isSelected ? 'text-white' : isLibur ? 'text-red-600' : isToday ? 'text-primary-700' : 'text-slate-700'}`}
                     >
                       {d.getDate()}
                     </span>
@@ -235,7 +235,7 @@ export default function BerandaPage() {
                         <div className="h-1.5 w-1.5 rounded-full bg-red-500 shadow-sm"></div>
                       )}
                       {isUjian && (
-                        <div className="bg-emas-400 h-1.5 w-1.5 rounded-full shadow-sm"></div>
+                        <div className="bg-gold-400 h-1.5 w-1.5 rounded-full shadow-sm"></div>
                       )}
                     </div>
                   </button>
@@ -248,7 +248,7 @@ export default function BerandaPage() {
                 <div className="h-1.5 w-1.5 rounded-full bg-red-500"></div> Libur
               </div>
               <div className="flex items-center gap-1">
-                <div className="bg-emas-400 h-1.5 w-1.5 rounded-full"></div> Ujian/Tugas
+                <div className="bg-gold-400 h-1.5 w-1.5 rounded-full"></div> Ujian/Tugas
               </div>
             </div>
 
@@ -273,7 +273,7 @@ export default function BerandaPage() {
                         key={i}
                         className="flex items-center gap-2 rounded-lg border border-slate-100 bg-slate-50 p-2 text-xs text-slate-700 sm:text-sm"
                       >
-                        <div className="bg-emas-400 h-2 w-2 shrink-0 rounded-full"></div>
+                        <div className="bg-gold-400 h-2 w-2 shrink-0 rounded-full"></div>
                         <div>
                           {a.mapel ? (
                             <>
@@ -298,10 +298,10 @@ export default function BerandaPage() {
 
           {/* Pintasan */}
           <div>
-            <h3 className="font-judul mb-4 px-1 font-semibold text-slate-800">Pintasan</h3>
+            <h3 className="font-heading mb-4 px-1 font-semibold text-slate-800">Pintasan</h3>
             <div className="grid grid-cols-4 gap-3">
               <Link to="/absensi" className="flex flex-col items-center gap-2">
-                <div className="bg-biru-50 text-biru-600 flex h-14 w-14 items-center justify-center rounded-2xl transition-transform active:scale-95">
+                <div className="bg-primary-50 text-primary-600 flex h-14 w-14 items-center justify-center rounded-2xl transition-transform active:scale-95">
                   <Users size={24} />
                 </div>
                 <span className="text-xs font-medium text-slate-600">Absensi</span>
