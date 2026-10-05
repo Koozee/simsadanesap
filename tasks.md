@@ -27,7 +27,7 @@ Setiap tugas selesai bila kriteria "Selesai bila" terpenuhi dan `typecheck`, `li
 - [x] **T0.3 Token desain.** Pasang token `design.md` bagian 10 (warna, radius, bayangan, font) ke `index.css` dan konfigurasi Tailwind. Tambahkan `meta theme-color` `#00359D`.
   *Selesai bila:* kelas utilitas untuk semua warna inti dan status tersedia.
 
-- [ ] **T0.4 Kerangka layar.** Header (logo 36 px, "Kelas 3", "SDN 1 Pandanmulyo", garis emas 2 px), navigasi bawah 4 tab (Beranda, Absensi, Nilai, Kas), rute dasar dengan halaman kosong.
+- [x] **T0.4 Kerangka layar.** Header (logo 36 px, "Kelas 3", "SDN 1 Pandanmulyo", garis emas 2 px), navigasi bawah 4 tab (Beranda, Absensi, Nilai, Kas), rute dasar dengan halaman kosong.
   *Selesai bila:* berpindah tab berfungsi di lebar 360 px, tab aktif sesuai `design.md` 6.1.
 
 - [ ] **T0.5 Kontrak dan klien API.** Salin `api-contract.ts` ke `src/types/`. Buat `src/api/client.ts` (GET dengan query, POST dengan `text/plain`, parsing `ApiResult`, galat menjadi `ApiError` bertipe). Buat mode mock: fixture 32 siswa fiktif, handler mock untuk `students.list`, pemilihan lewat `VITE_USE_MOCK`.
