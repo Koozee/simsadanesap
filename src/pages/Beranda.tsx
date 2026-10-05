@@ -2,23 +2,24 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router'
 import { apiCall } from '../api/client'
 import { toISODate, formatDateID, getCalendarGrid, formatMonthID } from '../utils/date'
-import { Users, Wallet, Receipt, FileText, ChevronRight, Loader2 } from 'lucide-react'
+import { Users, Wallet, Receipt, FileText, ChevronRight, ChevronLeft, Loader2 } from 'lucide-react'
 import {CircularProgress} from '../components/CircularProgress'
 import type { BerandaOverview } from '../types/api-contract'
 
 export default function BerandaPage() {
   const [overview, setOverview] = useState<BerandaOverview | null>(null)
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
+  const [activeYear, setActiveYear] = useState(new Date().getFullYear())
+  const [activeMonth, setActiveMonth] = useState(new Date().getMonth() + 1)
   const [isLoading, setIsLoading] = useState(true)
 
   const today = toISODate(new Date())
-  const thisYear = new Date().getFullYear()
-  const thisMonth = new Date().getMonth() + 1
   const todayString = formatDateID(today)
   const formatRp = (n: number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n)
 
   useEffect(() => {
-    apiCall('beranda.overview', { date: today, year: thisYear, month: thisMonth }, 'GET')
+    setIsLoading(true)
+    apiCall('beranda.overview', { date: today, year: activeYear, month: activeMonth }, 'GET')
       .then(data => {
         setOverview(data)
         if (!selectedDate) setSelectedDate(today)
@@ -26,7 +27,25 @@ export default function BerandaPage() {
       .catch(() => {})
       .finally(() => setIsLoading(false))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [today, thisYear, thisMonth])
+  }, [today, activeYear, activeMonth])
+
+  const handlePrevMonth = () => {
+    if (activeMonth === 1) {
+      setActiveMonth(12)
+      setActiveYear(y => y - 1)
+    } else {
+      setActiveMonth(m => m - 1)
+    }
+  }
+
+  const handleNextMonth = () => {
+    if (activeMonth === 12) {
+      setActiveMonth(1)
+      setActiveYear(y => y + 1)
+    } else {
+      setActiveMonth(m => m + 1)
+    }
+  }
 
   const absen = overview?.absenDay
   const kas = overview?.kasSummary
@@ -107,7 +126,7 @@ export default function BerandaPage() {
           <Link to="/kas" className="block bg-white rounded-2xl p-5 shadow-sm border border-slate-200 active:scale-[0.98] transition-transform">
             <div className="flex justify-between items-center mb-2">
               <h2 className="font-judul font-semibold text-lg text-slate-800 flex items-center gap-2">
-                <Wallet className="text-emerald-600" size={20} /> Saldo Kas {thisYear}
+                <Wallet className="text-emerald-600" size={20} /> Saldo Kas {activeYear}
               </h2>
               <ChevronRight className="text-slate-400" size={20} />
             </div>
@@ -128,18 +147,24 @@ export default function BerandaPage() {
 
           {/* Kalender */}
           <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
-            <h2 className="font-judul font-semibold text-base text-slate-800 mb-3">
-              Kalender {formatMonthID(thisYear + '-' + String(thisMonth).padStart(2, '0'))}
-            </h2>
-            <div className="grid grid-cols-7 gap-1 text-center mb-1">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-judul font-semibold text-base sm:text-lg text-slate-800">
+                Kalender {formatMonthID(activeYear + '-' + String(activeMonth).padStart(2, '0'))}
+              </h2>
+              <div className="flex items-center gap-1">
+                <button onClick={handlePrevMonth} className="p-1 hover:bg-slate-100 rounded-lg text-slate-500 transition-colors"><ChevronLeft size={20}/></button>
+                <button onClick={handleNextMonth} className="p-1 hover:bg-slate-100 rounded-lg text-slate-500 transition-colors"><ChevronRight size={20}/></button>
+              </div>
+            </div>
+            <div className="grid grid-cols-7 gap-1 text-center mb-2">
               {['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'].map(d => (
-                <div key={d} className="text-[9px] sm:text-[10px] uppercase tracking-tighter font-semibold text-slate-400 truncate">{d}</div>
+                <div key={d} className="text-xs uppercase tracking-tight font-semibold text-slate-400 truncate">{d}</div>
               ))}
             </div>
             <div className="grid grid-cols-7 gap-1">
-              {getCalendarGrid(thisYear, thisMonth).map((d, i) => {
+              {getCalendarGrid(activeYear, activeMonth).map((d, i) => {
                 const iso = toISODate(d)
-                const isCurrentMonth = d.getMonth() + 1 === thisMonth
+                const isCurrentMonth = d.getMonth() + 1 === activeMonth
                 const isToday = iso === today
                 const isSelected = iso === selectedDate
                 
@@ -158,9 +183,9 @@ export default function BerandaPage() {
                     </span>
                     
                     {/* Penanda bawah */}
-                    <div className="flex gap-0.5 mt-0.5 h-1">
-                      {isLibur && liburDates.includes(iso) && <div className={`w-1 h-1 rounded-full ${isSelected ? 'bg-white' : 'bg-red-500'}`}></div>}
-                      {isUjian && <div className={`w-1 h-1 rounded-full ${isSelected ? 'bg-white' : 'bg-emas-400'}`}></div>}
+                    <div className="flex gap-1 mt-1 h-1.5">
+                      {isLibur && liburDates.includes(iso) && <div className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-sm"></div>}
+                      {isUjian && <div className="w-1.5 h-1.5 rounded-full bg-emas-400 shadow-sm"></div>}
                     </div>
                   </button>
                 )
