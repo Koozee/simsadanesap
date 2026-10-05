@@ -142,7 +142,7 @@ Catat hal di luar tugas yang perlu diperhatikan. Jangan dikerjakan tanpa persetu
 - (T0.2, diputuskan) **Saldo kas vs sel `C40`:** ikut `prd.md` A4 (kumulatif). Lihat "Keputusan yang sudah dipakai".
 - (T0.2, diputuskan) **Format rupiah:** ikut `prd.md` bagian 10, `Rp 2.000`.
 - (T0.2, diputuskan) **Token `merah-600`** = `#C62E24`, dipasang pada T0.3.
-- (T0.2, menunggu konfirmasi) **Parameter `nilai.getSheet`:** `prd.md` memakai `subject`, `api-contract.ts` memakai `mapel`. Sementara memakai `mapel` dari kontrak. Mengganti ke `subject` berarti mengubah kontrak dan perlu konfirmasi eksplisit.
+- (T0.2, diputuskan) **Parameter `nilai.getSheet`:** tetap `mapel` sesuai `api-contract.ts`. `subject` di tabel `prd.md` bagian 8 tidak dipakai.
 - (T0.2) **Perintah `typecheck`:** `CLAUDE.md` menulis `tsc --noEmit`, tetapi tsconfig memakai project references sehingga perintah itu tidak memeriksa apa pun. Skrip memakai `tsc -b` (semua tsconfig sudah `noEmit`).
 - (T0.2) `public/favicon.svg` dan `public/favicon.ico` masih logo Vite, dan `README.md` masih isi template Vite. Diganti pada T5.2 dan bila diminta.
 - (T0.2, diputuskan) Nama siswa tanpa NIPD tetap tertulis di `prd.md` dan `spreadsheet-schema.md` seperti adanya. Repositori harus privat (`prd.md` bagian 10).
