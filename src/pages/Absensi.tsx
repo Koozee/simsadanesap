@@ -227,7 +227,7 @@ export default function AbsensiPage() {
                   {dayData.recorded && !isDirty && (
                     <button
                       onClick={handleHapusClick}
-                      className="flex-1 rounded-btn border border-danger-100 bg-danger-50 py-2 text-sm font-medium text-danger-700 shadow-sm transition-colors active:bg-danger-100"
+                      className="flex-1 rounded-btn border border-danger-600 bg-danger-600 py-2 text-sm font-medium text-white shadow-sm transition-colors active:bg-danger-700"
                     >
                       Hapus Absensi
                     </button>
