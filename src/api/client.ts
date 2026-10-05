@@ -1,5 +1,6 @@
-import type { ActionName, ParamsOf, ResultOf, ApiResult, ApiError, MethodOf } from '../types/api-contract'
+import type { ActionName, ParamsOf, ResultOf, ApiResult, ApiError, MethodOf, AbsenEntry } from '../types/api-contract'
 import { mockStudents } from './mockData'
+import { mockGetDay, mockMonthOverview, mockSaveDay, mockClearDay, mockSetLibur } from './mockAbsensi'
 
 
 export class ApiClientError extends Error {
@@ -11,12 +12,20 @@ export class ApiClientError extends Error {
   }
 }
 
-async function handleMock<A extends ActionName>(action: A, _params: ParamsOf<A>): Promise<ResultOf<A>> {
-  void _params
+async function handleMock<A extends ActionName>(action: A, params: ParamsOf<A>): Promise<ResultOf<A>> {
   await new Promise(resolve => setTimeout(resolve, 500))
   
-  if (action === 'students.list') {
-    return mockStudents as ResultOf<A>
+  if (action === 'students.list') return mockStudents as ResultOf<A>
+  if (action === 'absensi.getDay') return mockGetDay((params as { date: string }).date) as ResultOf<A>
+  if (action === 'absensi.monthOverview') return mockMonthOverview((params as { month: string }).month) as ResultOf<A>
+  if (action === 'absensi.saveDay') {
+    const p = params as { date: string; entries: AbsenEntry[] }
+    return mockSaveDay(p.date, p.entries) as ResultOf<A>
+  }
+  if (action === 'absensi.clearDay') return mockClearDay((params as { date: string }).date) as ResultOf<A>
+  if (action === 'absensi.setLibur') {
+    const p = params as { date: string; libur: boolean }
+    return mockSetLibur(p.date, p.libur) as ResultOf<A>
   }
   
   throw new Error(`Mock for action ${action} not implemented`)
@@ -27,17 +36,17 @@ export async function apiCall<A extends ActionName>(
   params: ParamsOf<A>,
   method: MethodOf<A>
 ): Promise<ResultOf<A>> {
-  const isMock = import.meta.env.VITE_USE_MOCK === 'true'
-  if (isMock) {
-    return handleMock(action, params)
-  }
-
-  const gasUrl = import.meta.env.VITE_GAS_URL || ''
-  if (!gasUrl) {
-    throw new Error('VITE_GAS_URL is not set')
-  }
-
   try {
+    const isMock = import.meta.env.VITE_USE_MOCK === 'true'
+    if (isMock) {
+      return await handleMock(action, params)
+    }
+
+    const gasUrl = import.meta.env.VITE_GAS_URL || ''
+    if (!gasUrl) {
+      throw new Error('VITE_GAS_URL is not set')
+    }
+
     let url = `${gasUrl}?action=${encodeURIComponent(action)}`
     let body: BodyInit | undefined = undefined
 

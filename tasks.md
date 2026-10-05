@@ -56,7 +56,7 @@ Setiap tugas selesai bila kriteria "Selesai bila" terpenuhi dan `typecheck`, `li
 - [x] **T1.3 `absensi.saveDay`, `absensi.clearDay`, `absensi.setLibur`.** Tulis satu kolom (dengan lock). `H` ditulis `v`. Tolak hari Minggu dengan `SUNDAY_LOCKED`. `setLibur(true)` mengisi `L`, `setLibur(false)` mengosongkan.
   *Selesai bila:* menyimpan 5 Juli menulis kolom `I` saja, `L` di tanggal 17 terisi pada 32 sel dan tampil merah.
 
-- [ ] **T1.4 Handler mock untuk absensi** dengan perilaku yang sama (termasuk Minggu terkunci).
+- [x] **T1.4 Handler mock untuk absensi** dengan perilaku yang sama (termasuk Minggu terkunci).
   *Selesai bila:* seluruh alur absensi bisa dicoba tanpa backend.
 
 - [ ] **T1.5 Halaman Absensi: tanggal dan kalender.** Pemilih tanggal (panah kiri/kanan dan bottom sheet kalender), titik penanda tanggal terisi, merah untuk Minggu dan libur, tanggal Minggu tidak bisa dipilih untuk diabsen.

@@ -3,14 +3,14 @@ import { apiCall, ApiClientError } from './client'
 import type { ApiFail } from '../types/api-contract'
 
 describe('ApiClient', () => {
-  const originalFetch = global.fetch
+  const originalFetch = globalThis.fetch
 
   beforeEach(() => {
-    global.fetch = vi.fn()
+    globalThis.fetch = vi.fn()
   })
 
   afterEach(() => {
-    global.fetch = originalFetch
+    globalThis.fetch = originalFetch
     vi.clearAllMocks()
     vi.unstubAllEnvs()
   })
@@ -31,7 +31,7 @@ describe('ApiClient', () => {
       error: { code: 'INVALID_INPUT', message: 'Input salah' }
     }
     
-    vi.mocked(global.fetch).mockResolvedValueOnce({
+    vi.mocked(globalThis.fetch).mockResolvedValueOnce({
       ok: true,
       json: async () => mockErrorRes
     } as Response)
