@@ -1,30 +1,34 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router'
 import { apiCall } from '../api/client'
-import { toISODate, formatDateID } from '../utils/date'
+import { toISODate, formatDateID, getCalendarGrid, formatMonthID } from '../utils/date'
 import { Users, Wallet, Receipt, FileText, ChevronRight, Loader2 } from 'lucide-react'
 import {CircularProgress} from '../components/CircularProgress'
-import type { AbsenDay, KasSummary } from '../types/api-contract'
+import type { AbsenDay, KasSummary, AbsenMonth } from '../types/api-contract'
 
 export default function BerandaPage() {
   const [absen, setAbsen] = useState<AbsenDay | null>(null)
   const [kas, setKas] = useState<KasSummary | null>(null)
+  const [absenMonth, setAbsenMonth] = useState<AbsenMonth | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   const today = toISODate(new Date())
   const thisYear = new Date().getFullYear()
+  const thisMonth = new Date().getMonth() + 1
   const todayString = formatDateID(today)
   const formatRp = (n: number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n)
 
   useEffect(() => {
     Promise.all([
       apiCall('absensi.getDay', { date: today }, 'GET').catch(() => null),
-      apiCall('kas.summary', { year: thisYear }, 'GET').catch(() => null)
-    ]).then(([absenData, kasData]) => {
+      apiCall('kas.summary', { year: thisYear }, 'GET').catch(() => null),
+      apiCall('absensi.getMonth', { year: thisYear, month: thisMonth }, 'GET').catch(() => null)
+    ]).then(([absenData, kasData, monthData]) => {
       setAbsen(absenData as AbsenDay | null)
       setKas(kasData as KasSummary | null)
+      setAbsenMonth(monthData as AbsenMonth | null)
     }).finally(() => setIsLoading(false))
-  }, [today, thisYear])
+  }, [today, thisYear, thisMonth])
 
   // Hitung status absen
   let hadir = 0, sakit = 0, izin = 0, alpha = 0
@@ -118,6 +122,51 @@ export default function BerandaPage() {
               <div className="text-slate-400 py-2">Data kas belum tersedia</div>
             )}
           </Link>
+
+          {/* Kalender */}
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+            <h2 className="font-judul font-semibold text-lg text-slate-800 mb-4">
+              Kalender {formatMonthID(thisYear + '-' + String(thisMonth).padStart(2, '0'))}
+            </h2>
+            <div className="grid grid-cols-7 gap-1 text-center mb-2">
+              {['Sn', 'Sl', 'Rb', 'Km', 'Jm', 'Sb', 'Mg'].map(d => (
+                <div key={d} className="text-xs font-medium text-slate-400">{d}</div>
+              ))}
+            </div>
+            <div className="grid grid-cols-7 gap-1">
+              {getCalendarGrid(thisYear, thisMonth).map((d, i) => {
+                const iso = toISODate(d)
+                const isCurrentMonth = d.getMonth() + 1 === thisMonth
+                const isToday = iso === today
+                
+                const dataHari = absenMonth?.[iso]
+                // Libur jika hari Minggu atau ditandai libur di data absensi
+                const isLibur = dataHari?.libur || d.getDay() === 0
+                
+                // MOCK EVENTS (karena belum ada tabel database khusus agenda)
+                // Contoh: Tanggal 15 dan 20 bulan ini dianggap ada ujian/tugas
+                const isUjian = isCurrentMonth && (d.getDate() === 15 || d.getDate() === 20)
+                
+                return (
+                  <div key={i} className={`aspect-square flex flex-col items-center justify-center rounded-lg relative ${!isCurrentMonth ? 'opacity-30' : ''} ${isToday ? 'bg-biru-50 border border-biru-200' : ''}`}>
+                    <span className={`text-sm font-medium ${isLibur ? 'text-red-600' : isToday ? 'text-biru-700' : 'text-slate-700'}`}>
+                      {d.getDate()}
+                    </span>
+                    
+                    {/* Penanda bawah */}
+                    <div className="flex gap-1 mt-1 h-1.5">
+                      {isLibur && dataHari?.libur && <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>}
+                      {isUjian && <div className="w-1.5 h-1.5 rounded-full bg-emas-400"></div>}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+            <div className="flex gap-4 mt-4 text-xs text-slate-500 justify-center">
+              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-red-500"></div> Libur</div>
+              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-emas-400"></div> Ujian/Tugas</div>
+            </div>
+          </div>
 
           {/* Pintasan */}
           <div>
