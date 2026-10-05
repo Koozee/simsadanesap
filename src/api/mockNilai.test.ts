@@ -29,10 +29,10 @@ describe('Nilai API Mock', () => {
     // In our mock, setCell only accepts 'daily', 'pts', 'pas'.
     // If we try to pass 'nilaiAkhir', typescript prevents it.
     // We can simulate an invalid field test.
-    // @ts-expect-error testing invalid field
-    expect(() =>
-      mockNilaiSetCell('Bahasa Indonesia', 1, 'nilaiAkhir', undefined, undefined, 90),
-    ).toThrow('INVALID_INPUT')
+    expect(() => {
+      // @ts-expect-error testing invalid field
+      mockNilaiSetCell('Bahasa Indonesia', 1, 'nilaiAkhir', undefined, undefined, 90)
+    }).toThrow('INVALID_INPUT')
   })
 
   it('setCell null clears the cell instead of 0', () => {
