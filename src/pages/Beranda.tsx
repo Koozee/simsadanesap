@@ -33,7 +33,7 @@ export default function BerandaPage() {
         setOverview(data)
         if (!selectedDate) setSelectedDate(today)
       })
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => {
         setIsNavigating(false)
       })
@@ -82,7 +82,7 @@ export default function BerandaPage() {
     <div className="flex flex-col gap-6 pb-24">
       {/* Header */}
       <div>
-        <h1 className="font-heading text-2xl font-semibold text-slate-800">SIM SADANEPA</h1>
+        <h1 className="font-heading text-2xl font-semibold text-slate-800">SIM SADANESAP</h1>
         <p className="mt-1 font-medium text-slate-500">{todayString}</p>
       </div>
 
@@ -264,7 +264,7 @@ export default function BerandaPage() {
                     const [y, m, d] = selectedDate!.split('-')
                     const dayOfWeek = new Date(Number(y), Number(m) - 1, Number(d)).getDay()
                     const isLibur = liburDates.includes(selectedDate!) || dayOfWeek === 0
-                    
+
                     if (!isLibur && JADWAL_PELAJARAN[dayOfWeek]) {
                       return (
                         <div className="rounded-lg border border-primary-100 bg-primary-50/50 p-3">
